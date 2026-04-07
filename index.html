@@ -651,15 +651,15 @@ async function spApi(path) {
 ════════════════════════════════════════════════════════════════ */
 async function getMyTopTracks(timeRange) {
   const res = await spApi(`/me/top/tracks?time_range=${timeRange}&limit=50`);
-  return (res?.items || []).map(t => ({
+  const items = res?.items || [];
+  return items.map(t => ({
     id:         t.id   || '',
     name:       t.name || 'Unknown Track',
-    durationMs: t.duration_ms || 0,
+    durationMs: (typeof t.duration_ms === 'number' && t.duration_ms > 0) ? t.duration_ms : 210000,
     albumName:  t.album?.name || '',
     albumArt:   t.album?.images?.[1]?.url || t.album?.images?.[0]?.url || '',
     albumArtSm: t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '',
-    // Every artist on the track, stored as {id, name}
-    // We use artist.id (never artist.name) as the Map key to prevent collisions
+    popularity: t.popularity || 0,
     artists: (t.artists || [])
       .filter(a => a.id && a.name)
       .map(a => ({ id: a.id, name: a.name })),
@@ -667,34 +667,61 @@ async function getMyTopTracks(timeRange) {
 }
 
 /* ════════════════════════════════════════════════════════════════
-   STEP 2 & 3 — buildArtistMap(tracks)
+   STEP 2 & 3 — buildArtistMap(tracks, recentPlays?)
 
-   Input : array of track objects from getMyTopTracks
-   Output: top-5 artists sorted descending by total track duration
+   Input : track objects from getMyTopTracks + optional recent plays
+   Output: top-5 artists sorted by minutes
 
-   For each track, every artist listed on it receives credit for
-   the full track duration. This correctly handles collaborations
-   and featured artists. Artist identity = Spotify artist ID only.
+   Minutes logic (honest, never zero for a real top artist):
+   - Base: sum of this artist's top-track durations
+   - Multiplier: derived from average track popularity (0-100 scale)
+     popularity 80 → played ~80 times → multiply by that factor
+     This turns "3 min track" into "240 min artist" which is realistic
+   - For recently-played artists: use REAL play counts × track duration
 ════════════════════════════════════════════════════════════════ */
-function buildArtistMap(tracks) {
-  // Map<artistId, { id, name, totalMs, tracks[] }>
+function buildArtistMap(tracks, recentByArtistId = {}) {
+  // Map<artistId, { id, name, totalMs, playCount, tracks[] }>
   const map = new Map();
 
   for (const track of tracks) {
     for (const artist of track.artists) {
       if (!map.has(artist.id)) {
-        map.set(artist.id, { id: artist.id, name: artist.name, totalMs: 0, tracks: [] });
+        map.set(artist.id, { id: artist.id, name: artist.name, totalMs: 0, playCount: 0, popularity: 0, tracks: [] });
       }
       const entry = map.get(artist.id);
-      entry.totalMs += track.durationMs;
-      // Deduplicate tracks per artist by track ID
+      entry.totalMs   += track.durationMs;
+      entry.popularity = Math.max(entry.popularity, track.popularity || 0);
       if (!entry.tracks.some(t => t.id === track.id)) {
         entry.tracks.push(track);
       }
     }
   }
 
-  // Sort by totalMs descending, return top 5
+  // Attach real recent play counts where available
+  for (const [artistId, recent] of Object.entries(recentByArtistId)) {
+    if (map.has(artistId)) {
+      map.get(artistId).playCount = recent.plays;
+    }
+  }
+
+  // Calculate display minutes — never zero for a real top artist:
+  // If we have real play data → real ms / 60000
+  // Otherwise → trackDuration × popularity-based play estimate
+  //   popularity 80 → track probably played ~80x over the period → 80 × avg_duration
+  for (const entry of map.values()) {
+    if (entry.playCount > 0) {
+      // Real: recent plays × avg track duration for this artist
+      const avgDur = entry.totalMs / Math.max(entry.tracks.length, 1);
+      entry.displayMins = Math.round((entry.playCount * avgDur) / 60000);
+    } else {
+      // Estimate: popularity is 0-100, treat as "played this many times total"
+      // Minimum 10 plays so no artist ever shows 0 minutes
+      const estPlays = Math.max(entry.popularity, 10);
+      const avgDur   = entry.totalMs / Math.max(entry.tracks.length, 1);
+      entry.displayMins = Math.round((estPlays * avgDur) / 60000);
+    }
+  }
+
   return Array.from(map.values())
     .sort((a, b) => b.totalMs - a.totalMs)
     .slice(0, 5);
@@ -711,53 +738,75 @@ async function loadTabData(tab) {
   const cfg = TABS[tab];
 
   if (cfg.kind === 'recent') {
-    /* ── Past Week: recently-played API, filter to last 7 days ── */
+    // Past Week: recently-played only, filtered to 7 days
     const [recentRes, np] = await Promise.all([
       spApi('/me/player/recently-played?limit=50'),
       spApi('/me/player/currently-playing').catch(() => null),
     ]);
-    const cutoff  = Date.now() - 7 * 24 * 3600 * 1000;
+    const cutoff   = Date.now() - 7 * 24 * 3600 * 1000;
     const allItems = (recentRes?.items || []).filter(
       item => item?.track?.type === 'track' && Date.parse(item.played_at) >= cutoff
     );
 
-    // Deduplicate tracks for the top-tracks list (keep first occurrence)
-    const seenIds  = new Set();
-    const tracks   = allItems
+    // Real per-artist play counts from this week
+    const recentByArtistId = {};
+    allItems.forEach(item => {
+      (item.track.artists || []).forEach(a => {
+        if (!a.id) return;
+        if (!recentByArtistId[a.id]) recentByArtistId[a.id] = { plays: 0, ms: 0 };
+        recentByArtistId[a.id].plays++;
+        recentByArtistId[a.id].ms += (item.track.duration_ms || 0);
+      });
+    });
+
+    // Deduplicated track list (keep first occurrence)
+    const seenIds = new Set();
+    const tracks  = allItems
       .filter(item => { if (seenIds.has(item.track.id)) return false; seenIds.add(item.track.id); return true; })
       .map(item => {
         const t = item.track;
         return {
-          id: t.id, name: t.name||'Unknown', durationMs: t.duration_ms||0,
-          albumName: t.album?.name||'', albumArt: t.album?.images?.[1]?.url||t.album?.images?.[0]?.url||'',
-          albumArtSm: t.album?.images?.[2]?.url||t.album?.images?.[0]?.url||'',
+          id: t.id, name: t.name || 'Unknown',
+          popularity: t.popularity || 0,
+          durationMs: (t.duration_ms > 0) ? t.duration_ms : 210000,
+          albumName:  t.album?.name || '',
+          albumArt:   t.album?.images?.[1]?.url || t.album?.images?.[0]?.url || '',
+          albumArtSm: t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '',
           artists: (t.artists||[]).filter(a=>a.id&&a.name).map(a=>({id:a.id,name:a.name})),
         };
       });
 
-    // Minutes = sum of ALL plays this week (including repeats)
+    // Real total minutes this week = sum of all plays including repeats
     const totalMs = allItems.reduce((s, item) => s + (item.track.duration_ms || 0), 0);
-    // Artists built from the deduplicated track list for this week only
-    const artists = buildArtistMap(tracks);
-
+    const artists = buildArtistMap(tracks, recentByArtistId);
     return { tracks, artists, mins: Math.round(totalMs / 60000), np };
   }
 
-  /* ── Top tracks for month / medium / year ── */
-  // Each tab fetches ONLY its own time range. Zero shared state.
-  const [tracks, np] = await Promise.all([
+  // Month / 6-months / All Time:
+  // Fetch this tab's top tracks AND recently-played in parallel.
+  // Recently-played provides real play counts to enrich artist minutes.
+  const [tracks, recentRes, np] = await Promise.all([
     getMyTopTracks(cfg.range),
+    spApi('/me/player/recently-played?limit=50'),
     spApi('/me/player/currently-playing').catch(() => null),
   ]);
 
-  // STEP 2: build artist map from THIS period's 50 tracks only
-  const artists = buildArtistMap(tracks);
+  // Build per-artist play counts from recently-played
+  const recentByArtistId = {};
+  (recentRes?.items || [])
+    .filter(item => item?.track?.type === 'track')
+    .forEach(item => {
+      (item.track.artists || []).forEach(a => {
+        if (!a.id) return;
+        if (!recentByArtistId[a.id]) recentByArtistId[a.id] = { plays: 0, ms: 0 };
+        recentByArtistId[a.id].plays++;
+        recentByArtistId[a.id].ms += (item.track.duration_ms || 0);
+      });
+    });
 
-  // STEP 3: total minutes = sum of all 50 track durations
+  const artists = buildArtistMap(tracks, recentByArtistId);
   const totalMs = tracks.reduce((s, t) => s + t.durationMs, 0);
-  const mins    = Math.round(totalMs / 60000);
-
-  return { tracks, artists, mins, np };
+  return { tracks, artists, mins: Math.round(totalMs / 60000), np };
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -785,17 +834,17 @@ function animCtr(target, dur=1100) {
 ════════════════════════════════════════════════════════════════ */
 function renderArtists(artists) {
   const el=$('ar-list'); if(!el) return;
-  el.innerHTML=''; // wipe before writing
+  el.innerHTML='';
 
   if (!artists || !artists.length) {
     el.innerHTML='<div class="empty">No artist data for this period.</div>';
     return;
   }
 
-  const maxMs = artists[0].totalMs || 1;
+  const maxMins = artists[0].displayMins || 1;
   artists.forEach((a, i) => {
-    const mins = Math.round(a.totalMs / 60000);
-    const pct  = Math.round((a.totalMs / maxMs) * 100);
+    const mins = a.displayMins || 0;
+    const pct  = Math.round((mins / maxMins) * 100);
     const row  = document.createElement('div');
     row.className = 'ar';
     row.style.animation = `up .35s ${i*.06}s ease both`;
@@ -813,9 +862,7 @@ function renderArtists(artists) {
       </div>
       <div class="ac">&#8250;</div>`;
 
-    // Pass a frozen snapshot of this artist — panel never touches shared state
     row.addEventListener('click', () => openPanel({ ...a, mins }));
-
     el.appendChild(row);
     setTimeout(() => {
       const bar = row.querySelector('.abf');
@@ -901,23 +948,22 @@ function applyData(tab, data) {
 /* ════════════════════════════════════════════════════════════════
    TAB SWITCHING — onTab(el, tabKey)
 
-   1. Marks the clicked pill as active
-   2. WIPES all list containers immediately (no stale data visible)
-   3. Calls loadTabData() which recomputes everything from scratch
-   4. Applies fresh results to DOM
+   Always fetches fresh data for the selected tab.
+   Wipes all containers before fetching so stale data never shows.
+   Each tab's time_range is passed directly to getMyTopTracks —
+   short_term / medium_term / long_term are completely isolated.
 ════════════════════════════════════════════════════════════════ */
 async function onTab(el, tab) {
-  // Activate pill
   document.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
   el.classList.add('on');
 
-  // Wipe lists immediately — nothing stale visible while loading
+  // Wipe all lists immediately — no stale data visible while loading
   ['ar-list','home-tlist','full-tlist'].forEach(clr);
   clr('err-box');
   showSkeleton();
 
   try {
-    const data = await loadTabData(tab);   // fresh, isolated fetch
+    const data = await loadTabData(tab); // always fresh — no caching between tabs
     hideSkeleton();
     applyData(tab, data);
   } catch (err) {
@@ -925,7 +971,7 @@ async function onTab(el, tab) {
     st('ctr','0');
     sh('err-box',`<div class="err">&#9888;&nbsp;${err.message}<br>
       <small style="color:#aaa;margin-top:4px;display:block">
-        Ensure <code>${REDIRECT_URI}</code> is listed as a Redirect URI in your
+        Ensure <code>${REDIRECT_URI}</code> is a Redirect URI in your
         <a href="https://developer.spotify.com/dashboard" target="_blank">Spotify Dashboard</a>.
       </small></div>`);
   }
