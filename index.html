@@ -497,28 +497,36 @@ async function getMyTopTracks(timeRange) {
 }
 
 /* ═══════════════════════════════════════════
-   calcVibePoints(tracks)
-   Formula: rank (100→1) × duration in minutes.
-   Track #1 with 4 min = 100 × 4 = 400 pts.
-   100 tracks → total ~20,000–30,000 pts.
+   calcVibePoints(tracks, tab)
+   Formula: rank × durMins, then scaled by a
+   tab multiplier so longer periods always
+   produce higher scores than shorter ones:
+     Past Week  × 1
+     4 Weeks    × 4
+     6 Months   × 12
+     All Time   × 52
 ═══════════════════════════════════════════ */
-function calcVibePoints(tracks) {
+const TAB_MULTIPLIER = { week:1, month:4, medium:12, year:52 };
+
+function calcVibePoints(tracks, tab) {
   const total = tracks.length;
-  return Math.round(tracks.reduce((sum, track, i) => {
-    const rankWeight = total - i;              // 100 down to 1
-    const durMins    = track.durationMs / 60000; // duration in minutes (decimal)
+  const raw = tracks.reduce((sum, track, i) => {
+    const rankWeight = total - i;
+    const durMins    = track.durationMs / 60000;
     return sum + rankWeight * durMins;
-  }, 0));
+  }, 0);
+  const mult = TAB_MULTIPLIER[tab] || 1;
+  return Math.round(raw * mult);
 }
 
 /* ═══════════════════════════════════════════
    vibeStatus(points) — fun titles per score range
 ═══════════════════════════════════════════ */
 function vibeStatus(points) {
-  if (points >= 25000) return '👑 Music Legend';
-  if (points >= 18000) return '🔥 Main Character';
-  if (points >= 12000) return '🎧 Vibe Explorer';
-  if (points >= 6000)  return '✨ Rising Star';
+  if (points >= 800000) return '👑 Music Legend';
+  if (points >= 400000) return '🔥 Main Character';
+  if (points >= 150000) return '🎧 Vibe Explorer';
+  if (points >= 30000)  return '✨ Rising Star';
   return '🎵 Just Getting Started';
 }
 
@@ -656,7 +664,7 @@ async function loadTabData(tab) {
     },0);
 
     const artists=buildArtistMap(tracks);
-    return{tracks,artists,vibePoints:calcVibePoints(tracks),np,genres:[]};
+    return{tracks,artists,vibePoints:calcVibePoints(tracks,'week'),np,genres:[]};
   }
 
   // ── Top tracks (month / 6 months / all time) ────────
@@ -668,7 +676,7 @@ async function loadTabData(tab) {
 
   const genres  = (topArtistsRes?.items||[]).flatMap(a=>a.genres||[]);
   const artists = buildArtistMap(tracks);
-  const vibePoints = calcVibePoints(tracks);
+  const vibePoints = calcVibePoints(tracks, tab);
 
   return{tracks,artists,vibePoints,np,genres};
 }
