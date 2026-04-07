@@ -162,7 +162,10 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .ap-tr-nm{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ap-tr-al{font-size:11px;color:var(--t2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ap-tr-d{font-size:11px;color:var(--t3);font-weight:600;flex-shrink:0;font-variant-numeric:tabular-nums}
-.empty{padding:28px 22px;text-align:center;color:var(--t3);font-size:14px;line-height:1.7}
+.play-btn{width:28px;height:28px;border-radius:50%;background:var(--sp);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s,background .15s;-webkit-tap-highlight-color:transparent}
+.play-btn:hover{background:var(--sp2);transform:scale(1.1)}
+.play-btn:active{transform:scale(.95)}
+.play-btn svg{width:10px;height:10px;fill:#000;margin-left:1px}
 .err{margin:14px 22px;background:rgba(255,80,80,.07);border:1px solid rgba(255,80,80,.18);border-radius:12px;padding:13px 15px;font-size:13px;color:#f88;line-height:1.6}
 .err a{color:var(--sp)}
 @keyframes up{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
@@ -493,6 +496,7 @@ async function getMyTopTracks(timeRange) {
     albumName:  t.album?.name || '',
     albumArt:   t.album?.images?.[1]?.url || t.album?.images?.[0]?.url || '',
     albumArtSm: t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '',
+    spotifyUrl: t.external_urls?.spotify || '',
     artists:    (t.artists||[]).filter(a=>a.id&&a.name).map(a=>({id:a.id,name:a.name})),
   }));
 }
@@ -654,6 +658,7 @@ async function loadTabData(tab) {
           albumName:t.album?.name||'',
           albumArt:t.album?.images?.[1]?.url||t.album?.images?.[0]?.url||'',
           albumArtSm:t.album?.images?.[2]?.url||t.album?.images?.[0]?.url||'',
+          spotifyUrl:t.external_urls?.spotify||'',
           artists:(t.artists||[]).filter(a=>a.id&&a.name).map(a=>({id:a.id,name:a.name})),
         };
       });
@@ -755,7 +760,8 @@ function renderTracks(tracks,elId,animate) {
       <div class="trn" style="${i<3?'color:var(--sp);font-size:15px':''}">${i<3?['&#129351;','&#129352;','&#129353;'][i]:i+1}</div>
       <div class="ti">${t.albumArt?`<img src="${t.albumArt}" loading="lazy" alt=""/>`:''}</div>
       <div class="tinf"><div class="tn">${t.name}</div><div class="tar">${artists}</div></div>
-      <div class="td">${fmtMs(t.durationMs)}</div>`;
+      <div class="td">${fmtMs(t.durationMs)}</div>
+      ${t.spotifyUrl ? `<button class="play-btn" onclick="window.open('${t.spotifyUrl}','_blank')" title="Open in Spotify"><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9"/></svg></button>` : ''}`;
     el.appendChild(row);
   });
 }
