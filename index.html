@@ -168,7 +168,56 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .play-btn svg{width:10px;height:10px;fill:#000;margin-left:1px}
 .err{margin:14px 22px;background:rgba(255,80,80,.07);border:1px solid rgba(255,80,80,.18);border-radius:12px;padding:13px 15px;font-size:13px;color:#f88;line-height:1.6}
 .err a{color:var(--sp)}
-@keyframes up{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
+/* ── MOBILE OPTIMISATIONS ─────────────────────── */
+@media (max-width: 480px) {
+  /* topbar: tighter top padding, hide username text */
+  .topbar{padding-top:52px;padding-bottom:6px}
+  #u-nm{display:none}
+  .b-out{font-size:11px;padding:4px 10px}
+
+  /* pills: scroll horizontally, bigger tap targets */
+  .pills{gap:6px;overflow-x:auto;padding-bottom:2px}
+  .pill{padding:7px 14px;font-size:12px}
+
+  /* hero: less vertical space */
+  .hero{padding:2px 16px 14px}
+  #ctr{letter-spacing:-3px}
+  .h-disclaimer{font-size:10px}
+
+  /* artist + track rows: tighter */
+  .alist,.tlist{padding:0 14px}
+  .ar{gap:9px;padding:8px 8px;margin:0 -8px}
+  .ai{width:44px;height:44px;font-size:18px}
+  .an{font-size:13px}
+  .ag{font-size:10px}
+  .tr{gap:9px;padding:7px 8px;margin:0 -8px}
+  .ti{width:38px;height:38px}
+  .tn{font-size:12px}
+  .tar{font-size:10px}
+  /* hide duration on small screens — saves space for play button */
+  .td{display:none}
+  /* play button slightly smaller */
+  .play-btn{width:26px;height:26px}
+
+  /* section headers */
+  .sh{padding:0 14px 10px}
+  .st{font-size:16px}
+  .dv{margin:16px 14px}
+
+  /* stat cards: smaller font */
+  .sgrid{padding:0 14px;gap:8px}
+  .scv{font-size:18px}
+  .scl{font-size:10px}
+
+  /* now playing */
+  .np{margin:0 14px}
+
+  /* artist panel: full width on small screens */
+  #a-panel{max-width:100%}
+  .ap-meta{padding:0 16px 14px}
+  .ap-nm{font-size:22px}
+  .ap-tr{padding:7px 16px}
+}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes eqa{from{transform:scaleY(.3)}to{transform:scaleY(1)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
@@ -364,7 +413,8 @@ const TABS = {
 ═══════════════════════════════════════════ */
 let _token    = null;
 let _profData = null;
-const _tabCache = {}; // tab key → data object, so re-visiting a tab is instant
+const _CACHE_VERSION = 'v3'; // bump this to invalidate cache after code updates
+const _tabCache = {};
 
 /* ═══════════════════════════════════════════
    DOM HELPERS
@@ -939,6 +989,11 @@ function getTok() { return _token || sessionStorage.getItem('tok') || localStora
 function logout() { sessionStorage.clear(); localStorage.removeItem('tok'); localStorage.removeItem('pkce_v'); _token=null; _profData=null; Object.keys(_tabCache).forEach(k=>delete _tabCache[k]); location.href=location.pathname; }
 
 async function boot() {
+  // Clear tab cache if code was updated
+  if (localStorage.getItem('vc_cache_ver') !== _CACHE_VERSION) {
+    localStorage.setItem('vc_cache_ver', _CACHE_VERSION);
+    Object.keys(_tabCache).forEach(k => delete _tabCache[k]);
+  }
   const params  = new URLSearchParams(location.search);
   const code    = params.get('code');
   const oauthErr= params.get('error');
