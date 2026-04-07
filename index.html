@@ -14,15 +14,11 @@
   --r:14px;--f:'DM Sans',-apple-system,sans-serif;--nav:62px;
 }
 html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:100vh;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
-
-/* ── SCREENS ── */
 .scr{display:none;min-height:100vh;flex-direction:column}
 .scr.on{display:flex}
 #s-login{align-items:center;justify-content:center;padding:48px 24px;text-align:center;position:relative;overflow:hidden}
 #s-login::before{content:'';position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(29,185,84,.1)0%,transparent 68%);top:-110px;left:50%;transform:translateX(-50%);pointer-events:none}
 #s-load{align-items:center;justify-content:center;gap:18px}
-
-/* ── LOGIN ── */
 .l-ico{width:74px;height:74px;margin-bottom:26px;animation:up .5s ease both}
 .l-h{font-size:40px;font-weight:900;letter-spacing:-2.5px;line-height:1.08;margin-bottom:12px;animation:up .5s .07s ease both}
 .l-h em{font-style:normal;color:var(--sp)}
@@ -31,12 +27,8 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .b-sp:hover{background:var(--sp2);transform:scale(1.04)}
 .b-sp:active{transform:scale(.97)}
 .l-note{margin-top:13px;font-size:12px;color:var(--t3);animation:up .5s .28s ease both}
-
-/* ── LOADING ── */
 .ring{width:42px;height:42px;border:3px solid var(--bg3);border-top-color:var(--sp);border-radius:50%;animation:spin .75s linear infinite}
 .rmsg{font-size:13px;color:var(--t2);font-weight:500}
-
-/* ── APP ── */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:48px 22px 10px;flex-shrink:0;max-width:500px;width:100%;margin:0 auto}
 .tb-b{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:900;letter-spacing:-.5px}
 .tb-b svg{width:23px;height:23px}
@@ -45,8 +37,6 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .av img{width:100%;height:100%;object-fit:cover}
 .b-out{background:none;border:1px solid var(--bg4);color:var(--t2);font-family:var(--f);font-size:12px;font-weight:600;padding:5px 12px;border-radius:50px;cursor:pointer;transition:all .15s}
 .b-out:hover{border-color:var(--t2);color:var(--t)}
-
-/* ── PILLS ── */
 .pill-wrap{padding:2px 22px 14px;max-width:500px;margin:0 auto;position:sticky;top:0;z-index:99;background:var(--bg)}
 .pills{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
 .pills::-webkit-scrollbar{display:none}
@@ -57,13 +47,9 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .pill.on span{color:#000}
 .pill:not(.on):hover span{color:var(--t)}
 .pill:active{transform:scale(.96)}
-
-/* ── PAGES ── */
 .page{display:none;flex:1;flex-direction:column;animation:fi .18s ease}
 .page.on{display:flex}
 .inn{flex:1;max-width:500px;width:100%;margin:0 auto;padding-bottom:calc(var(--nav)+20px)}
-
-/* ── HERO ── */
 .hero{padding:4px 22px 20px;text-align:center;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;width:340px;height:220px;background:radial-gradient(ellipse,rgba(29,185,84,.07)0%,transparent 70%);top:0;left:50%;transform:translateX(-50%);pointer-events:none}
 .badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--sp);background:var(--glow);border-radius:50px;padding:4px 11px;margin-bottom:12px}
@@ -77,8 +63,6 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 #ve,#vt{position:relative;z-index:1}
 #ve{font-size:18px}
 #vtag.sk::after{content:'';position:absolute;inset:0;border-radius:50px;background:linear-gradient(90deg,var(--bg3)25%,var(--bg4)50%,var(--bg3)75%);background-size:600px 100%;animation:sh 1.3s ease infinite}
-
-/* ── NOW PLAYING ── */
 #np-s{overflow:hidden;transition:max-height .3s,opacity .3s;max-height:0;opacity:0}
 #np-s.on{max-height:130px;opacity:1}
 .np{margin:0 22px;background:var(--bg2);border-radius:var(--r);padding:13px;border:1px solid var(--bg3);display:flex;align-items:center;gap:12px}
@@ -90,15 +74,14 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .np-lv{font-size:9px;font-weight:800;color:var(--sp);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px}
 .eq{display:flex;gap:2px;align-items:flex-end;height:16px;flex-shrink:0}
 .eq b{width:3px;background:var(--sp);border-radius:2px;display:block;animation:eqa 1s ease-in-out infinite alternate}
-.eq b:nth-child(1){height:5px;animation-delay:0s}.eq b:nth-child(2){height:13px;animation-delay:.18s}.eq b:nth-child(3){height:9px;animation-delay:.36s}.eq b:nth-child(4){height:15px;animation-delay:.09s}
-
-/* ── SECTION ── */
+.eq b:nth-child(1){height:5px;animation-delay:0s}
+.eq b:nth-child(2){height:13px;animation-delay:.18s}
+.eq b:nth-child(3){height:9px;animation-delay:.36s}
+.eq b:nth-child(4){height:15px;animation-delay:.09s}
 .dv{height:1px;background:var(--bg3);margin:20px 22px}
 .sh{display:flex;align-items:baseline;justify-content:space-between;padding:0 22px 12px}
 .st{font-size:18px;font-weight:800;letter-spacing:-.3px}
 .sm{font-size:11px;color:var(--t2);font-weight:700;letter-spacing:.5px;text-transform:uppercase}
-
-/* ── ARTIST ROWS ── */
 .alist,.tlist{padding:0 22px}
 .ar,.tr{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:12px;margin:0 -10px;transition:background .15s}
 .ar{cursor:pointer}
@@ -125,16 +108,12 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .ac{font-size:16px;color:var(--t3);padding-left:2px;flex-shrink:0}
 .trn{font-size:13px;font-weight:700;color:var(--t3);width:22px;text-align:center;flex-shrink:0}
 .td{font-size:11px;color:var(--t3);font-weight:600;flex-shrink:0;font-variant-numeric:tabular-nums}
-
-/* ── STAT CARDS ── */
 .sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 22px}
 .sc{background:var(--bg2);border-radius:var(--r);padding:15px;border:1px solid var(--bg3)}
 .sci{width:30px;height:30px;border-radius:7px;background:rgba(29,185,84,.1);display:flex;align-items:center;justify-content:center;margin-bottom:10px}
 .sci svg{width:15px;height:15px;stroke:var(--sp);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .scv{font-size:22px;font-weight:800;letter-spacing:-.7px;line-height:1;font-variant-numeric:tabular-nums;min-height:27px}
 .scl{font-size:11px;color:var(--t2);font-weight:500;margin-top:3px}
-
-/* ── BOTTOM NAV ── */
 .bnav{position:fixed;bottom:0;left:0;right:0;height:var(--nav);background:rgba(9,9,9,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--bg3);display:flex;align-items:center;justify-content:center;z-index:200}
 .bni{max-width:500px;width:100%;display:flex}
 .bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 0;cursor:pointer;background:none;border:none;font-family:var(--f);color:var(--t3);transition:color .15s;-webkit-tap-highlight-color:transparent}
@@ -142,8 +121,6 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .bn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
 .bn.on svg{transform:scale(1.1)}
 .bnl{font-size:10px;font-weight:700;letter-spacing:.3px}
-
-/* ── SKELETON ── */
 @keyframes sh{0%{background-position:-600px 0}100%{background-position:600px 0}}
 .sk{background:linear-gradient(90deg,var(--bg3)25%,var(--bg4)50%,var(--bg3)75%);background-size:600px 100%;animation:sh 1.3s ease infinite;border-radius:8px}
 .csk{position:absolute;left:50%;transform:translateX(-50%);height:70px;width:52%;border-radius:10px}
@@ -153,8 +130,6 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .skl{border-radius:6px}
 .skrc{display:flex;flex-direction:column;gap:5px;align-items:flex-end;width:46px}
 .sksv{height:26px;width:55%;border-radius:6px;display:block}
-
-/* ── ARTIST PANEL ── */
 #a-bg{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:500;opacity:0;pointer-events:none;transition:opacity .28s ease}
 #a-bg.on{opacity:1;pointer-events:all}
 #a-panel{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:500px;max-height:91vh;background:#161616;border-radius:24px 24px 0 0;z-index:501;display:flex;flex-direction:column;transition:transform .38s cubic-bezier(.32,1.1,.4,1);overflow:hidden;will-change:transform}
@@ -173,7 +148,6 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .ap-sv{font-size:22px;font-weight:800;color:var(--sp);font-variant-numeric:tabular-nums}
 .ap-sl{font-size:10px;color:var(--t2);font-weight:600;margin-top:1px;text-transform:uppercase;letter-spacing:.5px}
 .ap-dv{height:1px;background:var(--bg3);margin:0 22px;flex-shrink:0}
-/* Scrollable body — this is where ALL track content goes */
 #ap-body{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;padding-bottom:32px}
 .ap-section-title{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--t2);padding:14px 22px 10px}
 .ap-tr{display:flex;align-items:center;gap:12px;padding:8px 22px;border-bottom:1px solid rgba(255,255,255,.04)}
@@ -185,16 +159,9 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .ap-tr-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ap-tr-album{font-size:11px;color:var(--t2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ap-tr-dur{font-size:11px;color:var(--t3);font-weight:600;flex-shrink:0;font-variant-numeric:tabular-nums}
-.ap-legend{margin:16px 22px;background:rgba(29,185,84,.08);border:1px solid rgba(29,185,84,.2);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px}
-.ap-legend-ico{font-size:28px;flex-shrink:0}
-.ap-legend-t1{font-size:14px;font-weight:700}
-.ap-legend-t2{font-size:12px;color:var(--t2);margin-top:3px}
-
-/* ── MISC ── */
 .empty{padding:28px 22px;text-align:center;color:var(--t3);font-size:14px;line-height:1.7}
 .err{margin:14px 22px;background:rgba(255,80,80,.07);border:1px solid rgba(255,80,80,.18);border-radius:12px;padding:13px 15px;font-size:13px;color:#f88;line-height:1.6}
 .err a{color:var(--sp)}
-
 @keyframes up{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes eqa{from{transform:scaleY(.3)}to{transform:scaleY(1)}}
@@ -237,7 +204,6 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
     </div>
   </div>
 
-  <!-- Time-range pill tabs -->
   <div class="pill-wrap" id="pill-wrap">
     <div class="pills">
       <button class="pill" data-tab="week"   onclick="onTabClick(this,'week')"><span>Past Week</span></button>
@@ -247,7 +213,7 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
     </div>
   </div>
 
-  <!-- PAGE: HOME -->
+  <!-- HOME -->
   <div class="page on" id="pg-home">
     <div class="inn">
       <div class="hero">
@@ -262,7 +228,7 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
         <div class="sh"><span class="st">Now Playing</span><span class="sm" style="color:var(--sp)">LIVE</span></div>
         <div class="np">
           <div class="np-a" id="np-art">🎵</div>
-          <div class="np-i"><div id="np-t">—</div><div id="np-a2">—</div><div class="np-lv">● Live</div></div>
+          <div class="np-i"><div id="np-t">—</div><div id="np-a2">—</div><div class="np-lv">&#9679; Live</div></div>
           <div class="eq"><b></b><b></b><b></b><b></b></div>
         </div>
       </div>
@@ -277,7 +243,7 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
     </div>
   </div>
 
-  <!-- PAGE: STATS -->
+  <!-- STATS -->
   <div class="page" id="pg-stats">
     <div class="inn">
       <div style="padding:28px 22px 8px">
@@ -296,7 +262,7 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
     </div>
   </div>
 
-  <!-- PAGE: TRACKS -->
+  <!-- TRACKS -->
   <div class="page" id="pg-tracks">
     <div class="inn">
       <div style="padding:28px 22px 8px">
@@ -308,7 +274,7 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
     </div>
   </div>
 
-  <!-- PAGE: PROFILE -->
+  <!-- PROFILE -->
   <div class="page" id="pg-profile">
     <div class="inn">
       <div style="padding:36px 22px 0;text-align:center">
@@ -339,14 +305,14 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
     </div>
   </div>
 
-  <!-- ARTIST DETAIL PANEL -->
+  <!-- ARTIST PANEL -->
   <div id="a-bg" onclick="closePanel()"></div>
   <div id="a-panel" role="dialog" aria-modal="true">
     <div class="ap-handle"></div>
     <div class="ap-hero-wrap">
       <div id="ap-hero-img">🎵</div>
       <div class="ap-hero-grad"></div>
-      <button class="ap-x" onclick="closePanel()">✕</button>
+      <button class="ap-x" onclick="closePanel()">&#10005;</button>
     </div>
     <div class="ap-meta">
       <div class="ap-nm" id="ap-nm">—</div>
@@ -357,74 +323,69 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
       </div>
     </div>
     <div class="ap-dv"></div>
-    <!-- #ap-body is always wiped to '' before any content is written -->
     <div id="ap-body"></div>
   </div>
 
-</div><!-- /s-app -->
+</div>
 
 <script>
 'use strict';
-// ═══════════════════════════════════════════════════
-// CONFIG
-// ═══════════════════════════════════════════════════
+
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
 const CLIENT_ID    = '22a39828c40d4acc8e50f21daaf65639';
 const REDIRECT_URI = 'https://s10922-netizen.github.io/vibecheck/';
 const SCOPES       = 'user-read-private user-read-email user-top-read user-read-recently-played user-read-currently-playing';
-const RECENT_TTL   = 5 * 60 * 1000; // 5 min cache for recently-played
+const RECENT_TTL   = 5 * 60 * 1000;
 
-// ═══════════════════════════════════════════════════
-// TAB DEFINITIONS
-// mult = how many times an avg top-song was played over the period
-// (used only to estimate total minutes for medium/year tabs)
-// ═══════════════════════════════════════════════════
+// ─── TAB DEFINITIONS ─────────────────────────────────────────────────────────
 const TABS = {
-  week:   { kind:'recent', label:'PAST WEEK',  meta:'7 days',   sub:'What you actually played this week',   statsLbl:'Past week',     mult:1   },
-  month:  { kind:'top',    range:'short_term',  label:'4 WEEKS',  meta:'4 weeks',  sub:'Your last 4 weeks on Spotify',         statsLbl:'Last 4 weeks',  mult:18  },
-  medium: { kind:'top',    range:'medium_term', label:'6 MONTHS', meta:'6 months', sub:'Your 6-month top artists & tracks',    statsLbl:'Last 6 months', mult:50  },
-  year:   { kind:'top',    range:'long_term',   label:'ALL TIME', meta:'all time', sub:'Your all-time Spotify favorites',      statsLbl:'All time',      mult:160 },
+  week:   { kind:'recent',                      label:'PAST WEEK',  meta:'7 days',   sub:'What you actually played this week',    statsLbl:'Past week',     mult:1   },
+  month:  { kind:'top', range:'short_term',     label:'4 WEEKS',    meta:'4 weeks',  sub:'Your last 4 weeks on Spotify',          statsLbl:'Last 4 weeks',  mult:18  },
+  medium: { kind:'top', range:'medium_term',    label:'6 MONTHS',   meta:'6 months', sub:'Your 6-month top artists and tracks',   statsLbl:'Last 6 months', mult:50  },
+  year:   { kind:'top', range:'long_term',      label:'ALL TIME',   meta:'all time', sub:'Your all-time Spotify favorites',       statsLbl:'All time',      mult:160 },
 };
 
-// ═══════════════════════════════════════════════════
-// AUTH STATE — token only, nothing else is global
-// ═══════════════════════════════════════════════════
-let _token = null;
+// ─── AUTH STATE (only globals — intentional) ──────────────────────────────────
+let _token    = null;
 let _profData = null;
 
-// ═══════════════════════════════════════════════════
-// DOM HELPERS
-// ═══════════════════════════════════════════════════
-const $ = id => document.getElementById(id);
-const st = (id, v) => { const e = $(id); if (e) e.textContent = String(v); };
-const sh = (id, v) => { const e = $(id); if (e) e.innerHTML = v; };
-const clr = id => { const e = $(id); if (e) e.innerHTML = ''; };
+// ─── DOM HELPERS ──────────────────────────────────────────────────────────────
+const $   = id => document.getElementById(id);
+const st  = (id, v) => { const e = $(id); if (e) e.textContent = String(v); };
+const sh  = (id, v) => { const e = $(id); if (e) e.innerHTML   = v; };
+const clr = id      => { const e = $(id); if (e) e.innerHTML   = ''; };
 
-// ═══════════════════════════════════════════════════
-// SCREEN SWITCHER
-// ═══════════════════════════════════════════════════
+// ─── SCREEN SWITCHER ──────────────────────────────────────────────────────────
 function showScr(id) {
-  document.querySelectorAll('.scr').forEach(e => { e.classList.remove('on'); e.style.display = ''; });
+  document.querySelectorAll('.scr').forEach(e => {
+    e.classList.remove('on');
+    e.style.display = '';
+  });
   const t = $(id);
   if (t) { t.style.display = 'flex'; t.classList.add('on'); }
 }
 function setLoad(msg) { st('rmsg', msg || 'Loading...'); showScr('s-load'); }
 
-// ═══════════════════════════════════════════════════
-// SKELETON — only touches clearly named containers
-// ═══════════════════════════════════════════════════
+// ─── SKELETON ─────────────────────────────────────────────────────────────────
 function showSkeleton() {
-  // Counter
-  const ctrEl = $('ctr'); if (ctrEl) ctrEl.style.visibility = 'hidden';
+  const ctrEl = $('ctr');
+  if (ctrEl) ctrEl.style.visibility = 'hidden';
+
   const cw = document.querySelector('.cw');
   if (cw && !cw.querySelector('.csk')) {
-    const s = document.createElement('div'); s.className = 'sk csk'; cw.appendChild(s);
+    const s = document.createElement('div');
+    s.className = 'sk csk';
+    cw.appendChild(s);
   }
+
   const sub = $('h-sub');
   if (sub) sub.innerHTML = '<span class="sk" style="display:inline-block;height:12px;width:44%;border-radius:6px"></span>';
-  const vt = $('vtag'); if (vt) { vt.classList.add('sk'); st('ve', ''); st('vt', ''); }
-  // Artist list — 5 shimmer rows
-  sh('ar-list', Array.from({length:5}, (_,i) => `
-    <div class="skr" style="opacity:${1-i*.13}">
+
+  const vt = $('vtag');
+  if (vt) { vt.classList.add('sk'); st('ve', ''); st('vt', ''); }
+
+  sh('ar-list', Array.from({length: 5}, (_, i) => `
+    <div class="skr" style="opacity:${1 - i * .13}">
       <div style="width:18px;flex-shrink:0"></div>
       <div class="sk skc"></div>
       <div class="skls">
@@ -437,64 +398,81 @@ function showSkeleton() {
         <div class="sk skl" style="height:10px;width:70%"></div>
       </div>
     </div>`).join(''));
-  // Stat cards
+
   ['s-tr','s-hr','s-ar','s-t1','s-mn','s-vb'].forEach(id => {
-    const e = $(id); if (e) e.innerHTML = '<span class="sk sksv"></span>';
+    const e = $(id);
+    if (e) e.innerHTML = '<span class="sk sksv"></span>';
   });
 }
+
 function hideSkeleton() {
-  const cw = document.querySelector('.cw');
-  const csk = cw && cw.querySelector('.csk'); if (csk) csk.remove();
-  const ctrEl = $('ctr'); if (ctrEl) ctrEl.style.visibility = 'visible';
-  const sub = $('h-sub'); if (sub) sub.innerHTML = '';
-  const vt = $('vtag'); if (vt) vt.classList.remove('sk');
+  const cw  = document.querySelector('.cw');
+  const csk = cw && cw.querySelector('.csk');
+  if (csk) csk.remove();
+
+  const ctrEl = $('ctr');
+  if (ctrEl) ctrEl.style.visibility = 'visible';
+
+  const sub = $('h-sub');
+  if (sub) sub.innerHTML = '';
+
+  const vt = $('vtag');
+  if (vt) vt.classList.remove('sk');
 }
 
-// ═══════════════════════════════════════════════════
-// VIBE CALCULATOR
-// ═══════════════════════════════════════════════════
+// ─── VIBE ─────────────────────────────────────────────────────────────────────
 function getVibe(genres) {
   const g = (genres || []).join(' ').toLowerCase();
-  if (g.includes('hip-hop') || g.includes('rap'))        return ['🔥', 'Hip-Hop Head'];
-  if (g.includes('pop'))                                  return ['✨', 'Pop Obsessed'];
-  if (g.includes('rock') || g.includes('metal'))         return ['🎸', 'Rock Soul'];
-  if (g.includes('r&b') || g.includes('soul'))           return ['🌙', 'R&B Vibes'];
-  if (g.includes('electronic') || g.includes('house'))   return ['⚡', 'Club Energy'];
-  if (g.includes('latin') || g.includes('reggaeton'))    return ['🕺', 'Latin Heat'];
-  if (g.includes('jazz'))                                 return ['🎷', 'Jazz Lover'];
-  if (g.includes('classical') || g.includes('piano'))    return ['🎹', 'Classical Soul'];
-  if (g.includes('indie') || g.includes('alternative'))  return ['🌿', 'Indie Spirit'];
+  if (g.includes('hip-hop') || g.includes('rap'))       return ['🔥', 'Hip-Hop Head'];
+  if (g.includes('pop'))                                 return ['✨', 'Pop Obsessed'];
+  if (g.includes('rock') || g.includes('metal'))        return ['🎸', 'Rock Soul'];
+  if (g.includes('r&b') || g.includes('soul'))          return ['🌙', 'R&B Vibes'];
+  if (g.includes('electronic') || g.includes('house'))  return ['⚡', 'Club Energy'];
+  if (g.includes('latin') || g.includes('reggaeton'))   return ['🕺', 'Latin Heat'];
+  if (g.includes('jazz'))                                return ['🎷', 'Jazz Lover'];
+  if (g.includes('classical') || g.includes('piano'))   return ['🎹', 'Classical Soul'];
+  if (g.includes('indie') || g.includes('alternative')) return ['🌿', 'Indie Spirit'];
   return ['🎵', 'Eclectic Taste'];
 }
 
-// ═══════════════════════════════════════════════════
-// AUTH — PKCE
-// ═══════════════════════════════════════════════════
+// ─── AUTH — PKCE ──────────────────────────────────────────────────────────────
 async function sha256(s) {
   const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
-  return btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  return btoa(String.fromCharCode(...new Uint8Array(b)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
-function randStr(n=64) {
+function randStr(n = 64) {
   const c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
-  const a = new Uint8Array(n); crypto.getRandomValues(a);
+  const a = new Uint8Array(n);
+  crypto.getRandomValues(a);
   return [...a].map(b => c[b % c.length]).join('');
 }
 async function doLogin() {
   const v = randStr(), ch = await sha256(v);
   sessionStorage.setItem('pkce_v', v);
   location.href = 'https://accounts.spotify.com/authorize?' + new URLSearchParams({
-    client_id: CLIENT_ID, response_type: 'code', redirect_uri: REDIRECT_URI,
-    code_challenge_method: 'S256', code_challenge: ch, scope: SCOPES,
+    client_id: CLIENT_ID, response_type: 'code',
+    redirect_uri: REDIRECT_URI,
+    code_challenge_method: 'S256', code_challenge: ch,
+    scope: SCOPES,
   });
 }
 async function exchangeCode(code) {
   const v = sessionStorage.getItem('pkce_v');
   if (!v) throw new Error('No PKCE verifier — please try logging in again.');
   const r = await fetch('https://accounts.spotify.com/api/token', {
-    method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'},
-    body: new URLSearchParams({grant_type:'authorization_code',code,redirect_uri:REDIRECT_URI,client_id:CLIENT_ID,code_verifier:v}),
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'authorization_code', code,
+      redirect_uri: REDIRECT_URI,
+      client_id: CLIENT_ID, code_verifier: v,
+    }),
   });
-  if (!r.ok) { const e = await r.json().catch(()=>({})); throw new Error(e.error_description || 'Token exchange failed'); }
+  if (!r.ok) {
+    const e = await r.json().catch(() => ({}));
+    throw new Error(e.error_description || 'Token exchange failed');
+  }
   const d = await r.json();
   _token = d.access_token;
   sessionStorage.setItem('tok', _token);
@@ -502,9 +480,7 @@ async function exchangeCode(code) {
   history.replaceState({}, '', location.pathname);
 }
 
-// ═══════════════════════════════════════════════════
-// SPOTIFY API WRAPPER
-// ═══════════════════════════════════════════════════
+// ─── SPOTIFY API ──────────────────────────────────────────────────────────────
 async function api(path) {
   const r = await fetch('https://api.spotify.com/v1' + path, {
     headers: { Authorization: 'Bearer ' + _token },
@@ -515,76 +491,69 @@ async function api(path) {
   return r.json();
 }
 
-// ═══════════════════════════════════════════════════
-// RECENTLY-PLAYED — fetched fresh each session
-// Parses every play into a flat, clean object.
-// allArtistIds = IDs of EVERY artist on the track (primary + featured).
-// allArtistMap = { artistId -> artistName } for every artist on the track.
-// ═══════════════════════════════════════════════════
+// ─── RECENTLY-PLAYED ──────────────────────────────────────────────────────────
+// Each play stores allArtistIds (every artist on track) + allArtistMap (id->name).
+// This lets featured artists be correctly attributed without name collisions.
 async function fetchRecentPlays() {
-  // Check session cache (valid 5 min)
   try {
     const stored = sessionStorage.getItem('vc_recent');
     if (stored) {
       const { ts, data } = JSON.parse(stored);
       if (Date.now() - ts < RECENT_TTL) return data;
     }
-  } catch {}
+  } catch (_) { /* ignore */ }
 
   const raw = await api('/me/player/recently-played?limit=50');
   const plays = (raw?.items || [])
-    .filter(item => item?.track?.type === 'track') // exclude podcasts
+    .filter(item => item?.track?.type === 'track')
     .map(item => {
       const t = item.track;
-      // Build a complete map of every artist on this track: id -> name
       const artistMap = {};
       (t.artists || []).forEach(a => { if (a.id && a.name) artistMap[a.id] = a.name; });
-
       return {
-        ts:            Date.parse(item.played_at),
-        ms:            t.duration_ms || 0,
-        trackId:       t.id || '',
-        trackName:     t.name || 'Unknown',
-        albumName:     t.album?.name || '',
-        albumArt:      t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '',
-        primaryArtistId:   t.artists?.[0]?.id || '',
-        primaryArtistName: t.artists?.[0]?.name || 'Unknown Artist',
-        allArtistIds:  Object.keys(artistMap),   // every artist ID on this track
-        allArtistMap:  artistMap,                 // id -> name for every artist
+        ts:               Date.parse(item.played_at),
+        ms:               t.duration_ms || 0,
+        trackId:          t.id || '',
+        trackName:        t.name || 'Unknown',
+        albumName:        t.album?.name || '',
+        albumArt:         t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '',
+        primaryArtistId:  t.artists?.[0]?.id   || '',
+        primaryArtistName:t.artists?.[0]?.name  || 'Unknown Artist',
+        allArtistIds:     Object.keys(artistMap),
+        allArtistMap:     artistMap,
       };
     });
 
-  try { sessionStorage.setItem('vc_recent', JSON.stringify({ ts: Date.now(), data: plays })); } catch {}
+  try {
+    sessionStorage.setItem('vc_recent', JSON.stringify({ ts: Date.now(), data: plays }));
+  } catch (_) { /* quota exceeded — ignore */ }
+
   return plays;
 }
 
-// ═══════════════════════════════════════════════════
-// FORMAT HELPERS
-// ═══════════════════════════════════════════════════
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
 function fmtDur(ms) {
   if (!ms) return '';
-  return `${Math.floor(ms/60000)}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}`;
+  return `${Math.floor(ms / 60000)}:${String(Math.floor((ms % 60000) / 1000)).padStart(2, '0')}`;
 }
-function animCounter(target, dur=1100) {
-  const el = $('ctr'); if (!el) return;
-  const from = parseInt(el.textContent.replace(/[^0-9]/g,'')) || 0;
-  const t0 = performance.now();
+function animCounter(target, dur = 1100) {
+  const el = $('ctr');
+  if (!el) return;
+  const from = parseInt(el.textContent.replace(/[^0-9]/g, '')) || 0;
+  const t0   = performance.now();
   (function step(now) {
-    const p = Math.min((now-t0)/dur, 1), e = 1 - Math.pow(1-p, 3);
-    el.textContent = Math.round(from + (target-from)*e).toLocaleString();
+    const p = Math.min((now - t0) / dur, 1);
+    const e = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(from + (target - from) * e).toLocaleString();
     if (p < 1) requestAnimationFrame(step);
   })(performance.now());
 }
 
-// ═══════════════════════════════════════════════════
-// RENDER: ARTIST LIST
-// Takes a plain array of artist objects, renders to #ar-list.
-// Each artist MUST have: name, images[], genres[], _plays, _ms
-// ═══════════════════════════════════════════════════
+// ─── RENDER: ARTIST LIST ──────────────────────────────────────────────────────
 function renderArtistList(artists) {
   const el = $('ar-list');
   if (!el) return;
-  el.innerHTML = ''; // always wipe first
+  el.innerHTML = '';  // always wipe
 
   if (!artists || artists.length === 0) {
     el.innerHTML = '<div class="empty">No artists found for this period.</div>';
@@ -594,17 +563,17 @@ function renderArtistList(artists) {
   const maxPlays = artists[0]._plays || 1;
 
   artists.forEach((a, i) => {
-    const pct     = Math.round((a._plays / maxPlays) * 100);
-    const img     = a.images?.[0]?.url;
-    const genre   = (a.genres || []).slice(0, 2).join(' · ') || 'Artist';
-    const minsVal = a._ms || 0; // _ms is already in minutes
+    const pct      = Math.round((a._plays / maxPlays) * 100);
+    const img      = a.images?.[0]?.url;
+    const genre    = (a.genres || []).slice(0, 2).join(' · ') || 'Artist';
+    const minsVal  = a._ms || 0;   // already in minutes
     const playsVal = a._plays || 0;
 
     const row = document.createElement('div');
     row.className = 'ar';
     row.style.animation = `up .35s ${i * .06}s ease both`;
     row.innerHTML = `
-      <div class="rk ${i===0?'gold':''}">${i+1}</div>
+      <div class="rk ${i === 0 ? 'gold' : ''}">${i + 1}</div>
       <div class="ai">${img ? `<img src="${img}" loading="lazy" alt="${a.name}"/>` : '🎵'}</div>
       <div class="ainf">
         <div class="an">${a.name}</div>
@@ -615,17 +584,16 @@ function renderArtistList(artists) {
         <div class="am">${minsVal.toLocaleString()}<small> min</small></div>
         <div class="as2">${playsVal.toLocaleString()} plays</div>
       </div>
-      <div class="ac">›</div>`;
+      <div class="ac">&#8250;</div>`;
 
-    row.addEventListener('click', () => {
-      openArtistPanel({
-        name:      a.name,
-        imageUrl:  img || '',
-        plays:     playsVal,
-        mins:      minsVal,          // already in minutes
-        ownTracks: a._ownTracks || [],
-      });
-    });
+    // Freeze data at click time — panel receives a plain object, no shared state
+    row.addEventListener('click', () => openArtistPanel({
+      name:      a.name,
+      imageUrl:  img || '',
+      plays:     playsVal,
+      mins:      minsVal,
+      ownTracks: a._ownTracks || [],
+    }));
 
     el.appendChild(row);
     setTimeout(() => {
@@ -635,13 +603,11 @@ function renderArtistList(artists) {
   });
 }
 
-// ═══════════════════════════════════════════════════
-// RENDER: TRACK LIST (stateless — takes array, renders to element)
-// ═══════════════════════════════════════════════════
+// ─── RENDER: TRACK LIST ───────────────────────────────────────────────────────
 function renderTrackList(tracks, elId, animate) {
   const el = $(elId);
   if (!el) return;
-  el.innerHTML = ''; // always wipe first
+  el.innerHTML = '';  // always wipe
 
   if (!tracks || tracks.length === 0) {
     el.innerHTML = '<div class="empty">No tracks found.</div>';
@@ -649,13 +615,13 @@ function renderTrackList(tracks, elId, animate) {
   }
 
   tracks.slice(0, 50).forEach((t, i) => {
-    const img = t.album?.images?.[1]?.url || t.album?.images?.[0]?.url;
+    const img     = t.album?.images?.[1]?.url || t.album?.images?.[0]?.url;
     const artists = (t.artists || []).map(a => a.name).join(', ') || 'Unknown';
-    const row = document.createElement('div');
+    const row     = document.createElement('div');
     row.className = 'tr';
     if (animate) row.style.animation = `up .28s ${i * .02}s ease both`;
     row.innerHTML = `
-      <div class="trn" style="${i < 3 ? 'color:var(--sp);font-size:15px' : ''}">${i < 3 ? ['🥇','🥈','🥉'][i] : i+1}</div>
+      <div class="trn" style="${i < 3 ? 'color:var(--sp);font-size:15px' : ''}">${i < 3 ? ['🥇','🥈','🥉'][i] : i + 1}</div>
       <div class="ti">${img ? `<img src="${img}" loading="lazy" alt="${t.name}"/>` : '🎵'}</div>
       <div class="tinf"><div class="tn">${t.name}</div><div class="tar">${artists}</div></div>
       <div class="td">${fmtDur(t.duration_ms)}</div>`;
@@ -663,11 +629,10 @@ function renderTrackList(tracks, elId, animate) {
   });
 }
 
-// ═══════════════════════════════════════════════════
-// RENDER: NOW PLAYING
-// ═══════════════════════════════════════════════════
+// ─── RENDER: NOW PLAYING ──────────────────────────────────────────────────────
 function renderNowPlaying(np) {
-  const sec = $('np-s'); if (!sec) return;
+  const sec = $('np-s');
+  if (!sec) return;
   if (!np?.item) { sec.classList.remove('on'); return; }
   sec.classList.add('on');
   st('np-t',  np.item.name || '—');
@@ -679,64 +644,55 @@ function renderNowPlaying(np) {
   }
 }
 
-// ═══════════════════════════════════════════════════
-// DATA FETCHERS
-// Each returns a clean, self-contained data object.
-// Nothing is stored in module-level variables.
-// ═══════════════════════════════════════════════════
-
-// --- WEEK: uses recently-played, filtered to last 7 days ---
+// ─── BUILD: WEEK (recently-played, last 7 days) ───────────────────────────────
 async function buildWeekData() {
   const allPlays = await fetchRecentPlays();
   const cutoff   = Date.now() - 7 * 24 * 3600 * 1000;
   const plays    = allPlays.filter(p => p.ts >= cutoff);
 
-  const totalMs  = plays.reduce((s, p) => s + p.ms, 0);
-  const mins     = Math.round(totalMs / 60000);
+  const totalMs = plays.reduce((s, p) => s + p.ms, 0);
+  const mins    = Math.round(totalMs / 60000);
 
-  // Build an id->name map for ALL artists seen across all plays this week
+  // id -> name for every artist seen this week
   const idToName = {};
   plays.forEach(p => {
     Object.entries(p.allArtistMap).forEach(([id, name]) => { idToName[id] = name; });
   });
 
-  // Aggregate per-artist — credit EVERY artist on each track
-  const artistBuckets = {}; // artistId -> { plays, ms, trackSet(Map<trackId, trackObj>) }
+  // Per-artist buckets — credit every artist on each track
+  const buckets = {};
   plays.forEach(p => {
     p.allArtistIds.forEach(artistId => {
-      if (!artistBuckets[artistId]) {
-        artistBuckets[artistId] = { plays: 0, ms: 0, trackSet: new Map() };
-      }
-      artistBuckets[artistId].plays++;
-      artistBuckets[artistId].ms += p.ms;
-      if (p.trackId && !artistBuckets[artistId].trackSet.has(p.trackId)) {
-        artistBuckets[artistId].trackSet.set(p.trackId, {
+      if (!buckets[artistId]) buckets[artistId] = { plays: 0, ms: 0, trackSet: new Map() };
+      buckets[artistId].plays++;
+      buckets[artistId].ms += p.ms;
+      if (p.trackId && !buckets[artistId].trackSet.has(p.trackId)) {
+        buckets[artistId].trackSet.set(p.trackId, {
           name: p.trackName, art: p.albumArt, album: p.albumName, ms: p.ms,
         });
       }
     });
   });
 
-  // Build sorted top-10 artist list
-  const artists = Object.entries(artistBuckets)
-    .sort(([,a],[,b]) => b.plays - a.plays)
+  const artists = Object.entries(buckets)
+    .sort(([, a], [, b]) => b.plays - a.plays)
     .slice(0, 10)
-    .map(([id, bucket]) => ({
+    .map(([id, b]) => ({
       id,
-      name:    idToName[id] || 'Unknown Artist',
-      images:  [],
-      genres:  [],
-      _plays:  bucket.plays,
-      _ms:     Math.round(bucket.ms / 60000),  // convert to minutes for consistency
-      _ownTracks:  Array.from(bucket.trackSet.values()),
+      name:       idToName[id] || 'Unknown Artist',
+      images:     [],
+      genres:     [],
+      _plays:     b.plays,
+      _ms:        Math.round(b.ms / 60000),       // minutes
+      _ownTracks: Array.from(b.trackSet.values()),
     }));
 
-  // Unique track list sorted by play count
+  // Deduplicated track list sorted by play count
   const trackCounts = {};
   plays.forEach(p => { if (p.trackId) trackCounts[p.trackId] = (trackCounts[p.trackId] || 0) + 1; });
-  const trackSeen = new Set();
+  const seen = new Set();
   const trackList = plays
-    .filter(p => { if (!p.trackId || trackSeen.has(p.trackId)) return false; trackSeen.add(p.trackId); return true; })
+    .filter(p => { if (!p.trackId || seen.has(p.trackId)) return false; seen.add(p.trackId); return true; })
     .map(p => ({
       id: p.trackId, name: p.trackName,
       artists: p.allArtistIds.map(id => ({ id, name: idToName[id] || '' })),
@@ -746,12 +702,13 @@ async function buildWeekData() {
     }))
     .sort((a, b) => b._plays - a._plays);
 
-  return { mins, artists, tracks: trackList, np: null, isWeek: true };
+  return { mins, artists, tracks: trackList, np: null };
 }
 
-// --- TOP: uses Spotify's top-artists + top-tracks API ---
+// ─── BUILD: TOP (month / medium / year) ──────────────────────────────────────
 async function buildTopData(tab) {
   const cfg = TABS[tab];
+
   const [topArtistsRes, topTracksRes, recentPlays, np] = await Promise.all([
     api(`/me/top/artists?time_range=${cfg.range}&limit=10`),
     api(`/me/top/tracks?time_range=${cfg.range}&limit=50`),
@@ -759,104 +716,79 @@ async function buildTopData(tab) {
     api('/me/player/currently-playing').catch(() => null),
   ]);
 
-  const topTracks  = topTracksRes?.items || [];
+  const topTracks  = topTracksRes?.items  || [];
   const rawArtists = topArtistsRes?.items || [];
 
-  // Total estimated minutes = sum(track durations) × plays-per-song estimate
+  // Estimated total minutes: sum of track durations × plays-per-song multiplier
   const totalMs = topTracks.reduce((s, t) => s + (t.duration_ms || 0), 0);
   const mins    = Math.round((totalMs / 60000) * cfg.mult);
 
-  // Build recent-plays lookup keyed by EVERY artist ID on each play.
-  // ms is accumulated per-play (not per-track) so featured artists get real minutes too.
-  const recentByArtistId = {}; // artistId -> { plays, ms, trackSet(Map) }
+  // Recent-plays lookup keyed by every artist ID on each play
+  const recentByArtistId = {};
   recentPlays.forEach(p => {
     p.allArtistIds.forEach(artistId => {
       if (!recentByArtistId[artistId]) {
         recentByArtistId[artistId] = { plays: 0, ms: 0, trackSet: new Map() };
       }
       recentByArtistId[artistId].plays++;
-      // Credit the FULL track duration to every artist on the track
       recentByArtistId[artistId].ms += p.ms;
       if (p.trackId && !recentByArtistId[artistId].trackSet.has(p.trackId)) {
         recentByArtistId[artistId].trackSet.set(p.trackId, {
-          name: p.trackName, art: p.albumArt, album: p.albumName, ms: p.ms,
-          trackId: p.trackId,
+          name: p.trackName, art: p.albumArt, album: p.albumName, ms: p.ms, trackId: p.trackId,
         });
       }
     });
   });
 
-  // For each top artist, build their track list using STRICT ID matching ONLY.
-  // _ownTracks = only tracks where a.id appears in the track's artists[] array.
-  // No fallback list is stored — if the artist has no own tracks, the panel
-  // will show a clean "no tracks" message and nothing else.
   const artists = rawArtists.map((a, i) => {
     const recent = recentByArtistId[a.id] || {};
 
-    // Plays: use real recent count × multiplier, or rank-based estimate
     const scaledPlays = recent.plays
       ? Math.round(recent.plays * cfg.mult)
       : Math.round(cfg.mult * (1 - i * 0.08));
 
-    // Minutes: real recent ms × multiplier, or popularity-based estimate
-    // This now correctly counts featured appearances because recentByArtistId
-    // accumulates ms for every artist on each track
-    const scaledMs = recent.ms
-      ? Math.round((recent.ms / 60000) * cfg.mult)  // already in ms, convert to mins × mult
+    // Minutes: real ms from recent plays scaled by multiplier
+    const scaledMins = recent.ms
+      ? Math.round((recent.ms / 60000) * cfg.mult)
       : Math.round((a.popularity || 50) * cfg.mult * 0.5);
 
-    // STRICT top-50 filter: a.id must appear in track.artists[n].id
-    const ownFromTop50 = topTracks
+    // STRICT: only tracks where a.id is in track.artists[].id — no name matching
+    const fromTop50 = topTracks
       .filter(t => (t.artists || []).some(x => x.id === a.id))
       .map(t => ({
-        name:    t.name,
-        art:     t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '',
-        album:   t.album?.name || '',
-        ms:      t.duration_ms || 0,
-        trackId: t.id || '',
+        name: t.name, art: t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '',
+        album: t.album?.name || '', ms: t.duration_ms || 0, trackId: t.id || '',
       }));
 
-    // Recent tracks correctly bucketed by artist ID
-    const ownFromRecent = Array.from((recent.trackSet || new Map()).values());
-
-    // Merge without duplicates
-    const seenIds = new Set(ownFromRecent.map(t => t.trackId).filter(Boolean));
-    const ownTracks = [
-      ...ownFromRecent,
-      ...ownFromTop50.filter(t => !seenIds.has(t.trackId)),
-    ];
+    const fromRecent  = Array.from((recent.trackSet || new Map()).values());
+    const seenIds     = new Set(fromRecent.map(t => t.trackId).filter(Boolean));
+    const ownTracks   = [...fromRecent, ...fromTop50.filter(t => !seenIds.has(t.trackId))];
 
     return {
       ...a,
       _plays:     scaledPlays,
-      _ms:        scaledMs,     // in minutes already (after conversion above)
-      _ownTracks: ownTracks,    // ONLY this artist's songs — never mixed
-      // NO _fallbackTracks — we do not show foreign tracks under an artist's face
+      _ms:        scaledMins,   // already in minutes
+      _ownTracks: ownTracks,    // ONLY this artist's tracks — never mixed
     };
   });
 
-  return { mins, artists, tracks: topTracks, np, isWeek: false };
+  return { mins, artists, tracks: topTracks, np };
 }
 
-// ═══════════════════════════════════════════════════
-// APPLY DATA TO UI
-// Takes a data object, writes to DOM. No globals touched.
-// ═══════════════════════════════════════════════════
+// ─── APPLY DATA ───────────────────────────────────────────────────────────────
 function applyData(tab, data) {
   const cfg = TABS[tab];
-
-  // Hero
   st('badge-txt', cfg.label);
   st('h-sub',     cfg.sub);
   st('ar-meta',   cfg.meta);
   st('tr-meta',   `top ${data.tracks.length}`);
 
   const [ve, vt] = getVibe(data.artists.flatMap(a => a.genres || []));
-  st('ve', ve); st('vt', vt);
+  st('ve', ve);
+  st('vt', vt);
 
   animCounter(data.mins);
 
-  // Stats
   const hrs = Math.round(data.mins / 60);
   st('s-tr', data.tracks.length);
   st('s-hr', hrs > 0 ? hrs.toLocaleString() : '0');
@@ -867,28 +799,21 @@ function applyData(tab, data) {
   st('stats-sub',  cfg.statsLbl + ' overview');
   st('tracks-sub', cfg.statsLbl + ' favorites');
 
-  // Render lists — each wipes its container before writing
   renderArtistList(data.artists);
   renderTrackList(data.tracks, 'home-tlist', true);
-  renderTrackList(data.tracks, 'full-tlist', false);
+  renderTrackList(data.tracks, 'full-tlist',  false);
   renderNowPlaying(data.np);
-
   clr('err-box');
 }
 
-// ═══════════════════════════════════════════════════
-// TAB SWITCHING
-// Clears all list containers, then fetches+applies fresh data.
-// ═══════════════════════════════════════════════════
+// ─── TAB SWITCHING ────────────────────────────────────────────────────────────
 async function onTabClick(el, tab) {
-  // Activate pill
   document.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
   el.classList.add('on');
 
-  // WIPE all list containers immediately — no stale data visible during load
-  ['ar-list', 'home-tlist', 'full-tlist'].forEach(id => clr(id));
+  // Immediately wipe all list containers
+  ['ar-list', 'home-tlist', 'full-tlist'].forEach(clr);
   clr('err-box');
-
   showSkeleton();
 
   try {
@@ -900,25 +825,23 @@ async function onTabClick(el, tab) {
   } catch (err) {
     hideSkeleton();
     st('ctr', '0');
-    sh('err-box', `<div class="err">⚠ ${err.message}<br>
+    sh('err-box', `<div class="err">&#9888; ${err.message}<br>
       <small style="color:#aaa;margin-top:4px;display:block">
-        Make sure <code>${REDIRECT_URI}</code> is a Redirect URI in your
+        Make sure <code>${REDIRECT_URI}</code> is listed as a Redirect URI in your
         <a href="https://developer.spotify.com/dashboard" target="_blank">Spotify Dashboard</a>.
       </small></div>`);
   }
 }
 
-// ═══════════════════════════════════════════════════
-// ARTIST PANEL
-// Receives a plain data object — no globals, no shared state.
-// First thing it does: wipe every element it will write to.
-// ═══════════════════════════════════════════════════
+// ─── ARTIST PANEL ─────────────────────────────────────────────────────────────
+// Receives a plain snapshot — no globals, no shared state.
+// Wipes every element before writing.
 function openArtistPanel({ name, imageUrl, plays, mins, ownTracks }) {
   const panel = $('a-panel'), bg = $('a-bg');
   if (!panel || !bg) return;
 
-  // ── 1. WIPE completely before writing anything ──
-  $('ap-body').innerHTML    = '';
+  // 1. Wipe completely
+  $('ap-body').innerHTML     = '';
   $('ap-hero-img').innerHTML = '🎵';
   $('ap-hero-img').style.fontSize = '72px';
   st('ap-nm',    '');
@@ -926,24 +849,24 @@ function openArtistPanel({ name, imageUrl, plays, mins, ownTracks }) {
   st('ap-plays', '0');
   st('ap-cnt',   '0');
 
-  // ── 2. Stats ──
-  st('ap-nm',    name || '—');
-  st('ap-mins',  mins > 0  ? Math.round(mins).toLocaleString()  : '0');
-  st('ap-plays', plays > 0 ? plays.toLocaleString()             : '0');
+  // 2. Stats
+  st('ap-nm',    name  || '—');
+  st('ap-mins',  mins  > 0  ? Math.round(mins).toLocaleString()  : '0');
+  st('ap-plays', plays > 0  ? plays.toLocaleString()             : '0');
   st('ap-cnt',   ownTracks.length);
 
-  // ── 3. Hero image ──
+  // 3. Hero image
   const heroEl = $('ap-hero-img');
   if (imageUrl) {
     heroEl.innerHTML = `<img src="${imageUrl}" alt="${name}" style="width:100%;height:100%;object-fit:cover;display:block"/>`;
     heroEl.style.fontSize = '0';
   }
 
-  // ── 4. Track list — two clean states, no mixing ──
+  // 4. Track list — two states, no mixing
   let bodyHtml = '';
 
   if (ownTracks.length > 0) {
-    // Has own tracks → show ONLY those
+    // Show ONLY this artist's own tracks
     bodyHtml += `<div class="ap-section-title">${name}'s Songs (${ownTracks.length})</div>`;
     bodyHtml += ownTracks.map((t, i) => `
       <div class="ap-tr" style="animation:up .2s ${i * .03}s ease both">
@@ -956,7 +879,7 @@ function openArtistPanel({ name, imageUrl, plays, mins, ownTracks }) {
         <div class="ap-tr-dur">${fmtDur(t.ms || 0)}</div>
       </div>`).join('');
   } else {
-    // No own tracks in this period → clean message only, no foreign tracks shown
+    // No own tracks in this period — clean message, nothing else
     bodyHtml = `
       <div style="padding:40px 22px;text-align:center">
         <div style="font-size:48px;margin-bottom:16px">🎤</div>
@@ -968,15 +891,15 @@ function openArtistPanel({ name, imageUrl, plays, mins, ownTracks }) {
       </div>`;
   }
 
-  // Single atomic write
+  // Single atomic write — one innerHTML assignment
   $('ap-body').innerHTML = bodyHtml;
 
-  // ── 5. Animate in ──
+  // 5. Animate in
   document.body.style.overflow = 'hidden';
   bg.classList.add('on');
   requestAnimationFrame(() => panel.classList.add('on'));
 
-  // ── 6. Swipe to dismiss ──
+  // 6. Swipe to dismiss
   let startY = 0, dragging = false;
   function onTS(e) { startY = e.touches[0].clientY; dragging = true; }
   function onTM(e) {
@@ -1006,23 +929,22 @@ function closePanel() {
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
 
-// ═══════════════════════════════════════════════════
-// BOTTOM NAV PAGE SWITCHING
-// ═══════════════════════════════════════════════════
+// ─── BOTTOM NAV ───────────────────────────────────────────────────────────────
 function goPage(nm) {
-  ['home','stats','tracks','profile'].forEach(n => {
-    const b = $(`bn-${n}`); if (b) b.classList.toggle('on', n === nm);
+  ['home', 'stats', 'tracks', 'profile'].forEach(n => {
+    const b = $(`bn-${n}`);
+    if (b) b.classList.toggle('on', n === nm);
   });
-  ['pg-home','pg-stats','pg-tracks','pg-profile'].forEach(id => {
-    const p = $(id); if (p) p.classList.toggle('on', id === `pg-${nm}`);
+  ['pg-home', 'pg-stats', 'pg-tracks', 'pg-profile'].forEach(id => {
+    const p = $(id);
+    if (p) p.classList.toggle('on', id === `pg-${nm}`);
   });
-  const pw = $('pill-wrap'); if (pw) pw.style.display = nm === 'home' ? '' : 'none';
+  const pw = $('pill-wrap');
+  if (pw) pw.style.display = nm === 'home' ? '' : 'none';
   if (nm === 'profile') fillProfile();
 }
 
-// ═══════════════════════════════════════════════════
-// PROFILE
-// ═══════════════════════════════════════════════════
+// ─── PROFILE ──────────────────────────────────────────────────────────────────
 async function loadProfile() {
   const p = await api('/me');
   _profData = p;
@@ -1050,23 +972,21 @@ function fillProfile() {
   st('p-fol',  (p.followers?.total ?? 0).toLocaleString());
 }
 
-// ═══════════════════════════════════════════════════
-// BOOT
-// ═══════════════════════════════════════════════════
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
 function getTok() { return _token || sessionStorage.getItem('tok') || null; }
 function logout() {
   sessionStorage.clear();
-  _token = null;
+  _token    = null;
   _profData = null;
   location.href = location.pathname;
 }
 
 async function boot() {
-  // Clear stale recent-plays cache on every boot (shape may have changed)
-  sessionStorage.removeItem('vc_recent');
+  sessionStorage.removeItem('vc_recent'); // clear stale cache on every boot
 
-  const params = new URLSearchParams(location.search);
-  const code = params.get('code'), oauthErr = params.get('error');
+  const params    = new URLSearchParams(location.search);
+  const code      = params.get('code');
+  const oauthErr  = params.get('error');
 
   if (oauthErr) { showScr('s-login'); return; }
 
@@ -1078,11 +998,10 @@ async function boot() {
       setLoad('Loading your profile...');
       await loadProfile();
       showScr('s-app');
-      // Start on All Time tab
       await onTabClick(document.querySelector('.pill[data-tab="year"]'), 'year');
     } catch (e) {
       showScr('s-login');
-      sh('err-box', `<div class="err">⚠ ${e.message}</div>`);
+      sh('err-box', `<div class="err">&#9888; ${e.message}</div>`);
     }
     return;
   }
@@ -1108,4 +1027,4 @@ async function boot() {
 boot();
 </script>
 </body>
-</html>ד
+</html>
