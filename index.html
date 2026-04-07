@@ -495,67 +495,74 @@ async function api(path) {
 // Built once per session. Combines recently-played + top-tracks for all ranges.
 // Every track has a strict artist ID list — used for artist panel filtering.
 // No minutes are invented: ms comes directly from Spotify's duration_ms field.
-let _library = null; // { tracks: Map<trackId, trackObj>, byArtist: Map<artistId, Set<trackId>> }
+// ─── PER-TAB TRACK INDEX ─────────────────────────────────────────────────────
+// Each tab builds its OWN isolated index. No cross-tab contamination.
+//
+//   Past Week  → recently-played (last 7 days) ONLY — no top-tracks
+//   4 Weeks    → short_term top-tracks + recently-played
+//   6 Months   → medium_term top-tracks + recently-played
+//   All Time   → long_term  top-tracks + recently-played
+//
+// Switching tabs re-runs the full calculation for that period only.
+// Long-term data NEVER appears in Past Week. Fresh taste = fresh results.
 
-async function buildLibrary() {
-  if (_library) return _library;
+function buildTabIndex(periodTracks, recentPlays) {
+  // periodTracks : Spotify top-tracks items for this tab's range (empty [] for week tab)
+  // recentPlays  : flat play objects from fetchRecentPlays()
+  //
+  // Returns: { byArtist: Map<artistId, trackObj[]>, trackMap: Map<trackId, trackObj> }
+  // Tracks are indexed under EVERY artist ID on them (strict Spotify ID match, never name).
 
-  // Fetch all data sources in parallel
-  const [recentRaw, topShort, topMedium, topLong] = await Promise.all([
-    api('/me/player/recently-played?limit=50'),
-    api('/me/top/tracks?time_range=short_term&limit=50'),
-    api('/me/top/tracks?time_range=medium_term&limit=50'),
-    api('/me/top/tracks?time_range=long_term&limit=50'),
-  ]);
+  const trackMap = new Map(); // trackId → trackObj
+  const byArtist = new Map(); // artistId → trackObj[]
 
-  const tracks   = new Map(); // trackId → trackObj
-  const byArtist = new Map(); // artistId → Set<trackId>
-
-  function addTrack(t, playedAt = null) {
-    if (!t?.id) return;
-    const existing = tracks.get(t.id);
-    const artistIds = (t.artists || []).map(a => a.id).filter(Boolean);
-
-    if (!existing) {
-      tracks.set(t.id, {
-        trackId:   t.id,
-        name:      t.name || 'Unknown',
-        albumName: t.album?.name || '',
-        albumArt:  t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '',
-        ms:        t.duration_ms || 0,
-        artistIds, // all artist IDs on this track — strict, no names
-        artistNames: (t.artists || []).map(a => a.name).filter(Boolean),
-        playedAt:  playedAt ? [playedAt] : [],
+  function indexTrack(id, name, ms, albumName, albumArt, artistIds, artistNames, playedAt) {
+    if (!id) return;
+    let obj = trackMap.get(id);
+    if (!obj) {
+      obj = { trackId: id, name, ms, albumName, albumArt, artistIds, artistNames, playedTimes: [] };
+      trackMap.set(id, obj);
+      artistIds.forEach(aid => {
+        if (!byArtist.has(aid)) byArtist.set(aid, []);
+        byArtist.get(aid).push(obj);
       });
-    } else {
-      // Track already exists — add playedAt timestamp if new
-      if (playedAt && !existing.playedAt.includes(playedAt)) {
-        existing.playedAt.push(playedAt);
-      }
     }
-
-    // Index by every artist ID on the track
-    artistIds.forEach(aid => {
-      if (!byArtist.has(aid)) byArtist.set(aid, new Set());
-      byArtist.get(aid).add(t.id);
-    });
+    if (playedAt) obj.playedTimes.push(playedAt);
   }
 
-  // Add recently-played (with real timestamps)
-  (recentRaw?.items || [])
-    .filter(item => item?.track?.type === 'track')
-    .forEach(item => addTrack(item.track, Date.parse(item.played_at)));
-
-  // Add top tracks from all time ranges (no timestamps — just track metadata)
-  [topShort, topMedium, topLong].forEach(res => {
-    (res?.items || []).forEach(t => addTrack(t, null));
+  // 1. Index period-specific top-tracks (e.g. short_term for 4-week tab)
+  (periodTracks || []).forEach(t => {
+    if (!t?.id) return;
+    indexTrack(
+      t.id,
+      t.name || 'Unknown',
+      t.duration_ms || 0,
+      t.album?.name || '',
+      t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '',
+      (t.artists || []).map(a => a.id).filter(Boolean),
+      (t.artists || []).map(a => a.name).filter(Boolean),
+      null
+    );
   });
 
-  _library = { tracks, byArtist };
-  return _library;
+  // 2. Index recently-played tracks with their real timestamps
+  recentPlays.forEach(p => {
+    indexTrack(
+      p.trackId,
+      p.trackName,
+      p.ms,
+      p.albumName,
+      p.albumArt,
+      p.allArtistIds,
+      Object.values(p.allArtistMap),
+      p.ts
+    );
+  });
+
+  return { byArtist, trackMap };
 }
 
-// ─── RECENTLY-PLAYED (still used for week tab + hero minutes) ────────────────
+// ─── RECENTLY-PLAYED ─────────────────────────────────────────────────────────
 async function fetchRecentPlays() {
   try {
     const stored = sessionStorage.getItem('vc_recent');
@@ -592,7 +599,6 @@ async function fetchRecentPlays() {
 
   return plays;
 }
-
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 function fmtDur(ms) {
   if (!ms) return '';
@@ -706,50 +712,63 @@ function renderNowPlaying(np) {
   }
 }
 
-// ─── BUILD: WEEK (recently-played, last 7 days) ───────────────────────────────
+// ─── BUILD: WEEK (recently-played, last 7 days ONLY) ────────────────────────
+// Uses recently-played filtered to 7 days. No top-tracks at all.
+// Artists are ranked by ACTUAL play count this week. Zero contamination from
+// medium or long-term data. If you only listened to one artist this week,
+// they are #1 — even if they don't appear in All Time.
 async function buildWeekData() {
   const allPlays = await fetchRecentPlays();
   const cutoff   = Date.now() - 7 * 24 * 3600 * 1000;
   const plays    = allPlays.filter(p => p.ts >= cutoff);
 
+  // Total real minutes this week
   const totalMs = plays.reduce((s, p) => s + p.ms, 0);
   const mins    = Math.round(totalMs / 60000);
 
-  // id -> name for every artist seen this week
+  // Build isolated index for this week — NO top-tracks, NO other periods
+  const idx = buildTabIndex([], plays); // empty periodTracks → week is purely recent
+
+  // Build id→name map from this week's plays only
   const idToName = {};
   plays.forEach(p => {
     Object.entries(p.allArtistMap).forEach(([id, name]) => { idToName[id] = name; });
   });
 
-  // Per-artist buckets — credit every artist on each track
-  const buckets = {};
+  // Aggregate per-artist from this week's plays
+  const artistStats = {}; // artistId → { plays, ms }
   plays.forEach(p => {
-    p.allArtistIds.forEach(artistId => {
-      if (!buckets[artistId]) buckets[artistId] = { plays: 0, ms: 0, trackSet: new Map() };
-      buckets[artistId].plays++;
-      buckets[artistId].ms += p.ms;
-      if (p.trackId && !buckets[artistId].trackSet.has(p.trackId)) {
-        buckets[artistId].trackSet.set(p.trackId, {
-          name: p.trackName, art: p.albumArt, album: p.albumName, ms: p.ms,
-        });
-      }
+    p.allArtistIds.forEach(aid => {
+      if (!artistStats[aid]) artistStats[aid] = { plays: 0, ms: 0 };
+      artistStats[aid].plays++;
+      artistStats[aid].ms += p.ms;
     });
   });
 
-  const artists = Object.entries(buckets)
+  // Build top-10 artists sorted by actual play count this week
+  const artists = Object.entries(artistStats)
     .sort(([, a], [, b]) => b.plays - a.plays)
     .slice(0, 10)
-    .map(([id, b]) => ({
-      id,
-      name:       idToName[id] || 'Unknown Artist',
-      images:     [],
-      genres:     [],
-      _plays:     b.plays,
-      _ms:        Math.round(b.ms / 60000),       // minutes
-      _ownTracks: Array.from(b.trackSet.values()),
-    }));
+    .map(([id, stats]) => {
+      // Get this artist's tracks from the week-only index
+      const weekTracks = (idx.byArtist.get(id) || [])
+        .sort((a, b) => b.playedTimes.length - a.playedTimes.length || b.ms - a.ms)
+        .map(t => ({ name: t.name, art: t.albumArt, album: t.albumName, ms: t.ms, trackId: t.trackId }));
 
-  // Deduplicated track list sorted by play count
+      const trackMins = Math.round(weekTracks.reduce((s, t) => s + t.ms, 0) / 60000);
+
+      return {
+        id,
+        name:       idToName[id] || 'Unknown Artist',
+        images:     [],
+        genres:     [],
+        _plays:     stats.plays,
+        _ms:        trackMins > 0 ? trackMins : Math.round(stats.ms / 60000),
+        _ownTracks: weekTracks,
+      };
+    });
+
+  // Deduplicated track list sorted by play count this week
   const trackCounts = {};
   plays.forEach(p => { if (p.trackId) trackCounts[p.trackId] = (trackCounts[p.trackId] || 0) + 1; });
   const seen = new Set();
@@ -766,33 +785,36 @@ async function buildWeekData() {
 
   return { mins, artists, tracks: trackList, np: null };
 }
-
-// ─── BUILD: TOP (month / medium / year) ──────────────────────────────────────
+// ─── BUILD: TOP (4-weeks / 6-months / all-time) ──────────────────────────────
+// Fetches ONLY this tab's data sources. Builds an isolated index for this period.
+// No data from other tabs bleeds in. Each tab's artist list is calculated fresh.
 async function buildTopData(tab) {
   const cfg = TABS[tab];
 
-  const [topArtistsRes, topTracksRes, recentPlays, lib, np] = await Promise.all([
+  const [topArtistsRes, topTracksRes, recentPlays, np] = await Promise.all([
     api(`/me/top/artists?time_range=${cfg.range}&limit=10`),
     api(`/me/top/tracks?time_range=${cfg.range}&limit=50`),
     fetchRecentPlays(),
-    buildLibrary(),
     api('/me/player/currently-playing').catch(() => null),
   ]);
 
   const topTracks  = topTracksRes?.items  || [];
   const rawArtists = topArtistsRes?.items || [];
 
-  // Real total minutes from recently-played — no multipliers
+  // Build the index for THIS tab only: period tracks + recent plays
+  const idx = buildTabIndex(topTracks, recentPlays);
+
+  // Total minutes = real sum from recently-played (no multipliers)
   const totalRealMs = recentPlays.reduce((s, p) => s + p.ms, 0);
   const mins        = Math.round(totalRealMs / 60000);
 
-  // Recent-plays lookup for per-artist play counts and minutes
+  // Per-artist play counts from recently-played
   const recentByArtistId = {};
   recentPlays.forEach(p => {
-    p.allArtistIds.forEach(artistId => {
-      if (!recentByArtistId[artistId]) recentByArtistId[artistId] = { plays: 0, ms: 0 };
-      recentByArtistId[artistId].plays++;
-      recentByArtistId[artistId].ms += p.ms;
+    p.allArtistIds.forEach(aid => {
+      if (!recentByArtistId[aid]) recentByArtistId[aid] = { plays: 0, ms: 0 };
+      recentByArtistId[aid].plays++;
+      recentByArtistId[aid].ms += p.ms;
     });
   });
 
@@ -801,41 +823,36 @@ async function buildTopData(tab) {
     const realPlays = recent.plays;
     const realMins  = Math.round(recent.ms / 60000);
 
-    // ── THE FILTER: scan the unified library for this artist's tracks ─────────
-    // lib.byArtist.get(a.id) = Set of trackIds where a.id is in artists[]
-    // This is a strict ID match — no name matching, no guessing
-    const artistTrackIds = lib.byArtist.get(a.id) || new Set();
-    const ownTracks = Array.from(artistTrackIds)
-      .map(tid => lib.tracks.get(tid))
-      .filter(Boolean)
-      .map(t => ({
-        name:     t.name,
-        art:      t.albumArt,
-        album:    t.albumName,
-        ms:       t.ms,
-        trackId:  t.trackId,
-        // Real minutes from this track = ms / 60000 (no invention)
-        minsReal: Math.round(t.ms / 60000),
-      }))
-      // Sort: tracks with recent play timestamps first, then by duration
-      .sort((a, b) => {
-        const aHasPlay = (lib.tracks.get(a.trackId)?.playedAt?.length || 0) > 0;
-        const bHasPlay = (lib.tracks.get(b.trackId)?.playedAt?.length || 0) > 0;
-        if (aHasPlay !== bHasPlay) return aHasPlay ? -1 : 1;
-        return b.ms - a.ms;
-      });
+    // Get THIS artist's tracks from THIS tab's index only
+    const tabTracks = idx.byArtist.get(a.id) || [];
+
+    // Calculate real minutes from the actual track durations in this index
+    const trackMins = Math.round(tabTracks.reduce((s, t) => s + t.ms, 0) / 60000);
+
+    // Sort: recently-played tracks first, then by duration
+    const ownTracks = [...tabTracks].sort((a, b) => {
+      const aPlays = a.playedTimes.length;
+      const bPlays = b.playedTimes.length;
+      if (aPlays !== bPlays) return bPlays - aPlays;
+      return b.ms - a.ms;
+    }).map(t => ({
+      name:    t.name,
+      art:     t.albumArt,
+      album:   t.albumName,
+      ms:      t.ms,
+      trackId: t.trackId,
+    }));
 
     return {
       ...a,
       _plays:     realPlays,
-      _ms:        realMins,
+      _ms:        trackMins > 0 ? trackMins : realMins, // prefer track-based minutes
       _ownTracks: ownTracks,
     };
   });
 
   return { mins, artists, tracks: topTracks, np };
 }
-
 // ─── APPLY DATA ───────────────────────────────────────────────────────────────
 function applyData(tab, data) {
   const cfg = TABS[tab];
@@ -1047,13 +1064,11 @@ function logout() {
   sessionStorage.clear();
   _token    = null;
   _profData = null;
-  _library  = null;
   location.href = location.pathname;
 }
 
 async function boot() {
   sessionStorage.removeItem('vc_recent'); // clear stale cache on every boot
-  _library = null; // force fresh library on every session
 
   const params    = new URLSearchParams(location.search);
   const code      = params.get('code');
