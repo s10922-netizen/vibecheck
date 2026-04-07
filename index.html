@@ -339,10 +339,10 @@ const RECENT_TTL   = 5 * 60 * 1000;
 
 // ─── TAB DEFINITIONS ─────────────────────────────────────────────────────────
 const TABS = {
-  week:   { kind:'recent',                      label:'PAST WEEK',  meta:'7 days',   sub:'What you actually played this week',    statsLbl:'Past week',     mult:1   },
-  month:  { kind:'top', range:'short_term',     label:'4 WEEKS',    meta:'4 weeks',  sub:'Your last 4 weeks on Spotify',          statsLbl:'Last 4 weeks',  mult:18  },
-  medium: { kind:'top', range:'medium_term',    label:'6 MONTHS',   meta:'6 months', sub:'Your 6-month top artists and tracks',   statsLbl:'Last 6 months', mult:50  },
-  year:   { kind:'top', range:'long_term',      label:'ALL TIME',   meta:'all time', sub:'Your all-time Spotify favorites',       statsLbl:'All time',      mult:160 },
+  week:   { kind:'recent',                   label:'PAST WEEK',  meta:'7 days',   sub:'Real minutes from your last 7 days',      statsLbl:'Past week'     },
+  month:  { kind:'top', range:'short_term',  label:'4 WEEKS',    meta:'4 weeks',  sub:'Top artists · recent play time shown',    statsLbl:'Last 4 weeks'  },
+  medium: { kind:'top', range:'medium_term', label:'6 MONTHS',   meta:'6 months', sub:'Top artists · recent play time shown',    statsLbl:'Last 6 months' },
+  year:   { kind:'top', range:'long_term',   label:'ALL TIME',   meta:'all time', sub:'Top artists · recent play time shown',    statsLbl:'All time'      },
 };
 
 // ─── AUTH STATE (only globals — intentional) ──────────────────────────────────
@@ -706,6 +706,10 @@ async function buildWeekData() {
 }
 
 // ─── BUILD: TOP (month / medium / year) ──────────────────────────────────────
+// Minutes and plays come ONLY from recently-played real data.
+// We never invent numbers. If an artist isn't in the recent 50 plays → 0 mins, 0 plays.
+// The top-artists/top-tracks API tells us WHO your favorites are for the period;
+// recently-played tells us the REAL listening time we can actually measure.
 async function buildTopData(tab) {
   const cfg = TABS[tab];
 
@@ -719,11 +723,12 @@ async function buildTopData(tab) {
   const topTracks  = topTracksRes?.items  || [];
   const rawArtists = topArtistsRes?.items || [];
 
-  // Estimated total minutes: sum of track durations × plays-per-song multiplier
-  const totalMs = topTracks.reduce((s, t) => s + (t.duration_ms || 0), 0);
-  const mins    = Math.round((totalMs / 60000) * cfg.mult);
+  // ── Real minutes: sum actual durations from recently-played only ──────────
+  // No multipliers. No estimates. Only what Spotify actually returned.
+  const totalRealMs = recentPlays.reduce((s, p) => s + p.ms, 0);
+  const mins        = Math.round(totalRealMs / 60000);
 
-  // Recent-plays lookup keyed by every artist ID on each play
+  // ── Recent-plays lookup keyed by every artist ID on each play ─────────────
   const recentByArtistId = {};
   recentPlays.forEach(p => {
     p.allArtistIds.forEach(artistId => {
@@ -734,41 +739,43 @@ async function buildTopData(tab) {
       recentByArtistId[artistId].ms += p.ms;
       if (p.trackId && !recentByArtistId[artistId].trackSet.has(p.trackId)) {
         recentByArtistId[artistId].trackSet.set(p.trackId, {
-          name: p.trackName, art: p.albumArt, album: p.albumName, ms: p.ms, trackId: p.trackId,
+          name: p.trackName, art: p.albumArt, album: p.albumName,
+          ms: p.ms, trackId: p.trackId,
         });
       }
     });
   });
 
-  const artists = rawArtists.map((a, i) => {
-    const recent = recentByArtistId[a.id] || {};
+  // ── Build artist objects ──────────────────────────────────────────────────
+  // _plays and _ms come directly from recently-played — no guessing.
+  // If the artist has no recent plays: _plays = 0, _ms = 0.
+  const artists = rawArtists.map(a => {
+    const recent = recentByArtistId[a.id] || { plays: 0, ms: 0, trackSet: new Map() };
 
-    const scaledPlays = recent.plays
-      ? Math.round(recent.plays * cfg.mult)
-      : Math.round(cfg.mult * (1 - i * 0.08));
+    // Real plays and real minutes from the 50 recent plays — nothing invented
+    const realPlays = recent.plays;
+    const realMins  = Math.round(recent.ms / 60000);
 
-    // Minutes: real ms from recent plays scaled by multiplier
-    const scaledMins = recent.ms
-      ? Math.round((recent.ms / 60000) * cfg.mult)
-      : Math.round((a.popularity || 50) * cfg.mult * 0.5);
-
-    // STRICT: only tracks where a.id is in track.artists[].id — no name matching
+    // STRICT: only tracks where a.id appears in track.artists[].id
     const fromTop50 = topTracks
       .filter(t => (t.artists || []).some(x => x.id === a.id))
       .map(t => ({
-        name: t.name, art: t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '',
-        album: t.album?.name || '', ms: t.duration_ms || 0, trackId: t.id || '',
+        name:    t.name,
+        art:     t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '',
+        album:   t.album?.name || '',
+        ms:      t.duration_ms || 0,
+        trackId: t.id || '',
       }));
 
-    const fromRecent  = Array.from((recent.trackSet || new Map()).values());
-    const seenIds     = new Set(fromRecent.map(t => t.trackId).filter(Boolean));
-    const ownTracks   = [...fromRecent, ...fromTop50.filter(t => !seenIds.has(t.trackId))];
+    const fromRecent = Array.from(recent.trackSet.values());
+    const seenIds    = new Set(fromRecent.map(t => t.trackId).filter(Boolean));
+    const ownTracks  = [...fromRecent, ...fromTop50.filter(t => !seenIds.has(t.trackId))];
 
     return {
       ...a,
-      _plays:     scaledPlays,
-      _ms:        scaledMins,   // already in minutes
-      _ownTracks: ownTracks,    // ONLY this artist's tracks — never mixed
+      _plays:     realPlays,  // real count from recently-played
+      _ms:        realMins,   // real minutes from recently-played (already converted)
+      _ownTracks: ownTracks,  // ONLY this artist's tracks — never mixed
     };
   });
 
