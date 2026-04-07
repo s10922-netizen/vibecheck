@@ -460,23 +460,33 @@ async function spApi(path) {
 
 /* ═══════════════════════════════════════════
    getMyTopTracks(timeRange)
-   Spotify /me/top/tracks max = 50 per request.
-   We fetch the full 50 (limit=50, offset=0).
-   The "168 minutes" problem is that this gives
-   us track CATALOG time, not listening time.
-   Real listening time is calculated separately
-   using recently-played play counts below.
+   Two parallel requests: offset 0 and offset 50
+   → up to 100 unique tracks.
+   Minutes = simple sum of all 100 durations.
 ═══════════════════════════════════════════ */
 async function getMyTopTracks(timeRange) {
-  const res = await spApi(`/me/top/tracks?time_range=${timeRange}&limit=50&offset=0`);
-  const items = res?.items || [];
-  return items.map(t => ({
+  const [res1, res2] = await Promise.all([
+    spApi(`/me/top/tracks?time_range=${timeRange}&limit=50&offset=0`),
+    spApi(`/me/top/tracks?time_range=${timeRange}&limit=50&offset=50`),
+  ]);
+
+  const raw = [...(res1?.items||[]), ...(res2?.items||[])];
+
+  // Deduplicate by track ID
+  const seen = new Set();
+  const unique = raw.filter(t => {
+    if(!t?.id || seen.has(t.id)) return false;
+    seen.add(t.id);
+    return true;
+  });
+
+  return unique.map(t => ({
     id:         t.id,
-    name:       t.name||'Unknown Track',
+    name:       t.name || 'Unknown Track',
     durationMs: (typeof t.duration_ms==='number' && t.duration_ms>0) ? t.duration_ms : 210000,
-    albumName:  t.album?.name||'',
-    albumArt:   t.album?.images?.[1]?.url||t.album?.images?.[0]?.url||'',
-    albumArtSm: t.album?.images?.[2]?.url||t.album?.images?.[0]?.url||'',
+    albumName:  t.album?.name || '',
+    albumArt:   t.album?.images?.[1]?.url || t.album?.images?.[0]?.url || '',
+    albumArtSm: t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '',
     artists:    (t.artists||[]).filter(a=>a.id&&a.name).map(a=>({id:a.id,name:a.name})),
   }));
 }
@@ -621,18 +631,16 @@ async function loadTabData(tab) {
   }
 
   // ── Top tracks (month / 6 months / all time) ────────
-  // Fetch tracks + recent plays + genres + now-playing all in parallel
-  const [tracks, recentPlays, topArtistsRes, np] = await Promise.all([
+  const [tracks, topArtistsRes, np] = await Promise.all([
     getMyTopTracks(cfg.range),
-    getRecentPlays(),
     spApi(`/me/top/artists?time_range=${cfg.range}&limit=10`),
     spApi('/me/player/currently-playing').catch(()=>null),
   ]);
 
   const genres  = (topArtistsRes?.items||[]).flatMap(a=>a.genres||[]);
   const artists = buildArtistMap(tracks);
-  // Play-count-weighted minutes: much more realistic than flat catalog sum
-  const mins    = calcListeningMins(tracks, recentPlays);
+  // Sum of all track durations — honest, no estimation
+  const mins    = Math.round(tracks.reduce((s,t)=>s+t.durationMs,0) / 60000);
 
   return{tracks,artists,mins,np,genres};
 }
