@@ -222,8 +222,8 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
       <div class="hero">
         <div class="badge"><span class="dot"></span><span id="badge-txt">ALL TIME</span></div>
         <div class="cw"><span id="ctr">0</span></div>
-        <div class="h-unit">estimated minutes listened</div>
-        <div class="h-disclaimer" id="h-disclaimer">Based on your Top 100 tracks &middot; Full Wrapped data available in December</div>
+        <div class="h-unit">Vibe Points</div>
+        <div class="h-disclaimer" id="h-disclaimer">Calculating your status...</div>
         <div id="h-sub"></div>
         <div class="vrow"><div id="vtag"><span id="ve">&#127925;</span><span id="vt">Calculating...</span></div></div>
       </div>
@@ -264,7 +264,7 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
         <div class="sc"><div class="sci"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="scv" id="s-hr">0</div><div class="scl">Total hours</div></div>
         <div class="sc"><div class="sci"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="scv" id="s-ar">0</div><div class="scl">Artists</div></div>
         <div class="sc"><div class="sci"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="scv" id="s-t1" style="font-size:15px;letter-spacing:-.3px">&#8212;</div><div class="scl">Top artist</div></div>
-        <div class="sc"><div class="sci"><svg viewBox="0 0 24 24" style="stroke:var(--sp);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;width:15px;height:15px"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div class="scv" id="s-mn">0</div><div class="scl">Minutes</div></div>
+        <div class="sc"><div class="sci"><svg viewBox="0 0 24 24" style="stroke:var(--sp);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;width:15px;height:15px"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div class="scv" id="s-mn">0</div><div class="scl">Vibe Points</div></div>
         <div class="sc"><div class="sci"><svg viewBox="0 0 24 24" style="stroke:var(--sp);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;width:15px;height:15px"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div><div class="scv" id="s-vb" style="font-size:15px;letter-spacing:-.3px">&#8212;</div><div class="scl">Your vibe</div></div>
       </div>
     </div>
@@ -492,7 +492,33 @@ async function getMyTopTracks(timeRange) {
 }
 
 /* ═══════════════════════════════════════════
-   getRecentPlays()
+   calcVibePoints(tracks)
+   Rank-weighted score: track at position 1
+   gets 100 pts, position 2 gets 99, … etc.
+   Each point × track duration in seconds
+   gives a personal, always-unique number.
+   Week tab: same formula on recent tracks.
+═══════════════════════════════════════════ */
+function calcVibePoints(tracks) {
+  const total = tracks.length;
+  return tracks.reduce((sum, track, i) => {
+    const rankWeight = total - i;           // 100 down to 1
+    const durSec     = Math.round(track.durationMs / 1000);
+    return sum + rankWeight * durSec;
+  }, 0);
+}
+
+/* ═══════════════════════════════════════════
+   vibeStatus(points)
+   Returns a status string based on score.
+═══════════════════════════════════════════ */
+function vibeStatus(points) {
+  if (points >= 500000) return '👑 Legendary Listener';
+  if (points >= 300000) return '🔥 Music Obsessed';
+  if (points >= 150000) return '🎧 Vibe Hunter';
+  if (points >= 50000)  return '✨ Rising Star';
+  return '🎵 Just Getting Started';
+}
    Fetch up to 50 recent plays. Used to count
    how many times each track was actually played,
    which multiplies into real listening minutes.
@@ -627,7 +653,7 @@ async function loadTabData(tab) {
     },0);
 
     const artists=buildArtistMap(tracks);
-    return{tracks,artists,mins:Math.round(totalMs/60000),np,genres:[]};
+    return{tracks,artists,vibePoints:calcVibePoints(tracks),np,genres:[]};
   }
 
   // ── Top tracks (month / 6 months / all time) ────────
@@ -639,10 +665,9 @@ async function loadTabData(tab) {
 
   const genres  = (topArtistsRes?.items||[]).flatMap(a=>a.genres||[]);
   const artists = buildArtistMap(tracks);
-  // Sum of all track durations — honest, no estimation
-  const mins    = Math.round(tracks.reduce((s,t)=>s+t.durationMs,0) / 60000);
+  const vibePoints = calcVibePoints(tracks);
 
-  return{tracks,artists,mins,np,genres};
+  return{tracks,artists,vibePoints,np,genres};
 }
 
 /* ═══════════════════════════════════════════
@@ -740,29 +765,25 @@ function renderNP(np) {
 function applyData(tab,data) {
   const cfg=TABS[tab];
   const trackCount=data.tracks.length;
+  const points=data.vibePoints||0;
 
   st('badge-txt', cfg.label);
   st('ar-meta',   `from top ${trackCount}`);
   st('tr-meta',   `top ${trackCount}`);
 
-  // Disclaimer line: changes for week tab
+  // Disclaimer: personal score context
   const disc=$('h-disclaimer');
-  if(disc){
-    disc.textContent = tab==='week'
-      ? 'Based on your recently played tracks \u00B7 Real play counts'
-      : `Estimated from your Top 50 tracks \u00B7 Full Wrapped stats available in December`;
-  }
+  if(disc) disc.textContent=vibeStatus(points);
 
   const [ve,vt]=detectVibe(data.genres||[]);
   sh('ve',ve); st('vt',vt);
-  animCtr(data.mins);
+  animCtr(points);
 
-  const hrs=Math.round(data.mins/60);
   st('s-tr', trackCount);
-  st('s-hr', hrs>0?hrs.toLocaleString():'0');
+  st('s-hr', '—');
   st('s-ar', data.artists.length);
   st('s-t1', data.artists[0]?.name||'&#8212;');
-  st('s-mn', data.mins>0?data.mins.toLocaleString():'0');
+  st('s-mn', points.toLocaleString());
   sh('s-vb', vt);
   st('stats-sub',  cfg.statsLbl+' overview');
   st('tracks-sub', cfg.statsLbl+' top tracks');
