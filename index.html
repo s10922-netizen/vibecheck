@@ -302,17 +302,19 @@ async function spApi(path) {
   return r.status === 204 ? null : r.json();
 }
 
+// משיכה של 100 שירים - הפעם עם הכתובת המלאה והנכונה
 async function getExtendedTopTracks(range) {
   const [r1, r2] = await Promise.all([
     spApi(`/me/top/tracks?time_range=${range}&limit=50&offset=0`),
-    spApi(`/me/top/tracks?time_range=${range}&limit=50&offset=50`)
+    spApi(`/me/top/tracks?time_range=${range}&limit=50&offset=49`)
   ]);
   return [...(r1?.items || []), ...(r2?.items || [])];
 }
 
 function calculateArtistStats(tracks, tab) {
   const artistMap = new Map();
-  const multipliers = { week: 1.1, month: 4.8, medium: 19, year: 56 };
+  // המכפילים הדרסטיים שחיכינו להם!
+  const multipliers = { week: 1.5, month: 8, medium: 45, year: 160 }; 
   const m = multipliers[tab] || 1;
 
   tracks.forEach((track, index) => {
@@ -322,15 +324,16 @@ function calculateArtistStats(tracks, tab) {
       }
       const entry = artistMap.get(a.id);
       entry.rawMs += track.duration_ms;
-      entry.score += (110 - index);
+      entry.score += (120 - index); // בוסט רציני לדירוג
       if (!entry.tracks.some(t => t.id === track.id)) entry.tracks.push(track);
     });
   });
 
   return Array.from(artistMap.values())
     .map(a => {
+      // חישוב דקות מנופח ואמין
       let mins = Math.round((a.rawMs / 60000) * m);
-      if (tab === 'year') mins += Math.floor(Math.random() * 400);
+      if (tab === 'year') mins += (Math.floor(Math.random() * 800) + 500); 
       return { ...a, displayMins: mins };
     })
     .sort((a, b) => b.score - a.score)
@@ -338,8 +341,10 @@ function calculateArtistStats(tracks, tab) {
 }
 
 async function onTab(el, tab) {
-  document.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
-  el.classList.add('on');
+  if (el) {
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
+    el.classList.add('on');
+  }
   showSkeleton();
 
   try {
@@ -359,31 +364,37 @@ async function onTab(el, tab) {
 
     hideSkeleton();
     applyData(tab, artists, tracks, totalMins, np);
-  } catch (err) { console.error(err); hideSkeleton(); }
+  } catch (err) { console.error("TAB ERROR:", err); hideSkeleton(); }
 }
 
 function applyData(tab, artists, tracks, totalMins, np) {
   const labels = { week: 'PAST WEEK', month: '4 WEEKS', medium: '6 MONTHS', year: 'ALL TIME' };
   st('badge-txt', labels[tab]);
+  
+  // עדכון ה-Counter הגדול
   animCtr(totalMins);
+  
   renderArtists(artists);
   renderTracks(tracks.slice(0,50), 'home-tlist', true);
   renderTracks(tracks, 'full-tlist', false);
   renderNP(np);
 
+  // Stats Page
   st('s-tr', tracks.length);
-  st('s-hr', Math.round(totalMins/60));
+  st('s-hr', Math.round(totalMins/60).toLocaleString());
   st('s-ar', artists.length);
   st('s-t1', artists[0]?.name || '—');
   st('s-mn', totalMins.toLocaleString());
-  st('vt', artists.length > 3 ? 'Elite Listener' : 'Pure Vibe');
+  st('s-vb', totalMins > 10000 ? 'Super Fan' : 'Music Lover');
 }
 
 function renderArtists(artists) {
   const el = $('ar-list'); clr('ar-list');
-  const max = artists[0]?.displayMins || 1;
+  if (!artists.length) { el.innerHTML = '<div class="empty">No data found</div>'; return; }
+  
+  const max = artists[0].displayMins || 1;
   artists.slice(0,5).forEach((a, i) => {
-    const pct = (a.displayMins / max) * 100;
+    const pct = Math.max((a.displayMins / max) * 100, 5);
     const row = document.createElement('div');
     row.className = 'ar';
     row.innerHTML = `
@@ -391,7 +402,7 @@ function renderArtists(artists) {
       <div class="ai">🎵</div>
       <div class="ainf">
         <div class="an">${a.name}</div>
-        <div class="ag">${a.tracks.length} tracks found</div>
+        <div class="ag">${a.tracks.length} heavy hits</div>
         <div class="abar"><div class="abf" style="width:${pct}%"></div></div>
       </div>
       <div class="ar-r"><div class="am">${a.displayMins.toLocaleString()}<small> min</small></div></div>
@@ -416,9 +427,11 @@ function renderTracks(tracks, elId, anim) {
 }
 
 function openPanel(a) {
-  st('ap-nm', a.name); st('ap-mins', a.displayMins.toLocaleString()); st('ap-cnt', a.tracks.length);
+  st('ap-nm', a.name); 
+  st('ap-mins', a.displayMins.toLocaleString()); 
+  st('ap-cnt', a.tracks.length);
   const body = $('ap-body'); clr('ap-body');
-  a.tracks.forEach((t, i) => {
+  a.tracks.forEach((t) => {
     const r = document.createElement('div');
     r.className = 'ap-tr';
     r.innerHTML = `<div class="ap-tr-nm">${t.name}</div><div class="ap-tr-al">${t.album.name}</div>`;
@@ -436,17 +449,23 @@ function renderNP(np) {
 }
 
 function animCtr(v) {
-  const el = $('ctr'); let curr = parseInt(el.textContent.replace(/,/g,'')) || 0;
-  const step = Math.ceil(Math.abs(v - curr) / 20);
-  const int = setInterval(() => {
-    if (curr < v) curr = Math.min(curr + step, v);
-    else curr = Math.max(curr - step, v);
-    el.textContent = curr.toLocaleString();
-    if (curr === v) clearInterval(int);
-  }, 30);
+  const el = $('ctr'); 
+  let curr = parseInt(el.textContent.replace(/,/g,'')) || 0;
+  if (curr === v) return;
+  const dur = 1000;
+  const start = performance.now();
+  
+  function update(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / dur, 1);
+    const val = Math.floor(curr + (v - curr) * progress);
+    el.textContent = val.toLocaleString();
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
 }
 
-function showSkeleton() { sh('ar-list', '<div class="sk" style="height:200px;margin:20px"></div>'); }
+function showSkeleton() { sh('ar-list', '<div style="padding:20px;color:#555">Calculating vibes...</div>'); }
 function hideSkeleton() {}
 
 function goPage(p) {
@@ -456,17 +475,12 @@ function goPage(p) {
   $(`bn-${p}`).classList.add('on');
 }
 
-/* AUTH PKCE (Simplified for logic) */
 async function doLogin() {
-  const codeVerifier = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-  sessionStorage.setItem('v', codeVerifier);
-  const encoder = new TextEncoder();
-  const data = encoder.encode(codeVerifier);
-  const digest = await window.crypto.subtle.digest('SHA-256', data);
-  const codeChallenge = btoa(String.fromCharCode(...new Uint8Array(digest))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-  
-  const url = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPES)}&code_challenge_method=S256&code_challenge=${codeChallenge}`;
-  window.location.href = url;
+  const v = Math.random().toString(36).substring(2, 15);
+  sessionStorage.setItem('v', v);
+  const digest = await window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(v));
+  const ch = btoa(String.fromCharCode(...new Uint8Array(digest))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  window.location.href = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPES)}&code_challenge_method=S256&code_challenge=${ch}`;
 }
 
 async function boot() {
@@ -488,8 +502,5 @@ async function boot() {
 }
 
 function logout() { sessionStorage.clear(); location.reload(); }
-
 boot();
 </script>
-</body>
-</html>
