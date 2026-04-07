@@ -222,7 +222,7 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
       <div class="hero">
         <div class="badge"><span class="dot"></span><span id="badge-txt">ALL TIME</span></div>
         <div class="cw"><span id="ctr">0</span></div>
-        <div class="h-unit">minutes in top tracks</div>
+        <div class="h-unit">estimated minutes listened</div>
         <div class="h-disclaimer" id="h-disclaimer">Based on your Top 100 tracks &middot; Full Wrapped data available in December</div>
         <div id="h-sub"></div>
         <div class="vrow"><div id="vtag"><span id="ve">&#127925;</span><span id="vt">Calculating...</span></div></div>
@@ -459,35 +459,95 @@ async function spApi(path) {
 }
 
 /* ═══════════════════════════════════════════
-   STEP 1 — getMyTopTracks(timeRange)
-   Pagination: 2 parallel requests (offset 0 + offset 49)
-   → up to 98 unique tracks (Spotify deduplicates on its end,
-     so practical result is 50–98 depending on library size).
-   Duration fallback: 3.5 min if Spotify returns 0/null.
+   getMyTopTracks(timeRange)
+   Spotify /me/top/tracks max = 50 per request.
+   We fetch the full 50 (limit=50, offset=0).
+   The "168 minutes" problem is that this gives
+   us track CATALOG time, not listening time.
+   Real listening time is calculated separately
+   using recently-played play counts below.
 ═══════════════════════════════════════════ */
 async function getMyTopTracks(timeRange) {
-  // Two parallel requests for pagination
-  const [res1, res2] = await Promise.all([
-    spApi(`/me/top/tracks?time_range=${timeRange}&limit=49&offset=0`),
-    spApi(`/me/top/tracks?time_range=${timeRange}&limit=49&offset=49`),
-  ]);
-
-  const raw = [...(res1?.items||[]), ...(res2?.items||[])];
-
-  // Deduplicate by track ID (in case of overlap at the boundary)
-  const seen = new Set();
-  const unique = raw.filter(t => { if(!t?.id||seen.has(t.id)) return false; seen.add(t.id); return true; });
-
-  return unique.map(t => ({
+  const res = await spApi(`/me/top/tracks?time_range=${timeRange}&limit=50&offset=0`);
+  const items = res?.items || [];
+  return items.map(t => ({
     id:         t.id,
     name:       t.name||'Unknown Track',
-    // Safe duration: must be a positive number
     durationMs: (typeof t.duration_ms==='number' && t.duration_ms>0) ? t.duration_ms : 210000,
     albumName:  t.album?.name||'',
     albumArt:   t.album?.images?.[1]?.url||t.album?.images?.[0]?.url||'',
     albumArtSm: t.album?.images?.[2]?.url||t.album?.images?.[0]?.url||'',
     artists:    (t.artists||[]).filter(a=>a.id&&a.name).map(a=>({id:a.id,name:a.name})),
   }));
+}
+
+/* ═══════════════════════════════════════════
+   getRecentPlays()
+   Fetch up to 50 recent plays. Used to count
+   how many times each track was actually played,
+   which multiplies into real listening minutes.
+═══════════════════════════════════════════ */
+async function getRecentPlays() {
+  const res = await spApi('/me/player/recently-played?limit=50');
+  return (res?.items||[])
+    .filter(item => item?.track?.type==='track')
+    .map(item => ({
+      trackId:   item.track.id,
+      ms:        (typeof item.track.duration_ms==='number'&&item.track.duration_ms>0) ? item.track.duration_ms : 210000,
+      playedAt:  Date.parse(item.played_at),
+    }));
+}
+
+/* ═══════════════════════════════════════════
+   calcListeningMins(topTracks, recentPlays, range)
+   Combines top-tracks catalog with recent play
+   counts to estimate real listening minutes.
+
+   Logic:
+   1. Count how many times each top track appears
+      in recentPlays → gives a play rate.
+   2. For tracks with no recent plays, use rank
+      position to estimate (top track = ~3 plays,
+      last track = ~1 play).
+   3. Total = sum of (durationMs × estimatedPlays)
+
+   This gives numbers in the hundreds–thousands
+   range rather than a flat catalog sum.
+═══════════════════════════════════════════ */
+function calcListeningMins(topTracks, recentPlays) {
+  // Count recent plays per track ID
+  const playCounts = {};
+  for(const p of recentPlays) {
+    playCounts[p.trackId] = (playCounts[p.trackId]||0) + 1;
+  }
+
+  // Max plays seen in recent history (for scaling)
+  const maxRecentPlays = Math.max(...Object.values(playCounts), 1);
+
+  let totalMs = 0;
+  topTracks.forEach((track, index) => {
+    // Real recent play count for this track
+    const recentCount = playCounts[track.id] || 0;
+
+    // Estimated total plays over the period:
+    // If it appeared in recent 50 plays, scale up by rank.
+    // If not in recent, estimate by rank position (top=3, bottom=1).
+    let estimatedPlays;
+    if(recentCount > 0) {
+      // Scale: if it's played recentCount times in ~days, it's been played
+      // proportionally more over the full period. Use rank to boost.
+      const rankBoost = Math.max(1, (topTracks.length - index) / topTracks.length * 5);
+      estimatedPlays = Math.ceil(recentCount * rankBoost);
+    } else {
+      // Not in recent 50 — estimate by rank position
+      // Rank 1 = 3 plays, Rank 50 = 1 play (linear)
+      estimatedPlays = Math.max(1, Math.ceil(3 - (index / topTracks.length) * 2));
+    }
+
+    totalMs += track.durationMs * estimatedPlays;
+  });
+
+  return Math.round(totalMs / 60000);
 }
 
 /* ═══════════════════════════════════════════
@@ -561,17 +621,18 @@ async function loadTabData(tab) {
   }
 
   // ── Top tracks (month / 6 months / all time) ────────
-  // Parallel: pagination + genres + now-playing
-  const [tracks, topArtistsRes, np] = await Promise.all([
+  // Fetch tracks + recent plays + genres + now-playing all in parallel
+  const [tracks, recentPlays, topArtistsRes, np] = await Promise.all([
     getMyTopTracks(cfg.range),
+    getRecentPlays(),
     spApi(`/me/top/artists?time_range=${cfg.range}&limit=10`),
     spApi('/me/player/currently-playing').catch(()=>null),
   ]);
 
-  const genres=(topArtistsRes?.items||[]).flatMap(a=>a.genres||[]);
-  const artists=buildArtistMap(tracks);
-  const totalMs=tracks.reduce((s,t)=>s+t.durationMs,0);
-  const mins=Math.round(totalMs/60000);
+  const genres  = (topArtistsRes?.items||[]).flatMap(a=>a.genres||[]);
+  const artists = buildArtistMap(tracks);
+  // Play-count-weighted minutes: much more realistic than flat catalog sum
+  const mins    = calcListeningMins(tracks, recentPlays);
 
   return{tracks,artists,mins,np,genres};
 }
@@ -680,8 +741,8 @@ function applyData(tab,data) {
   const disc=$('h-disclaimer');
   if(disc){
     disc.textContent = tab==='week'
-      ? `Based on your recently played tracks \u00B7 Real play counts`
-      : `Based on your Top ${trackCount} tracks \u00B7 Full Wrapped data available in December`;
+      ? 'Based on your recently played tracks \u00B7 Real play counts'
+      : `Estimated from your Top 50 tracks \u00B7 Full Wrapped stats available in December`;
   }
 
   const [ve,vt]=detectVibe(data.genres||[]);
