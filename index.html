@@ -342,8 +342,7 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
    CONFIG
 ═══════════════════════════════════════════ */
 const CLIENT_ID    = '22a39828c40d4acc8e50f21daaf65639';
-// Dynamic REDIRECT_URI — works with any domain or shortened link
-const REDIRECT_URI = window.location.origin + window.location.pathname;
+const REDIRECT_URI = 'https://s10922-netizen.github.io/vibecheck/';
 const SCOPES       = 'user-read-private user-read-email user-top-read user-read-recently-played user-read-currently-playing';
 
 /* ═══════════════════════════════════════════
@@ -430,14 +429,17 @@ function randStr(n=64) {
   return [...a].map(b=>c[b%c.length]).join('');
 }
 async function doLogin() {
-  const v=randStr(), ch=await sha256(v); sessionStorage.setItem('pkce_v',v);
+  const v=randStr(), ch=await sha256(v);
+  localStorage.setItem('pkce_v', v);   // localStorage survives redirects on mobile
+  sessionStorage.setItem('pkce_v', v); // keep sessionStorage as fallback for desktop
   location.href='https://accounts.spotify.com/authorize?'+new URLSearchParams({
     client_id:CLIENT_ID,response_type:'code',redirect_uri:REDIRECT_URI,
     code_challenge_method:'S256',code_challenge:ch,scope:SCOPES,
   });
 }
 async function exchangeCode(code) {
-  const v=sessionStorage.getItem('pkce_v');
+  // Try sessionStorage first (desktop), fall back to localStorage (mobile)
+  const v = sessionStorage.getItem('pkce_v') || localStorage.getItem('pkce_v');
   if(!v) throw new Error('No PKCE verifier — please log in again.');
   const r=await fetch('https://accounts.spotify.com/api/token',{
     method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
@@ -445,8 +447,9 @@ async function exchangeCode(code) {
   });
   if(!r.ok){ const e=await r.json().catch(()=>({})); throw new Error(e.error_description||'Token exchange failed'); }
   const d=await r.json();
-  _token=d.access_token; sessionStorage.setItem('tok',_token);
-  sessionStorage.removeItem('pkce_v'); history.replaceState({},'',location.pathname);
+  _token=d.access_token; sessionStorage.setItem('tok',_token); localStorage.setItem('tok',_token);
+  sessionStorage.removeItem('pkce_v'); localStorage.removeItem('pkce_v');
+  history.replaceState({},'',location.pathname);
 }
 
 /* ═══════════════════════════════════════════
@@ -917,8 +920,8 @@ function fillProfile() {
 /* ═══════════════════════════════════════════
    BOOT
 ═══════════════════════════════════════════ */
-function getTok() { return _token||sessionStorage.getItem('tok')||null; }
-function logout() { sessionStorage.clear(); _token=null; _profData=null; Object.keys(_tabCache).forEach(k=>delete _tabCache[k]); location.href=location.pathname; }
+function getTok() { return _token || sessionStorage.getItem('tok') || localStorage.getItem('tok') || null; }
+function logout() { sessionStorage.clear(); localStorage.removeItem('tok'); localStorage.removeItem('pkce_v'); _token=null; _profData=null; Object.keys(_tabCache).forEach(k=>delete _tabCache[k]); location.href=location.pathname; }
 
 async function boot() {
   const params=new URLSearchParams(location.search);
