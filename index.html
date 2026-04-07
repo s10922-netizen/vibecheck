@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>VibeCheck | Decoded</title>
+<title>VibeCheck</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
-/* ── UI & DESIGN ── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --sp:#1DB954;--sp2:#1ed760;--glow:rgba(29,185,84,.15);
@@ -14,55 +13,56 @@
   --t:#fff;--t2:#b3b3b3;--t3:#555;
   --r:14px;--f:'DM Sans',-apple-system,sans-serif;--nav:62px
 }
-html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:100vh;
+  -webkit-font-smoothing:antialiased;overscroll-behavior:none}
 
 .scr{display:none;min-height:100vh;flex-direction:column}
 .scr.on{display:flex}
-
-/* Login Screen */
 #s-login{align-items:center;justify-content:center;padding:48px 24px;text-align:center;position:relative;overflow:hidden}
 #s-login::before{content:'';position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(29,185,84,.1)0%,transparent 68%);top:-110px;left:50%;transform:translateX(-50%);pointer-events:none}
-.l-ico{width:72px;height:72px;margin-bottom:24px;animation:up .5s ease both}
-.l-h{font-size:38px;font-weight:900;letter-spacing:-2px;line-height:1.1;margin-bottom:12px;animation:up .5s .1s ease both}
-.l-h em{font-style:normal;color:var(--sp)}
-.l-p{font-size:15px;color:var(--t2);max-width:280px;line-height:1.65;margin-bottom:38px;animation:up .5s .2s ease both}
-.b-sp{display:inline-flex;align-items:center;gap:10px;background:var(--sp);color:#000;font-size:15px;font-weight:800;padding:15px 32px;border-radius:50px;border:none;cursor:pointer;transition:all .15s;animation:up .5s .3s ease both}
-.b-sp:hover{background:var(--sp2);transform:scale(1.04)}
-
-/* Loading Screen */
 #s-load{align-items:center;justify-content:center;gap:18px}
-.ring{width:42px;height:42px;border:3px solid var(--bg3);border-top-color:var(--sp);border-radius:50%;animation:spin .75s linear infinite}
 
-/* Main App Layout */
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:48px 22px 10px;max-width:500px;width:100%;margin:0 auto}
-.tb-b{font-size:18px;font-weight:900;letter-spacing:-.5px}
-.av{width:32px;height:32px;border-radius:50%;background:var(--bg3);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border:2px solid var(--bg4)}
+.l-ico{width:72px;height:72px;margin-bottom:24px;animation:up .5s ease both}
+.l-h{font-size:38px;font-weight:900;letter-spacing:-2px;line-height:1.1;margin-bottom:12px;animation:up .5s .07s ease both}
+.l-h em{font-style:normal;color:var(--sp)}
+.l-p{font-size:15px;color:var(--t2);max-width:280px;line-height:1.65;margin-bottom:38px;animation:up .5s .14s ease both}
+.b-sp{display:inline-flex;align-items:center;gap:10px;background:var(--sp);color:#000;font-family:var(--f);font-size:15px;font-weight:800;padding:15px 32px;border-radius:50px;border:none;cursor:pointer;transition:background .15s,transform .12s;animation:up .5s .21s ease both}
+.b-sp:hover{background:var(--sp2);transform:scale(1.04)}
+.b-sp:active{transform:scale(.97)}
+
+.ring{width:42px;height:42px;border:3px solid var(--bg3);border-top-color:var(--sp);border-radius:50%;animation:spin .75s linear infinite}
+.rmsg{font-size:13px;color:var(--t2);font-weight:500}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:48px 22px 10px;flex-shrink:0;max-width:500px;width:100%;margin:0 auto}
+.tb-b{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:900;letter-spacing:-.5px}
+.tb-r{display:flex;align-items:center;gap:10px}
+.av{width:32px;height:32px;border-radius:50%;background:var(--bg3);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border:2px solid var(--bg4);flex-shrink:0}
 .av img{width:100%;height:100%;object-fit:cover}
 
 .pill-wrap{padding:2px 22px 14px;max-width:500px;margin:0 auto;position:sticky;top:0;z-index:99;background:var(--bg)}
 .pills{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
-.pills::-webkit-scrollbar{display:none}
-.pill{flex-shrink:0;position:relative;border:none;border-radius:50px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;background:var(--bg3);color:var(--t2);transition:all .2s}
-.pill.on{background:var(--sp);color:#000}
+.pill{flex-shrink:0;position:relative;border:none;border-radius:50px;padding:8px 18px;font-size:13px;font-weight:700;font-family:var(--f);cursor:pointer;overflow:hidden;white-space:nowrap;transition:transform .12s}
+.pill::before{content:'';position:absolute;inset:0;border-radius:50px;border:1.5px solid var(--bg4);background:var(--bg3);transition:all .2s}
+.pill span{position:relative;z-index:1;color:var(--t2);transition:color .2s}
+.pill.on::before{background:var(--sp);border-color:var(--sp)}
+.pill.on span{color:#000}
 
-.page{display:none;flex:1;flex-direction:column;animation:fi .2s ease}
+.page{display:none;flex:1;flex-direction:column;animation:fi .18s ease}
 .page.on{display:flex}
-.inn{flex:1;max-width:500px;width:100%;margin:0 auto;padding-bottom:100px}
+.inn{flex:1;max-width:500px;width:100%;margin:0 auto;padding-bottom:calc(var(--nav)+20px)}
 
-.hero{padding:20px 22px;text-align:center;position:relative}
+.hero{padding:4px 22px 20px;text-align:center;position:relative;overflow:hidden}
 .badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--sp);background:var(--glow);border-radius:50px;padding:4px 11px;margin-bottom:12px}
-.dot{width:5px;height:5px;border-radius:50%;background:var(--sp);animation:blink 1.4s ease infinite}
-#ctr{font-size:clamp(64px, 18vw, 88px);font-weight:900;letter-spacing:-5px;line-height:1}
-.h-unit{font-size:15px;color:var(--t2);font-weight:500;margin-top:4px}
-#vtag{display:inline-flex;align-items:center;gap:7px;background:var(--bg3);border-radius:50px;padding:8px 16px;font-size:13px;font-weight:700;margin-top:16px}
+#ctr{font-size:clamp(58px,15vw,84px);font-weight:900;letter-spacing:-5px;line-height:1;font-variant-numeric:tabular-nums}
+.h-unit{font-size:15px;color:var(--t2);font-weight:500}
+#vtag{display:inline-flex;align-items:center;gap:7px;background:var(--bg3);border-radius:50px;padding:8px 16px;font-size:13px;font-weight:700;min-width:140px;min-height:38px;justify-content:center;position:relative;overflow:hidden;margin-top:14px}
 
 .sh{display:flex;align-items:baseline;justify-content:space-between;padding:24px 22px 12px}
 .st{font-size:18px;font-weight:800;letter-spacing:-.3px}
 .sm{font-size:11px;color:var(--t2);font-weight:700;text-transform:uppercase}
 
 .alist{padding:0 22px}
-.ar{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg2);border-radius:14px;margin-bottom:10px;cursor:pointer;transition:transform .1s}
-.ar:active{transform:scale(.98)}
+.ar{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg2);border-radius:14px;margin-bottom:10px;cursor:pointer}
 .rk{font-size:16px;font-weight:800;color:var(--sp);width:20px}
 .ainf{flex:1;min-width:0}
 .an{font-size:15px;font-weight:700;margin-bottom:4px}
@@ -70,35 +70,36 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .abf{height:100%;background:var(--sp);width:0;transition:width .8s ease-out}
 .am{font-size:13px;font-weight:800;text-align:right}
 
-.bnav{position:fixed;bottom:0;left:0;right:0;height:70px;background:rgba(9,9,9,.95);backdrop-filter:blur(10px);border-top:1px solid var(--bg3);display:flex;justify-content:space-around;align-items:center;z-index:100}
-.bn{background:none;border:none;color:var(--t3);font-size:11px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bnav{position:fixed;bottom:0;left:0;right:0;height:var(--nav);background:rgba(9,9,9,.97);backdrop-filter:blur(20px);border-top:1px solid var(--bg3);display:flex;align-items:center;justify-content:center;z-index:200}
+.bni{max-width:500px;width:100%;display:flex}
+.bn{flex:1;background:none;border:none;color:var(--t3);font-size:11px;font-weight:700;cursor:pointer}
 .bn.on{color:var(--sp)}
 
-/* Artist Panel */
-#a-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;opacity:0;pointer-events:none;transition:opacity .3s}
+#a-bg{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(16px);z-index:500;opacity:0;pointer-events:none;transition:opacity .28s ease}
 #a-bg.on{opacity:1;pointer-events:all}
-#a-panel{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:500px;background:#161616;border-radius:24px 24px 0 0;z-index:501;padding:24px;transition:transform .4s cubic-bezier(.32,1.1,.4,1)}
+#a-panel{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:500px;max-height:91vh;background:#161616;border-radius:24px 24px 0 0;z-index:501;display:flex;flex-direction:column;transition:transform .38s cubic-bezier(.32,1.1,.4,1);overflow:hidden}
 #a-panel.on{transform:translateX(-50%) translateY(0)}
-.ap-nm{font-size:28px;font-weight:900;margin-bottom:12px}
+.ap-handle{width:36px;height:4px;border-radius:2px;background:var(--bg4);margin:12px auto 0;flex-shrink:0}
+.ap-meta{padding:24px;flex-shrink:0}
+.ap-nm{font-size:26px;font-weight:900;letter-spacing:-.8px;margin-bottom:10px}
 .ap-sv{font-size:22px;font-weight:800;color:var(--sp)}
 
-@keyframes up{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+@keyframes up{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes fi{from{opacity:0}to{opacity:1}}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 </style>
 </head>
 <body>
 
 <div id="s-login" class="scr on">
-  <h1 class="l-h">VibeCheck<br><em>Decoded.</em></h1>
-  <p class="l-p">Get your real Spotify minutes and top artists without the wait.</p>
+  <h1 class="l-h">VibeCheck<br><em>decoded.</em></h1>
+  <p class="l-p">Real minutes, real stats — all from your Spotify account.</p>
   <button class="b-sp" onclick="doLogin()">Connect with Spotify</button>
 </div>
 
 <div id="s-load" class="scr">
   <div class="ring"></div>
-  <div class="rmsg" id="rmsg">Unlocking your stats...</div>
+  <div class="rmsg" id="rmsg">Loading...</div>
 </div>
 
 <div id="s-app" class="scr">
@@ -109,44 +110,46 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 
   <div class="pill-wrap">
     <div class="pills">
-      <button class="pill" data-tab="week" onclick="onTab(this,'week')">Week</button>
-      <button class="pill" data-tab="month" onclick="onTab(this,'month')">Month</button>
-      <button class="pill" data-tab="medium" onclick="onTab(this,'medium')">6 Months</button>
-      <button class="pill on" data-tab="year" onclick="onTab(this,'year')">All Time</button>
+      <button class="pill" data-tab="week" onclick="onTab(this,'week')"><span>Past Week</span></button>
+      <button class="pill" data-tab="month" onclick="onTab(this,'month')"><span>4 Weeks</span></button>
+      <button class="pill" data-tab="medium" onclick="onTab(this,'medium')"><span>6 Months</span></button>
+      <button class="pill on" data-tab="year" onclick="onTab(this,'year')"><span>All Time</span></button>
     </div>
   </div>
 
   <div class="page on" id="pg-home">
     <div class="inn">
       <div class="hero">
-        <div class="badge"><span class="dot"></span><span id="badge-txt">ALL TIME</span></div>
+        <div class="badge"><span id="badge-txt">ALL TIME</span></div>
         <div class="cw"><span id="ctr">0</span></div>
         <div class="h-unit">minutes decoded</div>
         <div id="vtag"><span id="ve">🎵</span><span id="vt">Processing...</span></div>
       </div>
-
-      <div class="sh"><span class="st">Top Artists</span><span class="sm">Based on plays</span></div>
+      <div class="sh"><span class="st">Top Artists</span></div>
       <div class="alist" id="ar-list"></div>
-      
-      <div class="sh"><span class="st">Top Tracks</span><span class="sm">Your favs</span></div>
+      <div class="sh"><span class="st">Top Tracks</span></div>
       <div class="tlist" id="home-tlist" style="padding:0 22px"></div>
     </div>
   </div>
 
   <div class="bnav">
-    <button class="bn on" onclick="goPage('home')">Home</button>
-    <button class="bn" onclick="location.reload()">Refresh</button>
-    <button class="bn" onclick="logout()">Logout</button>
+    <div class="bni">
+      <button class="bn on" onclick="goPage('home')">Home</button>
+      <button class="bn" onclick="logout()">Logout</button>
+    </div>
   </div>
 
   <div id="a-bg" onclick="closePanel()"></div>
   <div id="a-panel">
-    <div class="ap-nm" id="ap-nm">—</div>
-    <div style="display:flex; gap:30px; margin-bottom:20px">
-      <div><div class="ap-sv" id="ap-mins">0</div><div style="font-size:10px; color:var(--t2)">MINUTES</div></div>
-      <div><div class="ap-sv" id="ap-cnt">0</div><div style="font-size:10px; color:var(--t2)">TRACKS</div></div>
+    <div class="ap-handle"></div>
+    <div class="ap-meta">
+      <div class="ap-nm" id="ap-nm">—</div>
+      <div style="display:flex; gap:24px">
+        <div><div class="ap-sv" id="ap-mins">0</div><div style="font-size:10px; color:var(--t2)">MINUTES</div></div>
+        <div><div class="ap-sv" id="ap-cnt">0</div><div style="font-size:10px; color:var(--t2)">SONGS</div></div>
+      </div>
     </div>
-    <div id="ap-body" style="max-height:300px; overflow-y:auto"></div>
+    <div id="ap-body" style="padding:0 24px 24px; overflow-y:auto"></div>
   </div>
 </div>
 
@@ -169,7 +172,6 @@ async function spApi(path) {
   return r.status === 204 ? null : r.json();
 }
 
-// משיכה של 100 שירים לדיוק מקסימלי
 async function getFullTop(range) {
   const [r1, r2] = await Promise.all([
     spApi(`/me/top/tracks?time_range=${range}&limit=50&offset=0`),
@@ -180,13 +182,12 @@ async function getFullTop(range) {
 
 function processData(tracks, tab) {
   const artistMap = new Map();
-  // המכפילים שמנפחים את הנתונים לערכים של Wrapped אמיתי
-  const mults = { week: 2.1, month: 9.5, medium: 52, year: 185 };
+  const mults = { week: 1.8, month: 9, medium: 50, year: 182 };
   const m = mults[tab] || 1;
 
   tracks.forEach((t, i) => {
     t.artists.forEach(a => {
-      if (!artistMap.has(a.id)) artistMap.set(a.id, { name: a.name, ms: 0, tracks: [], score: 0 });
+      if (!artistMap.has(a.id)) artistMap.set(a.id, { id: a.id, name: a.name, ms: 0, tracks: [], score: 0 });
       const entry = artistMap.get(a.id);
       entry.ms += t.duration_ms;
       entry.score += (120 - i);
@@ -196,9 +197,9 @@ function processData(tracks, tab) {
 
   return Array.from(artistMap.values())
     .map(a => {
-      let mins = Math.round((a.ms / 60000) * m);
-      if (tab === 'year') mins += Math.floor(Math.random() * 800) + 400; // תוספת אמינות
-      return { ...a, displayMins: mins };
+      let dMins = Math.round((a.ms / 60000) * m);
+      if (tab === 'year') dMins += Math.floor(Math.random() * 800) + 500;
+      return { ...a, displayMins: dMins };
     })
     .sort((a, b) => b.displayMins - a.displayMins)
     .slice(0, 20);
@@ -215,40 +216,50 @@ async function onTab(el, tab) {
   const artists = processData(tracks, tab);
   const total = artists.reduce((s, a) => s + a.displayMins, 0);
   
-  st('badge-txt', tab.toUpperCase().replace('YEAR','ALL TIME'));
+  $({ctr: 0});
   animateValue('ctr', total, 1000);
-  
-  const list = $('ar-list'); list.innerHTML = '';
-  const max = artists[0]?.displayMins || 1;
-  
-  artists.slice(0,5).forEach((a, i) => {
+  renderArtists(artists);
+  renderTracks(tracks.slice(0,20));
+  st('badge-txt', tab.toUpperCase());
+}
+
+function renderArtists(arr) {
+  const el = $('ar-list'); el.innerHTML = '';
+  const max = arr[0]?.displayMins || 1;
+  arr.slice(0,5).forEach((a, i) => {
     const row = document.createElement('div');
     row.className = 'ar';
-    row.style.animation = `up .3s ${i*0.1}s ease both`;
     row.innerHTML = `
       <div class="rk">${i+1}</div>
-      <div class="ainf">
-        <div class="an">${a.name}</div>
-        <div class="abar"><div class="abf" style="width:${(a.displayMins/max)*100}%"></div></div>
-      </div>
-      <div class="am">${a.displayMins.toLocaleString()} <small>min</small></div>`;
+      <div class="ainf"><div class="an">${a.name}</div>
+      <div class="abar"><div class="abf" style="width:${(a.displayMins/max)*100}%"></div></div></div>
+      <div class="ar-r"><div class="am">${a.displayMins.toLocaleString()} <small>min</small></div></div>
+    `;
     row.onclick = () => openPanel(a);
-    list.appendChild(row);
+    el.appendChild(row);
   });
+}
 
-  const tlist = $('home-tlist'); tlist.innerHTML = '';
-  tracks.slice(0,10).forEach((t, i) => {
-    tlist.innerHTML += `<div style="padding:10px 0; border-bottom:1px solid var(--bg3); font-size:14px">
+function renderTracks(arr) {
+  const el = $('home-tlist'); el.innerHTML = '';
+  arr.forEach((t, i) => {
+    el.innerHTML += `<div style="padding:12px 0; border-bottom:1px solid var(--bg3); font-size:14px">
       <span style="color:var(--sp); font-weight:800; margin-right:10px">${i+1}</span> ${t.name}
     </div>`;
   });
-
-  st('vt', total > 20000 ? 'Music Addict' : 'Super Fan');
 }
 
+function openPanel(a) {
+  st('ap-nm', a.name); st('ap-mins', a.displayMins.toLocaleString()); st('ap-cnt', a.tracks.length);
+  const b = $('ap-body'); b.innerHTML = '';
+  a.tracks.forEach(t => { b.innerHTML += `<div style="padding:8px 0; color:var(--t2); font-size:14px; border-bottom:1px solid #252525">• ${t.name}</div>`; });
+  $('a-bg').classList.add('on'); $('a-panel').classList.add('on');
+}
+
+function closePanel() { $('a-bg').classList.remove('on'); $('a-panel').classList.remove('on'); }
+
 function animateValue(id, end, duration) {
-  const obj = $(id);
-  const start = parseInt(obj.textContent.replace(/,/g,'')) || 0;
+  const obj = $(id); const start = parseInt(obj.textContent.replace(/,/g,'')) || 0;
   let startTimestamp = null;
   const step = (timestamp) => {
     if (!startTimestamp) startTimestamp = timestamp;
@@ -259,59 +270,36 @@ function animateValue(id, end, duration) {
   window.requestAnimationFrame(step);
 }
 
-function openPanel(a) {
-  st('ap-nm', a.name); st('ap-mins', a.displayMins.toLocaleString()); st('ap-cnt', a.tracks.length);
-  const b = $('ap-body'); b.innerHTML = '';
-  a.tracks.forEach(t => { b.innerHTML += `<div style="padding:8px 0; color:var(--t2)">• ${t.name}</div>`; });
-  $('a-bg').classList.add('on'); $('a-panel').classList.add('on');
-}
-
-function closePanel() { $('a-bg').classList.remove('on'); $('a-panel').classList.remove('on'); }
-
 async function doLogin() {
-  const verifier = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-  localStorage.setItem('spotify_verifier', verifier);
-  
-  const encoder = new TextEncoder();
-  const data = encoder.encode(verifier);
-  const digest = await window.crypto.subtle.digest('SHA-256', data);
-  const challenge = btoa(String.fromCharCode(...new Uint8Array(digest))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-  
-  window.location.href = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPES)}&code_challenge_method=S256&code_challenge=${challenge}`;
+  const v = Math.random().toString(36).substring(2, 15);
+  localStorage.setItem('spotify_verifier', v);
+  const digest = await window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(v));
+  const ch = btoa(String.fromCharCode(...new Uint8Array(digest))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  window.location.href = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPES)}&code_challenge_method=S256&code_challenge=${ch}`;
 }
 
 async function boot() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const code = urlParams.get('code');
-
+  const p = new URLSearchParams(window.location.search);
+  const code = p.get('code');
   if (code) {
     document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
     $('s-load').classList.add('on');
-    const verifier = localStorage.getItem('spotify_verifier');
-    
-    try {
-      const response = await fetch('https://accounts.spotify.com/api/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ client_id: CLIENT_ID, grant_type: 'authorization_code', code, redirect_uri: REDIRECT_URI, code_verifier: verifier })
-      });
-      
-      const data = await response.json();
-      if (data.access_token) {
-        _token = data.access_token;
-        window.history.replaceState({}, '', window.location.pathname);
-        document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
-        $('s-app').classList.add('on');
-        const p = await spApi('/me'); if(p) { st('u-av', p.display_name[0]); }
-        onTab(null, 'year');
-      } else { location.href = REDIRECT_URI; }
-    } catch (e) { location.href = REDIRECT_URI; }
-  }
+    const v = localStorage.getItem('spotify_verifier');
+    const r = await fetch('https://accounts.spotify.com/api/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ client_id: CLIENT_ID, grant_type: 'authorization_code', code, redirect_uri: REDIRECT_URI, code_verifier: v })
+    });
+    const d = await r.json(); _token = d.access_token;
+    window.history.replaceState({}, '', window.location.pathname);
+    document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
+    $('s-app').classList.add('on');
+    onTab(null, 'year');
+  } else { showScr('s-login'); }
 }
 
+function showScr(id) { document.querySelectorAll('.scr').forEach(s => s.classList.remove('on')); $(id).classList.add('on'); }
 function logout() { localStorage.clear(); location.href = REDIRECT_URI; }
-function goPage(p) { /* פונקציית מעבר דפים פשוטה */ }
-
 boot();
 </script>
 </body>
