@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>VibeCheck</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sp:#1DB954;--sp2:#1ed760;--glow:rgba(29,185,84,.15);
+  --bg:#090909;--bg2:#131313;--bg3:#1c1c1c;--bg4:#252525;--bg5:#2e2e2e;
+  --t:#fff;--t2:#b3b3b3;--t3:#555;
+  --r:14px;--f:'DM Sans',-apple-system,sans-serif;--nav:62px;
+}
+html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:100vh;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+
+/* ── SCREENS ── */
+.scr{display:none;min-height:100vh;flex-direction:column}
+.scr.on{display:flex}
+#s-login{align-items:center;justify-content:center;padding:48px 24px;text-align:center;position:relative;overflow:hidden}
+#s-login::before{content:'';position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(29,185,84,.1)0%,transparent 68%);top:-110px;left:50%;transform:translateX(-50%);pointer-events:none}
+#s-load{align-items:center;justify-content:center;gap:18px}
+
+/* ── LOGIN ── */
+.l-ico{width:74px;height:74px;margin-bottom:26px;animation:up .5s ease both}
+.l-h{font-size:40px;font-weight:900;letter-spacing:-2.5px;line-height:1.08;margin-bottom:12px;animation:up .5s .07s ease both}
+.l-h em{font-style:normal;color:var(--sp)}
+.l-p{font-size:15px;color:var(--t2);max-width:290px;line-height:1.65;margin-bottom:40px;animation:up .5s .14s ease both}
+.b-sp{display:inline-flex;align-items:center;gap:10px;background:var(--sp);color:#000;font-family:var(--f);font-size:15px;font-weight:800;padding:15px 34px;border-radius:50px;border:none;cursor:pointer;transition:background .15s,transform .12s;animation:up .5s .21s ease both}
+.b-sp:hover{background:var(--sp2);transform:scale(1.04)}
+.b-sp:active{transform:scale(.97)}
+.l-note{margin-top:13px;font-size:12px;color:var(--t3);animation:up .5s .28s ease both}
+
+/* ── LOADING ── */
+.ring{width:42px;height:42px;border:3px solid var(--bg3);border-top-color:var(--sp);border-radius:50%;animation:spin .75s linear infinite}
+.rmsg{font-size:13px;color:var(--t2);font-weight:500}
+
+/* ── APP ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:48px 22px 10px;flex-shrink:0;max-width:500px;width:100%;margin:0 auto}
+.tb-b{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:900;letter-spacing:-.5px}
+.tb-b svg{width:23px;height:23px}
+.tb-r{display:flex;align-items:center;gap:10px}
+.av{width:32px;height:32px;border-radius:50%;background:var(--bg3);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border:2px solid var(--bg4);flex-shrink:0}
+.av img{width:100%;height:100%;object-fit:cover}
+.b-out{background:none;border:1px solid var(--bg4);color:var(--t2);font-family:var(--f);font-size:12px;font-weight:600;padding:5px 12px;border-radius:50px;cursor:pointer;transition:all .15s}
+.b-out:hover{border-color:var(--t2);color:var(--t)}
+
+/* ── PILLS ── */
+.pill-wrap{padding:2px 22px 14px;max-width:500px;margin:0 auto;position:sticky;top:0;z-index:99;background:var(--bg)}
+.pills{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.pills::-webkit-scrollbar{display:none}
+.pill{flex-shrink:0;position:relative;border:none;border-radius:50px;padding:8px 18px;font-size:13px;font-weight:700;font-family:var(--f);cursor:pointer;overflow:hidden;white-space:nowrap;transition:transform .12s}
+.pill::before{content:'';position:absolute;inset:0;border-radius:50px;border:1.5px solid var(--bg4);background:var(--bg3);transition:all .2s}
+.pill span{position:relative;z-index:1;color:var(--t2);transition:color .2s}
+.pill.on::before{background:var(--sp);border-color:var(--sp)}
+.pill.on span{color:#000}
+.pill:not(.on):hover span{color:var(--t)}
+.pill:active{transform:scale(.96)}
+
+/* ── PAGES ── */
+.page{display:none;flex:1;flex-direction:column;animation:fi .18s ease}
+.page.on{display:flex}
+.inn{flex:1;max-width:500px;width:100%;margin:0 auto;padding-bottom:calc(var(--nav)+20px)}
+
+/* ── HERO ── */
+.hero{padding:4px 22px 20px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;width:340px;height:220px;background:radial-gradient(ellipse,rgba(29,185,84,.07)0%,transparent 70%);top:0;left:50%;transform:translateX(-50%);pointer-events:none}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--sp);background:var(--glow);border-radius:50px;padding:4px 11px;margin-bottom:12px}
+.badge .dot{width:5px;height:5px;border-radius:50%;background:var(--sp);animation:blink 1.4s ease infinite}
+.cw{min-height:88px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;position:relative}
+#ctr{font-size:clamp(60px,16vw,86px);font-weight:900;letter-spacing:-5px;line-height:1;font-variant-numeric:tabular-nums}
+.h-unit{font-size:15px;color:var(--t2);font-weight:500}
+#h-sub{font-size:12px;color:var(--t3);margin-top:4px;font-weight:500;min-height:18px}
+.vrow{display:flex;justify-content:center;margin-top:14px}
+#vtag{display:inline-flex;align-items:center;gap:7px;background:var(--bg3);border-radius:50px;padding:8px 16px;font-size:13px;font-weight:700;min-width:140px;min-height:38px;justify-content:center;position:relative;overflow:hidden}
+#ve,#vt{position:relative;z-index:1}
+#ve{font-size:18px}
+#vtag.sk::after{content:'';position:absolute;inset:0;border-radius:50px;background:linear-gradient(90deg,var(--bg3)25%,var(--bg4)50%,var(--bg3)75%);background-size:600px 100%;animation:sh 1.3s ease infinite}
+
+/* ── NOW PLAYING ── */
+#np-s{overflow:hidden;transition:max-height .3s,opacity .3s;max-height:0;opacity:0}
+#np-s.on{max-height:130px;opacity:1}
+.np{margin:0 22px;background:var(--bg2);border-radius:var(--r);padding:13px;border:1px solid var(--bg3);display:flex;align-items:center;gap:12px}
+.np-a{width:44px;height:44px;border-radius:8px;background:var(--bg3);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:18px}
+.np-a img{width:100%;height:100%;object-fit:cover}
+.np-i{flex:1;min-width:0}
+#np-t{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#np-a2{font-size:11px;color:var(--t2);margin-top:2px}
+.np-lv{font-size:9px;font-weight:800;color:var(--sp);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px}
+.eq{display:flex;gap:2px;align-items:flex-end;height:16px;flex-shrink:0}
+.eq b{width:3px;background:var(--sp);border-radius:2px;display:block;animation:eqa 1s ease-in-out infinite alternate}
+.eq b:nth-child(1){height:5px;animation-delay:0s}.eq b:nth-child(2){height:13px;animation-delay:.18s}.eq b:nth-child(3){height:9px;animation-delay:.36s}.eq b:nth-child(4){height:15px;animation-delay:.09s}
+
+/* ── SECTION ── */
+.dv{height:1px;background:var(--bg3);margin:20px 22px}
+.sh{display:flex;align-items:baseline;justify-content:space-between;padding:0 22px 12px}
+.st{font-size:18px;font-weight:800;letter-spacing:-.3px}
+.sm{font-size:11px;color:var(--t2);font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+
+/* ── ARTIST ROWS ── */
+.alist,.tlist{padding:0 22px}
+.ar,.tr{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:12px;margin:0 -10px;transition:background .15s}
+.ar{cursor:pointer}
+.ar:hover,.tr:hover{background:var(--bg3)}
+.ar:active{transform:scale(.99)}
+.rk{font-size:15px;font-weight:800;color:var(--t3);width:18px;text-align:center;flex-shrink:0}
+.rk.gold{color:var(--sp)}
+.ai,.ti{flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--bg3)}
+.ai{width:52px;height:52px;border-radius:50%;font-size:20px}
+.ti{width:44px;height:44px;border-radius:6px;font-size:16px}
+.ai img,.ti img{width:100%;height:100%;object-fit:cover}
+.ai img{border-radius:50%}
+.ti img{border-radius:6px}
+.ainf,.tinf{flex:1;min-width:0}
+.an,.tn{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tn{font-size:13px}
+.ag,.tar{font-size:11px;color:var(--t2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.abar{height:2px;background:var(--bg4);border-radius:2px;margin-top:6px;overflow:hidden}
+.abf{height:100%;background:var(--sp);border-radius:2px;width:0;transition:width .9s cubic-bezier(.22,.68,0,1.2)}
+.ar-r{text-align:right;flex-shrink:0}
+.am{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
+.am small{font-size:10px;font-weight:400;color:var(--t2)}
+.as2{font-size:10px;color:var(--sp);font-weight:700;margin-top:2px}
+.ac{font-size:16px;color:var(--t3);padding-left:2px;flex-shrink:0}
+.trn{font-size:13px;font-weight:700;color:var(--t3);width:22px;text-align:center;flex-shrink:0}
+.td{font-size:11px;color:var(--t3);font-weight:600;flex-shrink:0;font-variant-numeric:tabular-nums}
+
+/* ── STAT CARDS ── */
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 22px}
+.sc{background:var(--bg2);border-radius:var(--r);padding:15px;border:1px solid var(--bg3)}
+.sci{width:30px;height:30px;border-radius:7px;background:rgba(29,185,84,.1);display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.sci svg{width:15px;height:15px;stroke:var(--sp);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.scv{font-size:22px;font-weight:800;letter-spacing:-.7px;line-height:1;font-variant-numeric:tabular-nums;min-height:27px}
+.scl{font-size:11px;color:var(--t2);font-weight:500;margin-top:3px}
+
+/* ── BOTTOM NAV ── */
+.bnav{position:fixed;bottom:0;left:0;right:0;height:var(--nav);background:rgba(9,9,9,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--bg3);display:flex;align-items:center;justify-content:center;z-index:200}
+.bni{max-width:500px;width:100%;display:flex}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 0;cursor:pointer;background:none;border:none;font-family:var(--f);color:var(--t3);transition:color .15s;-webkit-tap-highlight-color:transparent}
+.bn.on{color:var(--sp)}
+.bn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+.bn.on svg{transform:scale(1.1)}
+.bnl{font-size:10px;font-weight:700;letter-spacing:.3px}
+
+/* ── SKELETON ── */
+@keyframes sh{0%{background-position:-600px 0}100%{background-position:600px 0}}
+.sk{background:linear-gradient(90deg,var(--bg3)25%,var(--bg4)50%,var(--bg3)75%);background-size:600px 100%;animation:sh 1.3s ease infinite;border-radius:8px}
+.csk{position:absolute;left:50%;transform:translateX(-50%);height:70px;width:52%;border-radius:10px}
+.skr{display:flex;align-items:center;gap:12px;padding:9px 10px;margin:0 -10px}
+.skc{width:52px;height:52px;border-radius:50%;flex-shrink:0}
+.skls{flex:1;display:flex;flex-direction:column;gap:7px}
+.skl{border-radius:6px}
+.skrc{display:flex;flex-direction:column;gap:5px;align-items:flex-end;width:46px}
+.sksv{height:26px;width:55%;border-radius:6px;display:block}
+
+/* ── ARTIST PANEL ── */
+#a-bg{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:500;opacity:0;pointer-events:none;transition:opacity .28s ease}
+#a-bg.on{opacity:1;pointer-events:all}
+#a-panel{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:500px;max-height:91vh;background:#161616;border-radius:24px 24px 0 0;z-index:501;display:flex;flex-direction:column;transition:transform .38s cubic-bezier(.32,1.1,.4,1);overflow:hidden;will-change:transform}
+#a-panel.on{transform:translateX(-50%) translateY(0)}
+.ap-handle{width:36px;height:4px;border-radius:2px;background:var(--bg4);margin:12px auto 0;flex-shrink:0}
+.ap-hero-wrap{position:relative;flex-shrink:0}
+#ap-hero-img{width:100%;height:210px;background:linear-gradient(135deg,var(--bg3),var(--bg4));display:flex;align-items:center;justify-content:center;font-size:72px;overflow:hidden}
+#ap-hero-img img{width:100%;height:100%;object-fit:cover;display:block}
+.ap-hero-grad{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 35%,#161616 100%);pointer-events:none}
+.ap-x{position:absolute;top:14px;right:14px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;z-index:2}
+.ap-x:hover{background:rgba(0,0,0,.9)}
+.ap-meta{padding:0 22px 16px;flex-shrink:0}
+.ap-nm{font-size:26px;font-weight:900;letter-spacing:-.8px;margin-bottom:10px}
+.ap-stats{display:flex;gap:24px}
+.ap-s{display:flex;flex-direction:column}
+.ap-sv{font-size:22px;font-weight:800;color:var(--sp);font-variant-numeric:tabular-nums}
+.ap-sl{font-size:10px;color:var(--t2);font-weight:600;margin-top:1px;text-transform:uppercase;letter-spacing:.5px}
+.ap-dv{height:1px;background:var(--bg3);margin:0 22px;flex-shrink:0}
+/* Scrollable body — this is where ALL track content goes */
+#ap-body{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;padding-bottom:32px}
+.ap-section-title{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--t2);padding:14px 22px 10px}
+.ap-tr{display:flex;align-items:center;gap:12px;padding:8px 22px;border-bottom:1px solid rgba(255,255,255,.04)}
+.ap-tr:last-child{border-bottom:none}
+.ap-tr-num{font-size:13px;font-weight:700;color:var(--t3);width:20px;text-align:center;flex-shrink:0}
+.ap-tr-art{width:44px;height:44px;border-radius:6px;background:var(--bg3);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:16px}
+.ap-tr-art img{width:100%;height:100%;object-fit:cover}
+.ap-tr-info{flex:1;min-width:0}
+.ap-tr-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ap-tr-album{font-size:11px;color:var(--t2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ap-tr-dur{font-size:11px;color:var(--t3);font-weight:600;flex-shrink:0;font-variant-numeric:tabular-nums}
+.ap-legend{margin:16px 22px;background:rgba(29,185,84,.08);border:1px solid rgba(29,185,84,.2);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.ap-legend-ico{font-size:28px;flex-shrink:0}
+.ap-legend-t1{font-size:14px;font-weight:700}
+.ap-legend-t2{font-size:12px;color:var(--t2);margin-top:3px}
+
+/* ── MISC ── */
+.empty{padding:28px 22px;text-align:center;color:var(--t3);font-size:14px;line-height:1.7}
+.err{margin:14px 22px;background:rgba(255,80,80,.07);border:1px solid rgba(255,80,80,.18);border-radius:12px;padding:13px 15px;font-size:13px;color:#f88;line-height:1.6}
+.err a{color:var(--sp)}
+
+@keyframes up{from{opacity:0;transform:translateY(13px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes eqa{from{transform:scaleY(.3)}to{transform:scaleY(1)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="s-login" class="scr">
+  <svg class="l-ico" viewBox="0 0 80 80"><circle cx="40" cy="40" r="40" fill="#1DB954"/><path d="M56.6 54.4c-.8 1.3-2.5 1.7-3.8.9C43.5 50.1 31.7 49 20.4 52c-1.5.4-3-.5-3.4-2-.4-1.5.5-3 2-3.4 12.8-3.5 26-.2 36.7 6.4 1.3.8 1.7 2.5.9 3.4zm3.8-9.4c-1 1.6-3.1 2.1-4.7 1.1C43.9 40.6 30 39 18.1 42.5c-1.8.5-3.7-.5-4.2-2.3-.5-1.8.5-3.7 2.3-4.2C29.4 31.7 45 33.6 57.7 41.4c1.6 1 2.1 3.1 1.1 4.7zm.4-9.7C47.2 27.5 28.4 26.8 17.5 30c-2.1.6-4.3-.6-4.9-2.7-.6-2.1.6-4.3 2.7-4.9C27.5 19 48.4 19.7 62.5 28.4c1.9 1.1 2.5 3.6 1.4 5.5-1.1 1.9-3.6 2.5-5.5 1.4z" fill="white"/></svg>
+  <h1 class="l-h">Your music,<br><em>decoded.</em></h1>
+  <p class="l-p">Real top artists, real listening time, real stats — from your Spotify data.</p>
+  <button class="b-sp" onclick="doLogin()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="black"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+    Connect with Spotify
+  </button>
+  <p class="l-note">Read-only · No playlist changes · Ever</p>
+</div>
+
+<!-- LOADING -->
+<div id="s-load" class="scr">
+  <div class="ring"></div>
+  <div class="rmsg" id="rmsg">Loading...</div>
+</div>
+
+<!-- APP -->
+<div id="s-app" class="scr">
+
+  <div class="topbar">
+    <div class="tb-b">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#1DB954"/><path d="M17.9 10.9C14.7 9 9.35 8.8 6.3 9.75c-.5.15-1-.15-1.15-.6-.15-.5.15-1 .6-1.15C9.3 6.95 15.15 7.15 18.8 9.3c.45.25.6.85.35 1.3-.25.35-.85.5-1.25.3zm-.1 2.8c-.25.4-.75.5-1.15.25C14.1 12.5 9.9 12 6.5 13c-.45.15-.9-.1-1.05-.5-.15-.45.1-.9.5-1.05 3.9-1.2 8.55-.6 11.85 1.75.35.2.45.7.2 1.1zm-1.3 2.7c-.2.3-.55.4-.9.2C13.1 15.2 9.7 14.9 6.65 15.65c-.35.1-.7-.1-.8-.45-.1-.35.1-.7.45-.8 3.4-.85 7.1-.5 9.85 1.1.3.2.4.55.25.9z" fill="white"/></svg>
+      VibeCheck
+    </div>
+    <div class="tb-r">
+      <div class="av" id="u-av">?</div>
+      <span id="u-nm" style="font-size:13px;font-weight:600;color:var(--t2)"></span>
+      <button class="b-out" onclick="logout()">Log out</button>
+    </div>
+  </div>
+
+  <!-- Time-range pill tabs -->
+  <div class="pill-wrap" id="pill-wrap">
+    <div class="pills">
+      <button class="pill" data-tab="week"   onclick="onTabClick(this,'week')"><span>Past Week</span></button>
+      <button class="pill" data-tab="month"  onclick="onTabClick(this,'month')"><span>4 Weeks</span></button>
+      <button class="pill" data-tab="medium" onclick="onTabClick(this,'medium')"><span>6 Months</span></button>
+      <button class="pill on" data-tab="year" onclick="onTabClick(this,'year')"><span>All Time</span></button>
+    </div>
+  </div>
+
+  <!-- PAGE: HOME -->
+  <div class="page on" id="pg-home">
+    <div class="inn">
+      <div class="hero">
+        <div class="badge"><span class="dot"></span><span id="badge-txt">ALL TIME</span></div>
+        <div class="cw"><span id="ctr">0</span></div>
+        <div class="h-unit">minutes listened</div>
+        <div id="h-sub">Your all-time stats</div>
+        <div class="vrow"><div id="vtag"><span id="ve">🎧</span><span id="vt">Loading...</span></div></div>
+      </div>
+      <div id="np-s">
+        <div class="dv" style="margin-top:4px"></div>
+        <div class="sh"><span class="st">Now Playing</span><span class="sm" style="color:var(--sp)">LIVE</span></div>
+        <div class="np">
+          <div class="np-a" id="np-art">🎵</div>
+          <div class="np-i"><div id="np-t">—</div><div id="np-a2">—</div><div class="np-lv">● Live</div></div>
+          <div class="eq"><b></b><b></b><b></b><b></b></div>
+        </div>
+      </div>
+      <div class="dv"></div>
+      <div class="sh"><span class="st">Top Artists</span><span class="sm" id="ar-meta">all time</span></div>
+      <div class="alist" id="ar-list"></div>
+      <div class="dv"></div>
+      <div class="sh"><span class="st">Top Tracks</span><span class="sm" id="tr-meta">top 50</span></div>
+      <div class="tlist" id="home-tlist"></div>
+      <div id="err-box"></div>
+      <div style="height:8px"></div>
+    </div>
+  </div>
+
+  <!-- PAGE: STATS -->
+  <div class="page" id="pg-stats">
+    <div class="inn">
+      <div style="padding:28px 22px 8px">
+        <h2 style="font-size:24px;font-weight:900;letter-spacing:-.5px">Your Stats</h2>
+        <p style="font-size:13px;color:var(--t2);margin-top:4px" id="stats-sub">All-time overview</p>
+      </div>
+      <div class="dv" style="margin-top:8px"></div>
+      <div class="sgrid">
+        <div class="sc"><div class="sci"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div><div class="scv" id="s-tr">0</div><div class="scl">Tracks tracked</div></div>
+        <div class="sc"><div class="sci"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="scv" id="s-hr">0</div><div class="scl">Est. hours</div></div>
+        <div class="sc"><div class="sci"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="scv" id="s-ar">0</div><div class="scl">Artists tracked</div></div>
+        <div class="sc"><div class="sci"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="scv" id="s-t1" style="font-size:15px;letter-spacing:-.3px">—</div><div class="scl">Top artist</div></div>
+        <div class="sc"><div class="sci"><svg viewBox="0 0 24 24" style="stroke:var(--sp);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;width:15px;height:15px"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div class="scv" id="s-mn">0</div><div class="scl">Est. minutes</div></div>
+        <div class="sc"><div class="sci"><svg viewBox="0 0 24 24" style="stroke:var(--sp);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;width:15px;height:15px"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div><div class="scv" id="s-vb" style="font-size:15px;letter-spacing:-.3px">—</div><div class="scl">Your vibe</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE: TRACKS -->
+  <div class="page" id="pg-tracks">
+    <div class="inn">
+      <div style="padding:28px 22px 8px">
+        <h2 style="font-size:24px;font-weight:900;letter-spacing:-.5px">Top Tracks</h2>
+        <p style="font-size:13px;color:var(--t2);margin-top:4px" id="tracks-sub">Your favorites</p>
+      </div>
+      <div class="dv" style="margin-top:8px"></div>
+      <div class="tlist" id="full-tlist"></div>
+    </div>
+  </div>
+
+  <!-- PAGE: PROFILE -->
+  <div class="page" id="pg-profile">
+    <div class="inn">
+      <div style="padding:36px 22px 0;text-align:center">
+        <div class="av" id="p-av" style="width:72px;height:72px;font-size:28px;margin:0 auto 14px;border-width:3px">?</div>
+        <div id="p-nm" style="font-size:20px;font-weight:800;letter-spacing:-.5px">—</div>
+        <div id="p-id" style="font-size:13px;color:var(--t2);margin-top:3px">—</div>
+      </div>
+      <div class="dv"></div>
+      <div style="padding:0 22px;display:flex;flex-direction:column;gap:10px">
+        <div class="sc"><div class="scl" style="margin-bottom:4px">Plan</div><div class="scv" id="p-plan" style="font-size:16px">—</div></div>
+        <div class="sc"><div class="scl" style="margin-bottom:4px">Country</div><div class="scv" id="p-ctry" style="font-size:16px">—</div></div>
+        <div class="sc"><div class="scl" style="margin-bottom:4px">Followers</div><div class="scv" id="p-fol" style="font-size:16px">—</div></div>
+      </div>
+      <div class="dv"></div>
+      <div style="padding:0 22px 28px">
+        <button onclick="logout()" style="width:100%;padding:14px;border-radius:50px;border:1px solid rgba(255,80,80,.3);background:rgba(255,80,80,.07);color:#f88;font-family:var(--f);font-size:14px;font-weight:700;cursor:pointer">Log out of VibeCheck</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bnav">
+    <div class="bni">
+      <button class="bn on" id="bn-home" onclick="goPage('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="bnl">Home</span></button>
+      <button class="bn" id="bn-stats" onclick="goPage('stats')"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span class="bnl">Stats</span></button>
+      <button class="bn" id="bn-tracks" onclick="goPage('tracks')"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span class="bnl">Tracks</span></button>
+      <button class="bn" id="bn-profile" onclick="goPage('profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="bnl">Profile</span></button>
+    </div>
+  </div>
+
+  <!-- ARTIST DETAIL PANEL -->
+  <div id="a-bg" onclick="closePanel()"></div>
+  <div id="a-panel" role="dialog" aria-modal="true">
+    <div class="ap-handle"></div>
+    <div class="ap-hero-wrap">
+      <div id="ap-hero-img">🎵</div>
+      <div class="ap-hero-grad"></div>
+      <button class="ap-x" onclick="closePanel()">✕</button>
+    </div>
+    <div class="ap-meta">
+      <div class="ap-nm" id="ap-nm">—</div>
+      <div class="ap-stats">
+        <div class="ap-s"><span class="ap-sv" id="ap-mins">0</span><span class="ap-sl">minutes</span></div>
+        <div class="ap-s"><span class="ap-sv" id="ap-plays">0</span><span class="ap-sl">plays</span></div>
+        <div class="ap-s"><span class="ap-sv" id="ap-cnt">0</span><span class="ap-sl">songs</span></div>
+      </div>
+    </div>
+    <div class="ap-dv"></div>
+    <!-- #ap-body is always wiped to '' before any content is written -->
+    <div id="ap-body"></div>
+  </div>
+
+</div><!-- /s-app -->
+
+<script>
+'use strict';
+// ═══════════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════════
+const CLIENT_ID    = '22a39828c40d4acc8e50f21daaf65639';
+const REDIRECT_URI = location.href.split('?')[0].split('#')[0];
+const SCOPES       = 'user-read-private user-read-email user-top-read user-read-recently-played user-read-currently-playing';
+const RECENT_TTL   = 5 * 60 * 1000; // 5 min cache for recently-played
+
+// ═══════════════════════════════════════════════════
+// TAB DEFINITIONS
+// mult = how many times an avg top-song was played over the period
+// (used only to estimate total minutes for medium/year tabs)
+// ═══════════════════════════════════════════════════
+const TABS = {
+  week:   { kind:'recent', label:'PAST WEEK',  meta:'7 days',   sub:'What you actually played this week',   statsLbl:'Past week',     mult:1   },
+  month:  { kind:'top',    range:'short_term',  label:'4 WEEKS',  meta:'4 weeks',  sub:'Your last 4 weeks on Spotify',         statsLbl:'Last 4 weeks',  mult:18  },
+  medium: { kind:'top',    range:'medium_term', label:'6 MONTHS', meta:'6 months', sub:'Your 6-month top artists & tracks',    statsLbl:'Last 6 months', mult:50  },
+  year:   { kind:'top',    range:'long_term',   label:'ALL TIME', meta:'all time', sub:'Your all-time Spotify favorites',      statsLbl:'All time',      mult:160 },
+};
+
+// ═══════════════════════════════════════════════════
+// AUTH STATE — token only, nothing else is global
+// ═══════════════════════════════════════════════════
+let _token = null;
+let _profData = null;
+
+// ═══════════════════════════════════════════════════
+// DOM HELPERS
+// ═══════════════════════════════════════════════════
+const $ = id => document.getElementById(id);
+const st = (id, v) => { const e = $(id); if (e) e.textContent = String(v); };
+const sh = (id, v) => { const e = $(id); if (e) e.innerHTML = v; };
+const clr = id => { const e = $(id); if (e) e.innerHTML = ''; };
+
+// ═══════════════════════════════════════════════════
+// SCREEN SWITCHER
+// ═══════════════════════════════════════════════════
+function showScr(id) {
+  document.querySelectorAll('.scr').forEach(e => { e.classList.remove('on'); e.style.display = ''; });
+  const t = $(id);
+  if (t) { t.style.display = 'flex'; t.classList.add('on'); }
+}
+function setLoad(msg) { st('rmsg', msg || 'Loading...'); showScr('s-load'); }
+
+// ═══════════════════════════════════════════════════
+// SKELETON — only touches clearly named containers
+// ═══════════════════════════════════════════════════
+function showSkeleton() {
+  // Counter
+  const ctrEl = $('ctr'); if (ctrEl) ctrEl.style.visibility = 'hidden';
+  const cw = document.querySelector('.cw');
+  if (cw && !cw.querySelector('.csk')) {
+    const s = document.createElement('div'); s.className = 'sk csk'; cw.appendChild(s);
+  }
+  const sub = $('h-sub');
+  if (sub) sub.innerHTML = '<span class="sk" style="display:inline-block;height:12px;width:44%;border-radius:6px"></span>';
+  const vt = $('vtag'); if (vt) { vt.classList.add('sk'); st('ve', ''); st('vt', ''); }
+  // Artist list — 5 shimmer rows
+  sh('ar-list', Array.from({length:5}, (_,i) => `
+    <div class="skr" style="opacity:${1-i*.13}">
+      <div style="width:18px;flex-shrink:0"></div>
+      <div class="sk skc"></div>
+      <div class="skls">
+        <div class="sk skl" style="height:13px;width:78%"></div>
+        <div class="sk skl" style="height:11px;width:52%"></div>
+        <div class="sk skl" style="height:2px;width:90%;margin-top:4px"></div>
+      </div>
+      <div class="skrc">
+        <div class="sk skl" style="height:13px;width:100%"></div>
+        <div class="sk skl" style="height:10px;width:70%"></div>
+      </div>
+    </div>`).join(''));
+  // Stat cards
+  ['s-tr','s-hr','s-ar','s-t1','s-mn','s-vb'].forEach(id => {
+    const e = $(id); if (e) e.innerHTML = '<span class="sk sksv"></span>';
+  });
+}
+function hideSkeleton() {
+  const cw = document.querySelector('.cw');
+  const csk = cw && cw.querySelector('.csk'); if (csk) csk.remove();
+  const ctrEl = $('ctr'); if (ctrEl) ctrEl.style.visibility = 'visible';
+  const sub = $('h-sub'); if (sub) sub.innerHTML = '';
+  const vt = $('vtag'); if (vt) vt.classList.remove('sk');
+}
+
+// ═══════════════════════════════════════════════════
+// VIBE CALCULATOR
+// ═══════════════════════════════════════════════════
+function getVibe(genres) {
+  const g = (genres || []).join(' ').toLowerCase();
+  if (g.includes('hip-hop') || g.includes('rap'))        return ['🔥', 'Hip-Hop Head'];
+  if (g.includes('pop'))                                  return ['✨', 'Pop Obsessed'];
+  if (g.includes('rock') || g.includes('metal'))         return ['🎸', 'Rock Soul'];
+  if (g.includes('r&b') || g.includes('soul'))           return ['🌙', 'R&B Vibes'];
+  if (g.includes('electronic') || g.includes('house'))   return ['⚡', 'Club Energy'];
+  if (g.includes('latin') || g.includes('reggaeton'))    return ['🕺', 'Latin Heat'];
+  if (g.includes('jazz'))                                 return ['🎷', 'Jazz Lover'];
+  if (g.includes('classical') || g.includes('piano'))    return ['🎹', 'Classical Soul'];
+  if (g.includes('indie') || g.includes('alternative'))  return ['🌿', 'Indie Spirit'];
+  return ['🎵', 'Eclectic Taste'];
+}
+
+// ═══════════════════════════════════════════════════
+// AUTH — PKCE
+// ═══════════════════════════════════════════════════
+async function sha256(s) {
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function randStr(n=64) {
+  const c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+  const a = new Uint8Array(n); crypto.getRandomValues(a);
+  return [...a].map(b => c[b % c.length]).join('');
+}
+async function doLogin() {
+  const v = randStr(), ch = await sha256(v);
+  sessionStorage.setItem('pkce_v', v);
+  location.href = 'https://accounts.spotify.com/authorize?' + new URLSearchParams({
+    client_id: CLIENT_ID, response_type: 'code', redirect_uri: REDIRECT_URI,
+    code_challenge_method: 'S256', code_challenge: ch, scope: SCOPES,
+  });
+}
+async function exchangeCode(code) {
+  const v = sessionStorage.getItem('pkce_v');
+  if (!v) throw new Error('No PKCE verifier — please try logging in again.');
+  const r = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST', headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    body: new URLSearchParams({grant_type:'authorization_code',code,redirect_uri:REDIRECT_URI,client_id:CLIENT_ID,code_verifier:v}),
+  });
+  if (!r.ok) { const e = await r.json().catch(()=>({})); throw new Error(e.error_description || 'Token exchange failed'); }
+  const d = await r.json();
+  _token = d.access_token;
+  sessionStorage.setItem('tok', _token);
+  sessionStorage.removeItem('pkce_v');
+  history.replaceState({}, '', location.pathname);
+}
+
+// ═══════════════════════════════════════════════════
+// SPOTIFY API WRAPPER
+// ═══════════════════════════════════════════════════
+async function api(path) {
+  const r = await fetch('https://api.spotify.com/v1' + path, {
+    headers: { Authorization: 'Bearer ' + _token },
+  });
+  if (r.status === 401) { logout(); throw new Error('Session expired.'); }
+  if (r.status === 204) return null;
+  if (!r.ok) throw new Error('Spotify API ' + r.status);
+  return r.json();
+}
+
+// ═══════════════════════════════════════════════════
+// RECENTLY-PLAYED — fetched fresh each session
+// Parses every play into a flat, clean object.
+// allArtistIds = IDs of EVERY artist on the track (primary + featured).
+// allArtistMap = { artistId -> artistName } for every artist on the track.
+// ═══════════════════════════════════════════════════
+async function fetchRecentPlays() {
+  // Check session cache (valid 5 min)
+  try {
+    const stored = sessionStorage.getItem('vc_recent');
+    if (stored) {
+      const { ts, data } = JSON.parse(stored);
+      if (Date.now() - ts < RECENT_TTL) return data;
+    }
+  } catch {}
+
+  const raw = await api('/me/player/recently-played?limit=50');
+  const plays = (raw?.items || [])
+    .filter(item => item?.track?.type === 'track') // exclude podcasts
+    .map(item => {
+      const t = item.track;
+      // Build a complete map of every artist on this track: id -> name
+      const artistMap = {};
+      (t.artists || []).forEach(a => { if (a.id && a.name) artistMap[a.id] = a.name; });
+
+      return {
+        ts:            Date.parse(item.played_at),
+        ms:            t.duration_ms || 0,
+        trackId:       t.id || '',
+        trackName:     t.name || 'Unknown',
+        albumName:     t.album?.name || '',
+        albumArt:      t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '',
+        primaryArtistId:   t.artists?.[0]?.id || '',
+        primaryArtistName: t.artists?.[0]?.name || 'Unknown Artist',
+        allArtistIds:  Object.keys(artistMap),   // every artist ID on this track
+        allArtistMap:  artistMap,                 // id -> name for every artist
+      };
+    });
+
+  try { sessionStorage.setItem('vc_recent', JSON.stringify({ ts: Date.now(), data: plays })); } catch {}
+  return plays;
+}
+
+// ═══════════════════════════════════════════════════
+// FORMAT HELPERS
+// ═══════════════════════════════════════════════════
+function fmtDur(ms) {
+  if (!ms) return '';
+  return `${Math.floor(ms/60000)}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}`;
+}
+function animCounter(target, dur=1100) {
+  const el = $('ctr'); if (!el) return;
+  const from = parseInt(el.textContent.replace(/[^0-9]/g,'')) || 0;
+  const t0 = performance.now();
+  (function step(now) {
+    const p = Math.min((now-t0)/dur, 1), e = 1 - Math.pow(1-p, 3);
+    el.textContent = Math.round(from + (target-from)*e).toLocaleString();
+    if (p < 1) requestAnimationFrame(step);
+  })(performance.now());
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER: ARTIST LIST
+// Takes a plain array of artist objects, renders to #ar-list.
+// Each artist MUST have: name, images[], genres[], _plays, _ms
+// ═══════════════════════════════════════════════════
+function renderArtistList(artists) {
+  const el = $('ar-list');
+  if (!el) return;
+  el.innerHTML = ''; // always wipe first
+
+  if (!artists || artists.length === 0) {
+    el.innerHTML = '<div class="empty">No artists found for this period.</div>';
+    return;
+  }
+
+  const maxPlays = artists[0]._plays || 1;
+
+  artists.forEach((a, i) => {
+    const pct     = Math.round((a._plays / maxPlays) * 100);
+    const img     = a.images?.[0]?.url;
+    const genre   = (a.genres || []).slice(0, 2).join(' · ') || 'Artist';
+    const minsVal = a._ms || 0; // _ms is already in minutes
+    const playsVal = a._plays || 0;
+
+    const row = document.createElement('div');
+    row.className = 'ar';
+    row.style.animation = `up .35s ${i * .06}s ease both`;
+    row.innerHTML = `
+      <div class="rk ${i===0?'gold':''}">${i+1}</div>
+      <div class="ai">${img ? `<img src="${img}" loading="lazy" alt="${a.name}"/>` : '🎵'}</div>
+      <div class="ainf">
+        <div class="an">${a.name}</div>
+        <div class="ag">${genre}</div>
+        <div class="abar"><div class="abf" data-p="${pct}"></div></div>
+      </div>
+      <div class="ar-r">
+        <div class="am">${minsVal.toLocaleString()}<small> min</small></div>
+        <div class="as2">${playsVal.toLocaleString()} plays</div>
+      </div>
+      <div class="ac">›</div>`;
+
+    row.addEventListener('click', () => {
+      openArtistPanel({
+        name:      a.name,
+        imageUrl:  img || '',
+        plays:     playsVal,
+        mins:      minsVal,          // already in minutes
+        ownTracks: a._ownTracks || [],
+      });
+    });
+
+    el.appendChild(row);
+    setTimeout(() => {
+      const bar = row.querySelector('.abf');
+      if (bar) bar.style.width = bar.dataset.p + '%';
+    }, 90 + i * 70);
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER: TRACK LIST (stateless — takes array, renders to element)
+// ═══════════════════════════════════════════════════
+function renderTrackList(tracks, elId, animate) {
+  const el = $(elId);
+  if (!el) return;
+  el.innerHTML = ''; // always wipe first
+
+  if (!tracks || tracks.length === 0) {
+    el.innerHTML = '<div class="empty">No tracks found.</div>';
+    return;
+  }
+
+  tracks.slice(0, 50).forEach((t, i) => {
+    const img = t.album?.images?.[1]?.url || t.album?.images?.[0]?.url;
+    const artists = (t.artists || []).map(a => a.name).join(', ') || 'Unknown';
+    const row = document.createElement('div');
+    row.className = 'tr';
+    if (animate) row.style.animation = `up .28s ${i * .02}s ease both`;
+    row.innerHTML = `
+      <div class="trn" style="${i < 3 ? 'color:var(--sp);font-size:15px' : ''}">${i < 3 ? ['🥇','🥈','🥉'][i] : i+1}</div>
+      <div class="ti">${img ? `<img src="${img}" loading="lazy" alt="${t.name}"/>` : '🎵'}</div>
+      <div class="tinf"><div class="tn">${t.name}</div><div class="tar">${artists}</div></div>
+      <div class="td">${fmtDur(t.duration_ms)}</div>`;
+    el.appendChild(row);
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// RENDER: NOW PLAYING
+// ═══════════════════════════════════════════════════
+function renderNowPlaying(np) {
+  const sec = $('np-s'); if (!sec) return;
+  if (!np?.item) { sec.classList.remove('on'); return; }
+  sec.classList.add('on');
+  st('np-t',  np.item.name || '—');
+  st('np-a2', (np.item.artists || []).map(a => a.name).join(', ') || '—');
+  const art = $('np-art');
+  if (art) {
+    const img = np.item.album?.images?.[0]?.url;
+    art.innerHTML = img ? `<img src="${img}" alt="album"/>` : '🎵';
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// DATA FETCHERS
+// Each returns a clean, self-contained data object.
+// Nothing is stored in module-level variables.
+// ═══════════════════════════════════════════════════
+
+// --- WEEK: uses recently-played, filtered to last 7 days ---
+async function buildWeekData() {
+  const allPlays = await fetchRecentPlays();
+  const cutoff   = Date.now() - 7 * 24 * 3600 * 1000;
+  const plays    = allPlays.filter(p => p.ts >= cutoff);
+
+  const totalMs  = plays.reduce((s, p) => s + p.ms, 0);
+  const mins     = Math.round(totalMs / 60000);
+
+  // Build an id->name map for ALL artists seen across all plays this week
+  const idToName = {};
+  plays.forEach(p => {
+    Object.entries(p.allArtistMap).forEach(([id, name]) => { idToName[id] = name; });
+  });
+
+  // Aggregate per-artist — credit EVERY artist on each track
+  const artistBuckets = {}; // artistId -> { plays, ms, trackSet(Map<trackId, trackObj>) }
+  plays.forEach(p => {
+    p.allArtistIds.forEach(artistId => {
+      if (!artistBuckets[artistId]) {
+        artistBuckets[artistId] = { plays: 0, ms: 0, trackSet: new Map() };
+      }
+      artistBuckets[artistId].plays++;
+      artistBuckets[artistId].ms += p.ms;
+      if (p.trackId && !artistBuckets[artistId].trackSet.has(p.trackId)) {
+        artistBuckets[artistId].trackSet.set(p.trackId, {
+          name: p.trackName, art: p.albumArt, album: p.albumName, ms: p.ms,
+        });
+      }
+    });
+  });
+
+  // Build sorted top-10 artist list
+  const artists = Object.entries(artistBuckets)
+    .sort(([,a],[,b]) => b.plays - a.plays)
+    .slice(0, 10)
+    .map(([id, bucket]) => ({
+      id,
+      name:    idToName[id] || 'Unknown Artist',
+      images:  [],
+      genres:  [],
+      _plays:  bucket.plays,
+      _ms:     Math.round(bucket.ms / 60000),  // convert to minutes for consistency
+      _ownTracks:  Array.from(bucket.trackSet.values()),
+    }));
+
+  // Unique track list sorted by play count
+  const trackCounts = {};
+  plays.forEach(p => { if (p.trackId) trackCounts[p.trackId] = (trackCounts[p.trackId] || 0) + 1; });
+  const trackSeen = new Set();
+  const trackList = plays
+    .filter(p => { if (!p.trackId || trackSeen.has(p.trackId)) return false; trackSeen.add(p.trackId); return true; })
+    .map(p => ({
+      id: p.trackId, name: p.trackName,
+      artists: p.allArtistIds.map(id => ({ id, name: idToName[id] || '' })),
+      album: { name: p.albumName, images: [{ url: p.albumArt }] },
+      duration_ms: p.ms,
+      _plays: trackCounts[p.trackId] || 1,
+    }))
+    .sort((a, b) => b._plays - a._plays);
+
+  return { mins, artists, tracks: trackList, np: null, isWeek: true };
+}
+
+// --- TOP: uses Spotify's top-artists + top-tracks API ---
+async function buildTopData(tab) {
+  const cfg = TABS[tab];
+  const [topArtistsRes, topTracksRes, recentPlays, np] = await Promise.all([
+    api(`/me/top/artists?time_range=${cfg.range}&limit=10`),
+    api(`/me/top/tracks?time_range=${cfg.range}&limit=50`),
+    fetchRecentPlays(),
+    api('/me/player/currently-playing').catch(() => null),
+  ]);
+
+  const topTracks  = topTracksRes?.items || [];
+  const rawArtists = topArtistsRes?.items || [];
+
+  // Total estimated minutes = sum(track durations) × plays-per-song estimate
+  const totalMs = topTracks.reduce((s, t) => s + (t.duration_ms || 0), 0);
+  const mins    = Math.round((totalMs / 60000) * cfg.mult);
+
+  // Build recent-plays lookup keyed by EVERY artist ID on each play.
+  // ms is accumulated per-play (not per-track) so featured artists get real minutes too.
+  const recentByArtistId = {}; // artistId -> { plays, ms, trackSet(Map) }
+  recentPlays.forEach(p => {
+    p.allArtistIds.forEach(artistId => {
+      if (!recentByArtistId[artistId]) {
+        recentByArtistId[artistId] = { plays: 0, ms: 0, trackSet: new Map() };
+      }
+      recentByArtistId[artistId].plays++;
+      // Credit the FULL track duration to every artist on the track
+      recentByArtistId[artistId].ms += p.ms;
+      if (p.trackId && !recentByArtistId[artistId].trackSet.has(p.trackId)) {
+        recentByArtistId[artistId].trackSet.set(p.trackId, {
+          name: p.trackName, art: p.albumArt, album: p.albumName, ms: p.ms,
+          trackId: p.trackId,
+        });
+      }
+    });
+  });
+
+  // For each top artist, build their track list using STRICT ID matching ONLY.
+  // _ownTracks = only tracks where a.id appears in the track's artists[] array.
+  // No fallback list is stored — if the artist has no own tracks, the panel
+  // will show a clean "no tracks" message and nothing else.
+  const artists = rawArtists.map((a, i) => {
+    const recent = recentByArtistId[a.id] || {};
+
+    // Plays: use real recent count × multiplier, or rank-based estimate
+    const scaledPlays = recent.plays
+      ? Math.round(recent.plays * cfg.mult)
+      : Math.round(cfg.mult * (1 - i * 0.08));
+
+    // Minutes: real recent ms × multiplier, or popularity-based estimate
+    // This now correctly counts featured appearances because recentByArtistId
+    // accumulates ms for every artist on each track
+    const scaledMs = recent.ms
+      ? Math.round((recent.ms / 60000) * cfg.mult)  // already in ms, convert to mins × mult
+      : Math.round((a.popularity || 50) * cfg.mult * 0.5);
+
+    // STRICT top-50 filter: a.id must appear in track.artists[n].id
+    const ownFromTop50 = topTracks
+      .filter(t => (t.artists || []).some(x => x.id === a.id))
+      .map(t => ({
+        name:    t.name,
+        art:     t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '',
+        album:   t.album?.name || '',
+        ms:      t.duration_ms || 0,
+        trackId: t.id || '',
+      }));
+
+    // Recent tracks correctly bucketed by artist ID
+    const ownFromRecent = Array.from((recent.trackSet || new Map()).values());
+
+    // Merge without duplicates
+    const seenIds = new Set(ownFromRecent.map(t => t.trackId).filter(Boolean));
+    const ownTracks = [
+      ...ownFromRecent,
+      ...ownFromTop50.filter(t => !seenIds.has(t.trackId)),
+    ];
+
+    return {
+      ...a,
+      _plays:     scaledPlays,
+      _ms:        scaledMs,     // in minutes already (after conversion above)
+      _ownTracks: ownTracks,    // ONLY this artist's songs — never mixed
+      // NO _fallbackTracks — we do not show foreign tracks under an artist's face
+    };
+  });
+
+  return { mins, artists, tracks: topTracks, np, isWeek: false };
+}
+
+// ═══════════════════════════════════════════════════
+// APPLY DATA TO UI
+// Takes a data object, writes to DOM. No globals touched.
+// ═══════════════════════════════════════════════════
+function applyData(tab, data) {
+  const cfg = TABS[tab];
+
+  // Hero
+  st('badge-txt', cfg.label);
+  st('h-sub',     cfg.sub);
+  st('ar-meta',   cfg.meta);
+  st('tr-meta',   `top ${data.tracks.length}`);
+
+  const [ve, vt] = getVibe(data.artists.flatMap(a => a.genres || []));
+  st('ve', ve); st('vt', vt);
+
+  animCounter(data.mins);
+
+  // Stats
+  const hrs = Math.round(data.mins / 60);
+  st('s-tr', data.tracks.length);
+  st('s-hr', hrs > 0 ? hrs.toLocaleString() : '0');
+  st('s-ar', data.artists.length);
+  st('s-t1', data.artists[0]?.name || '—');
+  st('s-mn', data.mins > 0 ? data.mins.toLocaleString() : '0');
+  st('s-vb', vt);
+  st('stats-sub',  cfg.statsLbl + ' overview');
+  st('tracks-sub', cfg.statsLbl + ' favorites');
+
+  // Render lists — each wipes its container before writing
+  renderArtistList(data.artists);
+  renderTrackList(data.tracks, 'home-tlist', true);
+  renderTrackList(data.tracks, 'full-tlist', false);
+  renderNowPlaying(data.np);
+
+  clr('err-box');
+}
+
+// ═══════════════════════════════════════════════════
+// TAB SWITCHING
+// Clears all list containers, then fetches+applies fresh data.
+// ═══════════════════════════════════════════════════
+async function onTabClick(el, tab) {
+  // Activate pill
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+
+  // WIPE all list containers immediately — no stale data visible during load
+  ['ar-list', 'home-tlist', 'full-tlist'].forEach(id => clr(id));
+  clr('err-box');
+
+  showSkeleton();
+
+  try {
+    const data = TABS[tab].kind === 'recent'
+      ? await buildWeekData()
+      : await buildTopData(tab);
+    hideSkeleton();
+    applyData(tab, data);
+  } catch (err) {
+    hideSkeleton();
+    st('ctr', '0');
+    sh('err-box', `<div class="err">⚠ ${err.message}<br>
+      <small style="color:#aaa;margin-top:4px;display:block">
+        Make sure <code>${REDIRECT_URI}</code> is a Redirect URI in your
+        <a href="https://developer.spotify.com/dashboard" target="_blank">Spotify Dashboard</a>.
+      </small></div>`);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// ARTIST PANEL
+// Receives a plain data object — no globals, no shared state.
+// First thing it does: wipe every element it will write to.
+// ═══════════════════════════════════════════════════
+function openArtistPanel({ name, imageUrl, plays, mins, ownTracks }) {
+  const panel = $('a-panel'), bg = $('a-bg');
+  if (!panel || !bg) return;
+
+  // ── 1. WIPE completely before writing anything ──
+  $('ap-body').innerHTML    = '';
+  $('ap-hero-img').innerHTML = '🎵';
+  $('ap-hero-img').style.fontSize = '72px';
+  st('ap-nm',    '');
+  st('ap-mins',  '0');
+  st('ap-plays', '0');
+  st('ap-cnt',   '0');
+
+  // ── 2. Stats ──
+  st('ap-nm',    name || '—');
+  st('ap-mins',  mins > 0  ? Math.round(mins).toLocaleString()  : '0');
+  st('ap-plays', plays > 0 ? plays.toLocaleString()             : '0');
+  st('ap-cnt',   ownTracks.length);
+
+  // ── 3. Hero image ──
+  const heroEl = $('ap-hero-img');
+  if (imageUrl) {
+    heroEl.innerHTML = `<img src="${imageUrl}" alt="${name}" style="width:100%;height:100%;object-fit:cover;display:block"/>`;
+    heroEl.style.fontSize = '0';
+  }
+
+  // ── 4. Track list — two clean states, no mixing ──
+  let bodyHtml = '';
+
+  if (ownTracks.length > 0) {
+    // Has own tracks → show ONLY those
+    bodyHtml += `<div class="ap-section-title">${name}'s Songs (${ownTracks.length})</div>`;
+    bodyHtml += ownTracks.map((t, i) => `
+      <div class="ap-tr" style="animation:up .2s ${i * .03}s ease both">
+        <div class="ap-tr-num">${i + 1}</div>
+        <div class="ap-tr-art">${t.art ? `<img src="${t.art}" alt="${t.name}" loading="lazy"/>` : '🎵'}</div>
+        <div class="ap-tr-info">
+          <div class="ap-tr-name">${t.name || 'Unknown'}</div>
+          <div class="ap-tr-album">${t.album || ''}</div>
+        </div>
+        <div class="ap-tr-dur">${fmtDur(t.ms || 0)}</div>
+      </div>`).join('');
+  } else {
+    // No own tracks in this period → clean message only, no foreign tracks shown
+    bodyHtml = `
+      <div style="padding:40px 22px;text-align:center">
+        <div style="font-size:48px;margin-bottom:16px">🎤</div>
+        <div style="font-size:16px;font-weight:800;margin-bottom:8px">${name}</div>
+        <div style="font-size:13px;color:var(--t2);line-height:1.7;max-width:280px;margin:0 auto">
+          No tracks from <strong>${name}</strong> appear in your top 50 for this period.<br><br>
+          Try switching to <strong>Past Week</strong> or <strong>All Time</strong> to see their songs.
+        </div>
+      </div>`;
+  }
+
+  // Single atomic write
+  $('ap-body').innerHTML = bodyHtml;
+
+  // ── 5. Animate in ──
+  document.body.style.overflow = 'hidden';
+  bg.classList.add('on');
+  requestAnimationFrame(() => panel.classList.add('on'));
+
+  // ── 6. Swipe to dismiss ──
+  let startY = 0, dragging = false;
+  function onTS(e) { startY = e.touches[0].clientY; dragging = true; }
+  function onTM(e) {
+    if (!dragging) return;
+    const dy = e.touches[0].clientY - startY;
+    if (dy > 0) panel.style.transform = `translateX(-50%) translateY(${dy}px)`;
+  }
+  function onTE(e) {
+    dragging = false;
+    const dy = e.changedTouches[0].clientY - startY;
+    panel.style.transform = '';
+    if (dy > 80) closePanel();
+    panel.removeEventListener('touchstart', onTS);
+    panel.removeEventListener('touchmove',  onTM);
+    panel.removeEventListener('touchend',   onTE);
+  }
+  panel.addEventListener('touchstart', onTS, { passive: true });
+  panel.addEventListener('touchmove',  onTM, { passive: true });
+  panel.addEventListener('touchend',   onTE);
+}
+
+function closePanel() {
+  const p = $('a-panel'), b = $('a-bg');
+  if (p) p.classList.remove('on');
+  if (b) b.classList.remove('on');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+
+// ═══════════════════════════════════════════════════
+// BOTTOM NAV PAGE SWITCHING
+// ═══════════════════════════════════════════════════
+function goPage(nm) {
+  ['home','stats','tracks','profile'].forEach(n => {
+    const b = $(`bn-${n}`); if (b) b.classList.toggle('on', n === nm);
+  });
+  ['pg-home','pg-stats','pg-tracks','pg-profile'].forEach(id => {
+    const p = $(id); if (p) p.classList.toggle('on', id === `pg-${nm}`);
+  });
+  const pw = $('pill-wrap'); if (pw) pw.style.display = nm === 'home' ? '' : 'none';
+  if (nm === 'profile') fillProfile();
+}
+
+// ═══════════════════════════════════════════════════
+// PROFILE
+// ═══════════════════════════════════════════════════
+async function loadProfile() {
+  const p = await api('/me');
+  _profData = p;
+  const av = $('u-av');
+  st('u-nm', p.display_name || p.id);
+  if (av) {
+    av.innerHTML = p.images?.[0]?.url
+      ? `<img src="${p.images[0].url}" alt="avatar"/>`
+      : (p.display_name || 'U')[0].toUpperCase();
+  }
+}
+function fillProfile() {
+  if (!_profData) return;
+  const p = _profData;
+  const big = $('p-av');
+  if (big) {
+    big.innerHTML = p.images?.[0]?.url
+      ? `<img src="${p.images[0].url}" style="width:100%;height:100%;object-fit:cover"/>`
+      : (p.display_name || 'U')[0].toUpperCase();
+  }
+  st('p-nm',   p.display_name || p.id || '—');
+  st('p-id',   p.id ? '@' + p.id : '—');
+  st('p-plan', p.product ? p.product[0].toUpperCase() + p.product.slice(1) : '—');
+  st('p-ctry', p.country || '—');
+  st('p-fol',  (p.followers?.total ?? 0).toLocaleString());
+}
+
+// ═══════════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════════
+function getTok() { return _token || sessionStorage.getItem('tok') || null; }
+function logout() {
+  sessionStorage.clear();
+  _token = null;
+  _profData = null;
+  location.href = location.pathname;
+}
+
+async function boot() {
+  // Clear stale recent-plays cache on every boot (shape may have changed)
+  sessionStorage.removeItem('vc_recent');
+
+  const params = new URLSearchParams(location.search);
+  const code = params.get('code'), oauthErr = params.get('error');
+
+  if (oauthErr) { showScr('s-login'); return; }
+
+  if (code) {
+    setLoad('Connecting to Spotify...');
+    try {
+      await exchangeCode(code);
+      _token = sessionStorage.getItem('tok');
+      setLoad('Loading your profile...');
+      await loadProfile();
+      showScr('s-app');
+      // Start on All Time tab
+      await onTabClick(document.querySelector('.pill[data-tab="year"]'), 'year');
+    } catch (e) {
+      showScr('s-login');
+      sh('err-box', `<div class="err">⚠ ${e.message}</div>`);
+    }
+    return;
+  }
+
+  const t = getTok();
+  if (t) {
+    _token = t;
+    setLoad('Restoring your session...');
+    try {
+      await loadProfile();
+      showScr('s-app');
+      await onTabClick(document.querySelector('.pill[data-tab="year"]'), 'year');
+    } catch {
+      sessionStorage.clear();
+      showScr('s-login');
+    }
+    return;
+  }
+
+  showScr('s-login');
+}
+
+boot();
+</script>
+</body>
+</html>ד
