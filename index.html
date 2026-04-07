@@ -184,6 +184,7 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
     Connect with Spotify
   </button>
   <p class="l-note">Read-only &middot; No playlist changes &middot; Ever</p>
+  <div id="err-box" style="margin-top:16px;max-width:320px"></div>
 </div>
 
 <!-- LOADING -->
@@ -932,26 +933,42 @@ function getTok() { return _token || sessionStorage.getItem('tok') || localStora
 function logout() { sessionStorage.clear(); localStorage.removeItem('tok'); localStorage.removeItem('pkce_v'); _token=null; _profData=null; Object.keys(_tabCache).forEach(k=>delete _tabCache[k]); location.href=location.pathname; }
 
 async function boot() {
-  const params=new URLSearchParams(location.search);
-  const code=params.get('code'), oauthErr=params.get('error');
-  if(oauthErr){ showScr('s-login'); return; }
-  if(code) {
+  const params  = new URLSearchParams(location.search);
+  const code    = params.get('code');
+  const oauthErr= params.get('error');
+
+  if (oauthErr) {
+    showScr('s-login');
+    sh('err-box', `<div class="err">Spotify error: <strong>${oauthErr}</strong><br><small>${params.get('error_description')||''}</small></div>`);
+    return;
+  }
+
+  if (code) {
     setLoad('Connecting to Spotify...');
     try {
-      await exchangeCode(code); _token=sessionStorage.getItem('tok');
+      await exchangeCode(code);
+      _token = sessionStorage.getItem('tok') || localStorage.getItem('tok');
       setLoad('Loading your profile...'); await loadProfile();
       showScr('s-app');
-      await onTab(document.querySelector('.pill[data-tab="year"]'),'year');
-    } catch(e) { showScr('s-login'); sh('err-box',`<div class="err">&#9888; ${e.message}</div>`); }
+      await onTab(document.querySelector('.pill[data-tab="year"]'), 'year');
+    } catch(e) {
+      showScr('s-login');
+      // Show the full error so we can diagnose
+      sh('err-box', `<div class="err">&#9888; ${e.message}<br><small style="color:#aaa;margin-top:4px;display:block">REDIRECT sent: <code>${REDIRECT_URI}</code></small></div>`);
+    }
     return;
   }
-  const t=getTok();
-  if(t) {
-    _token=t; setLoad('Restoring session...');
-    try { await loadProfile(); showScr('s-app'); await onTab(document.querySelector('.pill[data-tab="year"]'),'year'); }
-    catch { sessionStorage.clear(); showScr('s-login'); }
+
+  const t = getTok();
+  if (t) {
+    _token = t; setLoad('Restoring session...');
+    try {
+      await loadProfile(); showScr('s-app');
+      await onTab(document.querySelector('.pill[data-tab="year"]'), 'year');
+    } catch { sessionStorage.clear(); localStorage.removeItem('tok'); showScr('s-login'); }
     return;
   }
+
   showScr('s-login');
 }
 
