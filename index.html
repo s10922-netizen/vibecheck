@@ -342,7 +342,8 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
    CONFIG
 ═══════════════════════════════════════════ */
 const CLIENT_ID    = '22a39828c40d4acc8e50f21daaf65639';
-const REDIRECT_URI = 'https://s10922-netizen.github.io/vibecheck/';
+// Dynamic REDIRECT_URI — works with any domain or shortened link
+const REDIRECT_URI = window.location.origin + window.location.pathname;
 const SCOPES       = 'user-read-private user-read-email user-top-read user-read-recently-played user-read-currently-playing';
 
 /* ═══════════════════════════════════════════
@@ -356,10 +357,11 @@ const TABS = {
 };
 
 /* ═══════════════════════════════════════════
-   STATE — intentionally minimal
+   STATE
 ═══════════════════════════════════════════ */
 let _token    = null;
 let _profData = null;
+const _tabCache = {}; // tab key → data object, so re-visiting a tab is instant
 
 /* ═══════════════════════════════════════════
    DOM HELPERS
@@ -507,12 +509,12 @@ function calcVibePoints(tracks) {
 }
 
 /* ═══════════════════════════════════════════
-   vibeStatus(points) — thresholds for ~20k-30k range
+   vibeStatus(points) — fun titles per score range
 ═══════════════════════════════════════════ */
 function vibeStatus(points) {
-  if (points >= 25000) return '👑 Legendary Listener';
-  if (points >= 18000) return '🔥 Music Obsessed';
-  if (points >= 12000) return '🎧 Vibe Hunter';
+  if (points >= 25000) return '👑 Music Legend';
+  if (points >= 18000) return '🔥 Main Character';
+  if (points >= 12000) return '🎧 Vibe Explorer';
   if (points >= 6000)  return '✨ Rising Star';
   return '🎵 Just Getting Started';
 }
@@ -800,16 +802,25 @@ function applyData(tab,data) {
    Wipes all containers, fetches fresh data,
    applies to DOM. No tab caching.
 ═══════════════════════════════════════════ */
-async function onTab(el,tab) {
-  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('on'));
+async function onTab(el, tab) {
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
   el.classList.add('on');
-  ['ar-list','home-tlist','full-tlist'].forEach(clr);
   clr('err-box');
+
+  // If we have cached data, show it instantly — no skeleton, no wait
+  if (_tabCache[tab]) {
+    applyData(tab, _tabCache[tab]);
+    return;
+  }
+
+  // First visit: fetch fresh data
+  ['ar-list','home-tlist','full-tlist'].forEach(clr);
   showSkeleton();
   try {
-    const data=await loadTabData(tab);
+    const data = await loadTabData(tab);
+    _tabCache[tab] = data;          // store for instant re-visits
     hideSkeleton();
-    applyData(tab,data);
+    applyData(tab, data);
   } catch(err) {
     hideSkeleton(); st('ctr','0');
     sh('err-box',`<div class="err">&#9888; ${err.message}<br><small style="color:#aaa;margin-top:4px;display:block">Make sure <code>${REDIRECT_URI}</code> is listed as a Redirect URI in your <a href="https://developer.spotify.com/dashboard" target="_blank">Spotify Dashboard</a>.</small></div>`);
@@ -907,7 +918,7 @@ function fillProfile() {
    BOOT
 ═══════════════════════════════════════════ */
 function getTok() { return _token||sessionStorage.getItem('tok')||null; }
-function logout() { sessionStorage.clear(); _token=null; _profData=null; location.href=location.pathname; }
+function logout() { sessionStorage.clear(); _token=null; _profData=null; Object.keys(_tabCache).forEach(k=>delete _tabCache[k]); location.href=location.pathname; }
 
 async function boot() {
   const params=new URLSearchParams(location.search);
