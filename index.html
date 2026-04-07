@@ -519,9 +519,10 @@ function vibeStatus(points) {
   if (points >= 50000)  return '✨ Rising Star';
   return '🎵 Just Getting Started';
 }
-   Fetch up to 50 recent plays. Used to count
+
+/* Fetch up to 50 recent plays. Used to count
    how many times each track was actually played,
-   which multiplies into real listening minutes.
+   which replaces into real listening minutes.
 ═══════════════════════════════════════════ */
 async function getRecentPlays() {
   const res = await spApi('/me/player/recently-played?limit=50');
