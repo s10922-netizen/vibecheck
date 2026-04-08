@@ -1089,9 +1089,30 @@ async function loadProfile() {
   const av=$('u-av'); if(av) av.innerHTML=p.images?.[0]?.url?`<img src="${p.images[0].url}"/>`:'U';
 }
 function fillProfile() {
-  if(!_profData) return;
-  st('p-nm',_profData.display_name||_profData.id);
-  st('p-id','@'+_profData.id);
+  if (!_profData) return;
+  const p = _profData;
+  
+  // עדכון התמונה הגדולה
+  const big = $('p-av');
+  if (big) {
+    big.innerHTML = p.images?.[0]?.url 
+      ? `<img src="${p.images[0].url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>` 
+      : (p.display_name || 'U')[0].toUpperCase();
+  }
+
+  // עדכון השם וה-ID
+  st('p-nm', p.display_name || p.id || '—');
+  st('p-id', p.id ? '@' + p.id : '');
+
+  // עדכון הנתונים שכרגע מראים קו (Plan, Country, Followers)
+  const planEl = $('p-plan');
+  if (planEl) planEl.textContent = p.product ? p.product.charAt(0).toUpperCase() + p.product.slice(1) : 'Free';
+  
+  const ctryEl = $('p-ctry');
+  if (ctryEl) ctryEl.textContent = p.country || '—';
+  
+  const folEl = $('p-fol');
+  if (folEl) folEl.textContent = (p.followers?.total ?? 0).toLocaleString();
 }
 
 function logout(){ localStorage.removeItem('tok'); location.href=location.pathname; }
