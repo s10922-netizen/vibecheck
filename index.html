@@ -384,12 +384,28 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
         <div class="lb-live"><span class="dot"></span>LIVE</div>
       </div>
       <div class="dv" style="margin-top:8px"></div>
-      <!-- Save score button -->
+
+      <!-- My Status editor -->
       <div style="padding:0 22px 4px">
-        <button class="lb-save-btn" id="lb-save-btn" onclick="saveMyScore()">&#128190; Save My Score to Leaderboard</button>
-        <div id="lb-save-msg" style="font-size:12px;color:var(--t2);text-align:center;min-height:18px"></div>
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+          <input id="lb-status-input" maxlength="50" placeholder="What are you vibing to? &#127925;"
+            style="flex:1;background:var(--bg3);border:1px solid var(--bg4);border-radius:50px;padding:10px 16px;color:var(--t);font-family:var(--f);font-size:13px;outline:none"/>
+          <button onclick="saveStatus()" style="background:var(--bg3);border:1px solid var(--bg4);color:var(--sp);font-family:var(--f);font-size:13px;font-weight:700;padding:10px 16px;border-radius:50px;cursor:pointer;white-space:nowrap">Set &#10003;</button>
+        </div>
+        <button class="lb-save-btn" id="lb-save-btn" onclick="saveMyScore()">&#128190; Save My Score</button>
+        <div id="lb-save-msg" style="font-size:12px;color:var(--t2);text-align:center;min-height:18px;margin-top:4px"></div>
       </div>
+
+      <!-- Invite button -->
+      <div style="padding:0 22px 4px">
+        <button onclick="inviteFriends()" style="width:100%;padding:12px;border-radius:50px;border:1px solid var(--bg4);background:transparent;color:var(--t2);font-family:var(--f);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+          &#128279; Invite Friends via WhatsApp
+        </button>
+      </div>
+
       <div class="dv"></div>
+      <!-- Nudge toast -->
+      <div id="nudge-toast" style="display:none;position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#1DB954;color:#000;font-weight:800;font-size:14px;padding:12px 24px;border-radius:50px;z-index:9999;animation:up .3s ease both">&#127925; Vibe sent!</div>
       <!-- Live leaderboard list -->
       <div id="lb-list" style="padding-bottom:8px">
         <div class="empty">Loading leaderboard...</div>
@@ -996,7 +1012,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel();});
 
 /* ═══════════════════════════════════════════
    FIREBASE — Realtime Database
-   Database URL: europe-west1 region
 ═══════════════════════════════════════════ */
 const _fbApp = firebase.initializeApp({
   apiKey:      'AIzaSyBZaTbDIyXOtyLPEtJLLbdOw8L4eSmiNqY',
@@ -1004,93 +1019,167 @@ const _fbApp = firebase.initializeApp({
   projectId:   'vibecheck-app-7e557',
 });
 const _db = firebase.database();
+let _lbListener   = null;
+let _nudgeListener = null;
 
-// Active leaderboard listener — stored so we can detach if needed
-let _lbListener = null;
+/* ─── 1. PRESENCE — Last Seen / Online ──────────
+   On load: write online=true + timestamp.
+   On disconnect: Firebase auto-writes online=false.
+─────────────────────────────────────────────── */
+function startPresence(uid) {
+  const presRef = _db.ref('presence/' + uid);
+  presRef.set({ online: true, lastSeen: Date.now() });
+  presRef.onDisconnect().set({ online: false, lastSeen: Date.now() });
+}
 
-/* ═══════════════════════════════════════════
-   saveMyScore()
-   Writes the current user's display name +
-   latest All-Time vibe score to Firebase.
-   Path: /scores/<spotifyUserId>
-   One entry per user — overwrites on re-save.
-═══════════════════════════════════════════ */
+function fmtLastSeen(p) {
+  if (!p) return '';
+  if (p.online) return '<span style="color:var(--sp);font-size:10px;font-weight:800">● ONLINE</span>';
+  const diff = Date.now() - (p.lastSeen || 0);
+  const m = Math.floor(diff / 60000);
+  if (m < 2)  return '<span style="color:var(--t3);font-size:10px">just now</span>';
+  if (m < 60) return `<span style="color:var(--t3);font-size:10px">${m}m ago</span>`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `<span style="color:var(--t3);font-size:10px">${h}h ago</span>`;
+  return `<span style="color:var(--t3);font-size:10px">${Math.floor(h/24)}d ago</span>`;
+}
+
+/* ─── 2. SAVE STATUS ─────────────────────────── */
+async function saveStatus() {
+  if (!_profData) return;
+  const input = $('lb-status-input');
+  const status = (input?.value || '').trim().slice(0, 50);
+  if (!status) return;
+  await _db.ref('scores/' + _profData.id).update({ status });
+  if (input) input.value = '';
+}
+
+/* ─── 3. SAVE SCORE ─────────────────────────── */
 async function saveMyScore() {
-  const btn = $('lb-save-btn');
-  const msg = $('lb-save-msg');
+  const btn = $('lb-save-btn'), msg = $('lb-save-msg');
   if (!_profData) { if(msg) msg.textContent = 'Load your stats first.'; return; }
-
-  // Get the All-Time score from cache
   const yearData = _tabCache['year'];
-  if (!yearData) {
-    if(msg) msg.textContent = 'Please open the All Time tab first to generate your score.';
-    return;
-  }
+  if (!yearData) { if(msg) msg.textContent = 'Open the All Time tab first.'; return; }
 
   const uid   = _profData.id;
   const name  = _profData.display_name || _profData.id;
   const score = yearData.vibePoints || 0;
   const vibe  = vibeStatus(score);
 
-  if(btn){ btn.disabled = true; btn.textContent = 'Saving...'; }
-
+  if(btn){ btn.disabled=true; btn.textContent='Saving...'; }
   try {
-    await _db.ref('scores/' + uid).set({
-      name,
-      score,
-      vibe,
-      updatedAt: Date.now(),
-    });
-    if(msg) msg.textContent = '✅ Score saved! You\'re on the leaderboard.';
-    if(btn){ btn.textContent = '✅ Score Saved'; }
+    await _db.ref('scores/' + uid).update({ name, score, vibe, updatedAt: Date.now() });
+    if(msg) msg.textContent = '✅ Score saved!';
+    if(btn) btn.textContent = '✅ Saved';
+    startPresence(uid); // mark online after saving
   } catch(e) {
-    if(msg) msg.textContent = '❌ Failed to save: ' + e.message;
-    if(btn){ btn.disabled = false; btn.textContent = '💾 Save My Score'; }
+    if(msg) msg.textContent = '❌ ' + e.message;
+    if(btn){ btn.disabled=false; btn.textContent='💾 Save My Score'; }
   }
 }
 
-/* ═══════════════════════════════════════════
-   startLeaderboard()
-   Subscribes to /scores ordered by score desc.
-   Updates the UI in real-time whenever any
-   user saves a new score.
-═══════════════════════════════════════════ */
+/* ─── 4. SEND NUDGE ─────────────────────────── */
+async function sendNudge(toUid, toName) {
+  if (!_profData) return;
+  const fromName = _profData.display_name || _profData.id;
+  await _db.ref('nudges/' + toUid).push({
+    from: fromName, ts: Date.now(),
+  });
+  // Show toast to sender
+  const toast = $('nudge-toast');
+  if (toast) {
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 2500);
+  }
+}
+
+/* ─── 5. LISTEN FOR INCOMING NUDGES ─────────── */
+function listenNudges(uid) {
+  if (_nudgeListener) return;
+  const ref = _db.ref('nudges/' + uid);
+  _nudgeListener = ref.on('child_added', snap => {
+    const d = snap.val();
+    if (!d || (Date.now() - d.ts) > 30000) return; // ignore old nudges
+    ref.child(snap.key).remove(); // consume it
+    const toast = $('nudge-toast');
+    if (toast) {
+      toast.textContent = `✨ ${d.from} sent you a vibe!`;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 3000);
+    }
+  });
+}
+
+/* ─── 6. LEADERBOARD LISTENER ────────────────
+   Fetches scores + presence in parallel (realtime).
+─────────────────────────────────────────────── */
 function startLeaderboard() {
   const el = $('lb-list');
-  if (!el) return;
-  if (_lbListener) return; // already listening
+  if (!el || _lbListener) return;
 
-  const ref = _db.ref('scores').orderByChild('score').limitToLast(25);
+  const scoresRef   = _db.ref('scores').orderByChild('score').limitToLast(25);
+  const presenceRef = _db.ref('presence');
 
-  _lbListener = ref.on('value', snapshot => {
-    const rows = [];
-    snapshot.forEach(child => { rows.push({ uid: child.key, ...child.val() }); });
-    rows.sort((a, b) => b.score - a.score); // highest first
+  let latestScores   = [];
+  let latestPresence = {};
 
-    if (!rows.length) {
+  function render() {
+    if (!latestScores.length) {
       el.innerHTML = '<div class="empty">No scores yet — be the first!</div>';
       return;
     }
-
-    const myUid = _profData?.id;
+    const myUid  = _profData?.id;
     const medals = ['gold','silver','bronze'];
 
-    el.innerHTML = rows.map((r, i) => {
+    el.innerHTML = latestScores.map((r, i) => {
       const isMe = r.uid === myUid;
-      const posClass = medals[i] || '';
+      const p    = latestPresence[r.uid];
+      const nudgeBtn = isMe ? '' :
+        `<button onclick="sendNudge('${r.uid}','${r.name.replace(/'/g,'')}')"
+          style="background:var(--bg3);border:none;border-radius:50px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--sp);cursor:pointer;flex-shrink:0">
+          &#127925;
+        </button>`;
       return `
-        <div class="lb-row ${isMe ? 'me' : ''}">
-          <div class="lb-pos ${posClass}">${i < 3 ? ['🥇','🥈','🥉'][i] : i+1}</div>
+        <div class="lb-row ${isMe?'me':''}">
+          <div class="lb-pos ${medals[i]||''}">${i<3?['🥇','🥈','🥉'][i]:i+1}</div>
           <div class="lb-info">
-            <div class="lb-name">${r.name}${isMe ? ' <span style="color:var(--sp);font-size:10px">YOU</span>' : ''}</div>
-            <div class="lb-meta">${r.vibe || ''}</div>
+            <div class="lb-name" style="display:flex;align-items:center;gap:6px">
+              ${r.name}${isMe?' <span style="color:var(--sp);font-size:10px">YOU</span>':''}
+              ${fmtLastSeen(p)}
+            </div>
+            <div class="lb-meta">${r.status ? '🎵 '+r.status : (r.vibe||'')}</div>
           </div>
-          <div class="lb-score">${Number(r.score).toLocaleString()}</div>
+          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+            <div class="lb-score">${Number(r.score).toLocaleString()}</div>
+            ${nudgeBtn}
+          </div>
         </div>`;
     }).join('');
-  }, err => {
-    el.innerHTML = `<div class="empty">Error loading leaderboard: ${err.message}</div>`;
+  }
+
+  // Listen to scores
+  _lbListener = scoresRef.on('value', snap => {
+    const rows = [];
+    snap.forEach(c => { rows.push({ uid: c.key, ...c.val() }); });
+    latestScores = rows.sort((a,b) => b.score - a.score);
+    render();
   });
+
+  // Listen to presence (updates last-seen in real time)
+  presenceRef.on('value', snap => {
+    latestPresence = snap.val() || {};
+    render();
+  });
+}
+
+/* ─── 7. INVITE FRIENDS via WhatsApp ────────── */
+function inviteFriends() {
+  const myName  = _profData?.display_name || 'I';
+  const score   = (_tabCache['year']?.vibePoints || 0).toLocaleString();
+  const status  = vibeStatus(_tabCache['year']?.vibePoints || 0);
+  const url     = 'https://s10922-netizen.github.io/vibecheck/';
+  const text    = `🎵 ${myName} scored ${score} Vibe Points on VibeCheck!\n${status}\n\nCheck your own music vibe 👉 ${url}`;
+  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
 }
 
 /* ═══════════════════════════════════════════
