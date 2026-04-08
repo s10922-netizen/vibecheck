@@ -1042,7 +1042,7 @@ function showToast(msg) {
 function startLeaderboard() {
   const el=$('lb-list'); if(!el||_lbListener) return;
   // השורה הזו מושכת את 25 האנשים הכי חזקים בדירוג
-  const scoresRef=_db.ref('scores').orderByChild('score').limitToLast(25);
+  const scoresRef=_db.ref('scores').orderByChild('score').limitToLast(500);
   const presenceRef=_db.ref('presence');
   let latestScores=[], latestPresence={};
 
