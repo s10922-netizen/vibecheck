@@ -610,39 +610,29 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 const CLIENT_ID = '22a39828c40d4acc8e50f21daaf65639';
 const REDIRECT_URI = 'https://s10922-netizen.github.io/vibecheck/';
 const SCOPES = 'user-read-private user-read-email user-top-read user-read-recently-played user-read-currently-playing';
-
 const TABS = {
   week: { kind: 'recent', range: null, label: 'PAST WEEK', statsLbl: 'Past week' },
   month: { kind: 'top', range: 'short_term', label: '4 WEEKS', statsLbl: 'Last 4 weeks' },
   medium: { kind: 'top', range: 'medium_term', label: '6 MONTHS', statsLbl: 'Last 6 months' },
   year: { kind: 'top', range: 'long_term', label: 'ALL TIME', statsLbl: 'All time' },
 };
-
 const TAB_MULTIPLIER = { week: 1, month: 4, medium: 12, year: 52 };
 
-let _token = null;
-let _profData = null;
-const _tabCache = {};
-let _lbListener = null;
-let _presenceListener = null;
-let _frListener = null;
-let _frAllScores = [];
-let _frQuery = '';
+let token = null;
+let profile = null;
+const tabCache = {};
+let leaderboardRows = [];
+let leaderboardPresence = {};
+let lbScoreListener = null;
+let lbPresenceListener = null;
+let friendsListener = null;
+let friendsRows = [];
+let friendsQuery = '';
 
 const $ = (id) => document.getElementById(id);
-const st = (id, v) => { const el = $(id); if (el) el.textContent = String(v); };
-const sh = (id, v) => { const el = $(id); if (el) el.innerHTML = v; };
-const clr = (id) => { const el = $(id); if (el) el.innerHTML = ''; };
 
-const _fbApp = firebase.initializeApp({
-  apiKey: 'AIzaSyBZaTbDIyXOtyLPEtJLLbdOw8L4eSmiNqY',
-  databaseURL: 'https://vibecheck-app-7e557-default-rtdb.europe-west1.firebasedatabase.app/',
-  projectId: 'vibecheck-app-7e557',
-});
-const _db = firebase.database();
-
-function escapeHtml(str) {
-  return String(str ?? '')
+function escapeHtml(v) {
+  return String(v ?? '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
@@ -650,52 +640,34 @@ function escapeHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
-function showScr(id) {
-  document.querySelectorAll('.scr').forEach((el) => { el.classList.remove('on'); el.style.display = ''; });
-  const t = $(id);
-  if (t) { t.style.display = 'flex'; t.classList.add('on'); }
+function setText(id, value) {
+  const el = $(id);
+  if (el) el.textContent = String(value);
 }
 
-function setLoad(msg) {
-  st('rmsg', msg || 'Loading...');
-  showScr('s-load');
-}
-
-function showSkeleton() {
-  const cEl = $('ctr');
-  if (cEl) cEl.style.visibility = 'hidden';
-  const cw = document.querySelector('.cw');
-  if (cw && !cw.querySelector('.csk')) {
-    const s = document.createElement('div');
-    s.className = 'sk csk';
-    cw.appendChild(s);
+function showScreen(id) {
+  document.querySelectorAll('.scr').forEach((el) => {
+    el.classList.remove('on');
+    el.style.display = '';
+  });
+  const target = $(id);
+  if (target) {
+    target.style.display = 'flex';
+    target.classList.add('on');
   }
-  const vt = $('vtag');
-  if (vt) { vt.classList.add('sk'); st('ve', ''); st('vt', ''); }
-  sh('ar-list', Array.from({ length: 5 }, (_, i) => `
-    <div class="skr" style="opacity:${1 - i * 0.13}">
-      <div style="width:18px;flex-shrink:0"></div>
-      <div class="sk skc"></div>
-      <div class="skls">
-        <div class="sk skl" style="height:13px;width:78%"></div>
-        <div class="sk skl" style="height:11px;width:52%"></div>
-        <div class="sk skl" style="height:2px;width:90%;margin-top:4px"></div>
-      </div>
-      <div class="skrc">
-        <div class="sk skl" style="height:13px;width:100%"></div>
-        <div class="sk skl" style="height:10px;width:70%"></div>
-      </div>
-    </div>`).join(''));
 }
 
-function hideSkeleton() {
-  const cw = document.querySelector('.cw');
-  const csk = cw && cw.querySelector('.csk');
-  if (csk) csk.remove();
-  const cEl = $('ctr');
-  if (cEl) cEl.style.visibility = 'visible';
-  const vt = $('vtag');
-  if (vt) vt.classList.remove('sk');
+function showLoading(msg) {
+  setText('rmsg', msg || 'Loading...');
+  showScreen('s-load');
+}
+
+function vibeStatus(points) {
+  if (points >= 800000) return '👑 Music Legend';
+  if (points >= 400000) return '🔥 Main Character';
+  if (points >= 150000) return '🎧 Vibe Explorer';
+  if (points >= 30000) return '✨ Rising Star';
+  return '🎵 Just Getting Started';
 }
 
 function detectVibe(genres) {
@@ -712,20 +684,78 @@ function detectVibe(genres) {
   return ['🎵', 'Eclectic Taste'];
 }
 
-function vibeStatus(points) {
-  if (points >= 800000) return '👑 Music Legend';
-  if (points >= 400000) return '🔥 Main Character';
-  if (points >= 150000) return '🎧 Vibe Explorer';
-  if (points >= 30000) return '✨ Rising Star';
-  return '🎵 Just Getting Started';
+function formatMs(ms) {
+  if (!ms) return '';
+  return `${Math.floor(ms / 60000)}:${String(Math.floor((ms % 60000) / 1000)).padStart(2, '0')}`;
 }
 
-async function sha256(s) {
-  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
-  return btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+function animateCounter(target, duration = 1100) {
+  const el = $('ctr');
+  if (!el) return;
+  const start = parseInt(el.textContent.replace(/[^0-9]/g, ''), 10) || 0;
+  const t0 = performance.now();
+  (function frame(now) {
+    const p = Math.min((now - t0) / duration, 1);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(start + (target - start) * eased).toLocaleString();
+    if (p < 1) requestAnimationFrame(frame);
+  })(performance.now());
 }
 
-function randStr(n = 64) {
+function showSkeleton() {
+  const c = $('ctr');
+  if (c) c.style.visibility = 'hidden';
+  const cw = document.querySelector('.cw');
+  if (cw && !cw.querySelector('.csk')) {
+    const s = document.createElement('div');
+    s.className = 'sk csk';
+    cw.appendChild(s);
+  }
+  const vtag = $('vtag');
+  if (vtag) {
+    vtag.classList.add('sk');
+    setText('ve', '');
+    setText('vt', '');
+  }
+  const ar = $('ar-list');
+  if (ar) {
+    ar.innerHTML = Array.from({ length: 5 }, (_, i) => `
+      <div class="skr" style="opacity:${1 - i * 0.13}">
+        <div style="width:18px;flex-shrink:0"></div>
+        <div class="sk skc"></div>
+        <div class="skls">
+          <div class="sk skl" style="height:13px;width:78%"></div>
+          <div class="sk skl" style="height:11px;width:52%"></div>
+          <div class="sk skl" style="height:2px;width:90%;margin-top:4px"></div>
+        </div>
+        <div class="skrc">
+          <div class="sk skl" style="height:13px;width:100%"></div>
+          <div class="sk skl" style="height:10px;width:70%"></div>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+function hideSkeleton() {
+  const cw = document.querySelector('.cw');
+  const csk = cw && cw.querySelector('.csk');
+  if (csk) csk.remove();
+  const c = $('ctr');
+  if (c) c.style.visibility = 'visible';
+  const vtag = $('vtag');
+  if (vtag) vtag.classList.remove('sk');
+}
+
+async function sha256(input) {
+  const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(input));
+  return btoa(String.fromCharCode(...new Uint8Array(hash)))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/g, '');
+}
+
+function randomString(n = 64) {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
   const bytes = new Uint8Array(n);
   crypto.getRandomValues(bytes);
@@ -733,22 +763,23 @@ function randStr(n = 64) {
 }
 
 async function doLogin() {
-  const verifier = randStr();
+  const verifier = randomString();
   const challenge = await sha256(verifier);
   localStorage.setItem('pkce_v', verifier);
-  location.href = 'https://accounts.spotify.com/authorize?' + new URLSearchParams({
+  const params = new URLSearchParams({
     client_id: CLIENT_ID,
     response_type: 'code',
     redirect_uri: REDIRECT_URI,
     code_challenge_method: 'S256',
     code_challenge: challenge,
     scope: SCOPES,
-  }).toString();
+  });
+  location.href = 'https://accounts.spotify.com/authorize?' + params.toString();
 }
 
 async function exchangeCode(code) {
   const verifier = localStorage.getItem('pkce_v');
-  if (!verifier) throw new Error('No PKCE verifier - please log in again.');
+  if (!verifier) throw new Error('No PKCE verifier. Please login again.');
   const r = await fetch('https://accounts.spotify.com/api/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -764,273 +795,164 @@ async function exchangeCode(code) {
     const e = await r.json().catch(() => ({}));
     throw new Error(e.error_description || 'Token exchange failed');
   }
-  const d = await r.json();
-  _token = d.access_token;
-  localStorage.setItem('tok', _token);
+  const data = await r.json();
+  token = data.access_token;
+  localStorage.setItem('tok', token);
   localStorage.removeItem('pkce_v');
   history.replaceState({}, '', location.pathname);
 }
 
-async function spApi(path) {
+async function spotify(path) {
   const r = await fetch('https://api.spotify.com/v1' + path, {
-    headers: { Authorization: 'Bearer ' + _token },
+    headers: { Authorization: 'Bearer ' + token },
   });
-  if (r.status === 401) { logout(); throw new Error('Session expired - please log in again.'); }
+  if (r.status === 401) {
+    logout();
+    throw new Error('Session expired.');
+  }
   if (r.status === 204) return null;
   if (!r.ok) throw new Error('Spotify API ' + r.status);
   return r.json();
 }
 
-async function getMyTopTracks(timeRange) {
-  const [res1, res2] = await Promise.all([
-    spApi(`/me/top/tracks?time_range=${timeRange}&limit=50&offset=0`),
-    spApi(`/me/top/tracks?time_range=${timeRange}&limit=50&offset=50`),
+async function getTopTracks(range) {
+  const [a, b] = await Promise.all([
+    spotify(`/me/top/tracks?time_range=${range}&limit=50&offset=0`),
+    spotify(`/me/top/tracks?time_range=${range}&limit=50&offset=50`),
   ]);
-  const raw = [...(res1?.items || []), ...(res2?.items || [])];
+  const raw = [...(a?.items || []), ...(b?.items || [])];
   const seen = new Set();
   return raw
     .filter((t) => t?.id && !seen.has(t.id) && (seen.add(t.id), true))
     .map((t) => ({
       id: t.id,
-      name: t.name || 'Unknown Track',
-      durationMs: (typeof t.duration_ms === 'number' && t.duration_ms > 0) ? t.duration_ms : 210000,
+      name: t.name || 'Unknown',
+      durationMs: t.duration_ms || 210000,
       albumName: t.album?.name || '',
       albumArt: t.album?.images?.[1]?.url || t.album?.images?.[0]?.url || '',
       albumArtSm: t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '',
       spotifyUrl: t.external_urls?.spotify || '',
-      artists: (t.artists || []).filter((a) => a.id && a.name).map((a) => ({ id: a.id, name: a.name })),
+      artists: (t.artists || []).map((a2) => ({ id: a2.id, name: a2.name })).filter((a2) => a2.id && a2.name),
     }));
 }
 
-function calcVibePoints(tracks, tab) {
-  const total = tracks.length;
-  const raw = tracks.reduce((sum, track, i) => sum + (total - i) * (track.durationMs / 60000), 0);
-  return Math.round(raw * (TAB_MULTIPLIER[tab] || 1));
-}
-
-function buildArtistMap(tracks) {
-  const map = new Map();
+function buildArtistStats(tracks) {
+  const byArtist = new Map();
   tracks.forEach((track) => {
     track.artists.forEach((artist) => {
-      if (!map.has(artist.id)) map.set(artist.id, { id: artist.id, name: artist.name, totalMs: 0, tracks: [] });
-      const e = map.get(artist.id);
-      e.totalMs += track.durationMs;
-      if (!e.tracks.some((t) => t.id === track.id)) e.tracks.push(track);
+      if (!byArtist.has(artist.id)) byArtist.set(artist.id, { id: artist.id, name: artist.name, totalMs: 0, tracks: [] });
+      const row = byArtist.get(artist.id);
+      row.totalMs += track.durationMs;
+      if (!row.tracks.some((x) => x.id === track.id)) row.tracks.push(track);
     });
   });
-  return Array.from(map.values()).sort((a, b) => b.totalMs - a.totalMs).slice(0, 5);
+  return Array.from(byArtist.values()).sort((x, y) => y.totalMs - x.totalMs).slice(0, 5);
+}
+
+function calcPoints(tracks, tab) {
+  const total = tracks.length;
+  const raw = tracks.reduce((sum, t, i) => sum + (total - i) * (t.durationMs / 60000), 0);
+  return Math.round(raw * (TAB_MULTIPLIER[tab] || 1));
 }
 
 async function loadTabData(tab) {
   const cfg = TABS[tab];
   if (cfg.kind === 'recent') {
     const [recentRes, np] = await Promise.all([
-      spApi('/me/player/recently-played?limit=50'),
-      spApi('/me/player/currently-playing').catch(() => null),
+      spotify('/me/player/recently-played?limit=50'),
+      spotify('/me/player/currently-playing').catch(() => null),
     ]);
     const cutoff = Date.now() - 7 * 24 * 3600 * 1000;
-    const allPlays = (recentRes?.items || []).filter((item) =>
-      item?.track?.type === 'track' && Date.parse(item.played_at) >= cutoff);
+    const recent = (recentRes?.items || [])
+      .filter((it) => it?.track?.id && it?.track?.type === 'track' && Date.parse(it.played_at) >= cutoff);
     const seen = new Set();
-    const tracks = allPlays
-      .filter((item) => item?.track?.id && !seen.has(item.track.id) && (seen.add(item.track.id), true))
-      .map((item) => {
-        const t = item.track;
-        return {
-          id: t.id,
-          name: t.name || 'Unknown',
-          durationMs: (typeof t.duration_ms === 'number' && t.duration_ms > 0) ? t.duration_ms : 210000,
-          albumName: t.album?.name || '',
-          albumArt: t.album?.images?.[1]?.url || t.album?.images?.[0]?.url || '',
-          albumArtSm: t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '',
-          spotifyUrl: t.external_urls?.spotify || '',
-          artists: (t.artists || []).filter((a) => a.id && a.name).map((a) => ({ id: a.id, name: a.name })),
-        };
-      });
+    const tracks = recent
+      .filter((it) => !seen.has(it.track.id) && (seen.add(it.track.id), true))
+      .map((it) => ({
+        id: it.track.id,
+        name: it.track.name || 'Unknown',
+        durationMs: it.track.duration_ms || 210000,
+        albumName: it.track.album?.name || '',
+        albumArt: it.track.album?.images?.[1]?.url || it.track.album?.images?.[0]?.url || '',
+        albumArtSm: it.track.album?.images?.[2]?.url || it.track.album?.images?.[0]?.url || '',
+        spotifyUrl: it.track.external_urls?.spotify || '',
+        artists: (it.track.artists || []).map((a) => ({ id: a.id, name: a.name })).filter((a) => a.id && a.name),
+      }));
     return {
       tracks,
-      artists: buildArtistMap(tracks),
-      vibePoints: calcVibePoints(tracks, 'week'),
+      artists: buildArtistStats(tracks),
+      vibePoints: calcPoints(tracks, 'week'),
       np,
       genres: [],
     };
   }
-
-  const [tracks, topArtistsRes, np] = await Promise.all([
-    getMyTopTracks(cfg.range),
-    spApi(`/me/top/artists?time_range=${cfg.range}&limit=10`),
-    spApi('/me/player/currently-playing').catch(() => null),
+  const [tracks, artistsRes, np] = await Promise.all([
+    getTopTracks(cfg.range),
+    spotify(`/me/top/artists?time_range=${cfg.range}&limit=10`),
+    spotify('/me/player/currently-playing').catch(() => null),
   ]);
   return {
     tracks,
-    artists: buildArtistMap(tracks),
-    vibePoints: calcVibePoints(tracks, tab),
+    artists: buildArtistStats(tracks),
+    vibePoints: calcPoints(tracks, tab),
     np,
-    genres: (topArtistsRes?.items || []).flatMap((a) => a.genres || []),
+    genres: (artistsRes?.items || []).flatMap((a) => a.genres || []),
   };
 }
 
-function fmtMs(ms) {
-  if (!ms) return '';
-  return `${Math.floor(ms / 60000)}:${String(Math.floor((ms % 60000) / 1000)).padStart(2, '0')}`;
-}
-
-function animCtr(target, dur = 1100) {
-  const el = $('ctr');
-  if (!el) return;
-  const from = parseInt(el.textContent.replace(/[^0-9]/g, ''), 10) || 0;
-  const t0 = performance.now();
-  (function step(now) {
-    const p = Math.min((now - t0) / dur, 1);
-    const e = 1 - Math.pow(1 - p, 3);
-    el.textContent = Math.round(from + (target - from) * e).toLocaleString();
-    if (p < 1) requestAnimationFrame(step);
-  })(performance.now());
-}
-
-function renderArtists(artists, trackCount) {
-  const el = $('ar-list');
-  if (!el) return;
-  el.innerHTML = '';
-  if (!artists.length) {
-    el.innerHTML = '<div style="padding:20px;color:var(--t3);font-size:14px">No artist data.</div>';
+function renderNowPlaying(np) {
+  const sec = $('np-s');
+  if (!sec) return;
+  if (!np?.item) {
+    sec.classList.remove('on');
     return;
   }
-  const maxMs = artists[0].totalMs || 1;
-  artists.forEach((a, i) => {
-    const dispPts = Math.round(a.totalMs / 60000);
-    const pct = Math.round((a.totalMs / maxMs) * 100);
-    const row = document.createElement('div');
-    row.className = 'ar';
-    row.style.animation = `up .35s ${i * 0.06}s ease both`;
-    row.innerHTML = `
-      <div class="rk ${i === 0 ? 'g' : ''}">${i + 1}</div>
-      <div class="ai">🎵</div>
-      <div class="ainf">
-        <div class="an">${escapeHtml(a.name)}</div>
-        <div class="ag">${a.tracks.length} track${a.tracks.length !== 1 ? 's' : ''} in top ${trackCount}</div>
-        <div class="abar"><div class="abf" data-pct="${pct}"></div></div>
-      </div>
-      <div class="ar-r">
-        <div class="am">${dispPts.toLocaleString()}<small> pts</small></div>
-        <div class="as2">${a.tracks.length} song${a.tracks.length !== 1 ? 's' : ''}</div>
-      </div>
-      <div class="ac">›</div>`;
-    row.addEventListener('click', () => openPanel({ ...a, pts: dispPts }));
-    el.appendChild(row);
-    setTimeout(() => {
-      const b = row.querySelector('.abf');
-      if (b) b.style.width = b.dataset.pct + '%';
-    }, 90 + i * 70);
-  });
+  sec.classList.add('on');
+  setText('np-t', np.item.name || '');
+  setText('np-a2', (np.item.artists || []).map((a) => a.name).join(', ') || '');
+  const art = $('np-art');
+  if (art) {
+    const img = np.item.album?.images?.[0]?.url;
+    art.innerHTML = img ? `<img src="${escapeHtml(img)}" alt=""/>` : '🎵';
+  }
 }
 
 function renderTracks(tracks, elId, animate) {
   const el = $(elId);
   if (!el) return;
-  el.innerHTML = '';
   if (!tracks.length) {
     el.innerHTML = '<div style="padding:20px;color:var(--t3);font-size:14px">No track data.</div>';
     return;
   }
-  tracks.slice(0, 100).forEach((t, i) => {
-    const row = document.createElement('div');
-    row.className = 'tr';
-    if (animate) row.style.animation = `up .28s ${i * 0.02}s ease both`;
-    row.innerHTML = `
+  el.innerHTML = tracks.slice(0, 100).map((t, i) => `
+    <div class="tr" ${animate ? `style="animation:up .28s ${i * 0.02}s ease both"` : ''}>
       <div class="trn" style="${i < 3 ? 'color:var(--sp);font-size:15px' : ''}">${i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</div>
       <div class="ti">${t.albumArt ? `<img src="${escapeHtml(t.albumArt)}" loading="lazy" alt=""/>` : ''}</div>
-      <div class="tinf"><div class="tn">${escapeHtml(t.name)}</div><div class="tar">${escapeHtml(t.artists.map((a) => a.name).join(', ') || 'Unknown')}</div></div>
-      <div class="td">${fmtMs(t.durationMs)}</div>
-      ${t.spotifyUrl ? `<button class="play-btn" onclick="window.open('${escapeHtml(t.spotifyUrl)}','_blank')" title="Open in Spotify"><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9"/></svg></button>` : ''}`;
-    el.appendChild(row);
-  });
-}
-
-function renderNP(np) {
-  const sec = $('np-s');
-  if (!sec) return;
-  if (!np?.item) { sec.classList.remove('on'); return; }
-  sec.classList.add('on');
-  st('np-t', np.item.name || '');
-  st('np-a2', (np.item.artists || []).map((a) => a.name).join(', ') || '');
-  const artEl = $('np-art');
-  if (artEl) {
-    const img = np.item.album?.images?.[0]?.url;
-    artEl.innerHTML = img ? `<img src="${escapeHtml(img)}" alt=""/>` : '🎵';
-  }
-}
-
-function applyData(tab, data) {
-  const cfg = TABS[tab];
-  const trackCount = data.tracks.length;
-  const points = data.vibePoints || 0;
-  st('badge-txt', cfg.label);
-  st('ar-meta', `from top ${trackCount}`);
-  st('tr-meta', `top ${trackCount}`);
-  st('h-disclaimer', vibeStatus(points));
-  const [ve, vt] = detectVibe(data.genres || []);
-  sh('ve', ve);
-  st('vt', vt);
-  animCtr(points);
-  st('s-tr', trackCount);
-  st('s-hr', '—');
-  st('s-ar', data.artists.length);
-  st('s-t1', data.artists[0]?.name || '—');
-  st('s-mn', points.toLocaleString());
-  st('s-vb', vt);
-  st('stats-sub', cfg.statsLbl + ' overview');
-  st('tracks-sub', cfg.statsLbl + ' top tracks');
-  renderArtists(data.artists, trackCount);
-  renderTracks(data.tracks, 'home-tlist', true);
-  renderTracks(data.tracks, 'full-tlist', false);
-  renderNP(data.np);
-  clr('err-box');
-}
-
-async function onTab(el, tab) {
-  document.querySelectorAll('.pill').forEach((p) => p.classList.remove('on'));
-  el.classList.add('on');
-  clr('err-box');
-  if (_tabCache[tab]) { applyData(tab, _tabCache[tab]); return; }
-  ['ar-list', 'home-tlist', 'full-tlist'].forEach(clr);
-  showSkeleton();
-  try {
-    const data = await loadTabData(tab);
-    _tabCache[tab] = data;
-    hideSkeleton();
-    applyData(tab, data);
-  } catch (err) {
-    hideSkeleton();
-    st('ctr', '0');
-    sh('err-box', `<div class="err">⚠️ ${escapeHtml(err.message)}</div>`);
-  }
+      <div class="tinf"><div class="tn">${escapeHtml(t.name)}</div><div class="tar">${escapeHtml(t.artists.map((a) => a.name).join(', '))}</div></div>
+      <div class="td">${formatMs(t.durationMs)}</div>
+      ${t.spotifyUrl ? `<button class="play-btn" onclick="window.open('${escapeHtml(t.spotifyUrl)}','_blank')" title="Open in Spotify"><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9"/></svg></button>` : ''}
+    </div>
+  `).join('');
 }
 
 function openPanel(artist) {
   const panel = $('a-panel');
   const bg = $('a-bg');
   if (!panel || !bg) return;
-  $('ap-body').innerHTML = '';
-  $('ap-hero-img').innerHTML = '🎵';
-  $('ap-hero-img').style.fontSize = '72px';
-  st('ap-nm', artist.name || '');
-  st('ap-mins', artist.pts > 0 ? artist.pts.toLocaleString() : '0');
-  st('ap-cnt', artist.tracks.length);
-  if (artist.tracks.length > 0) {
-    $('ap-body').innerHTML = `<div class="ap-stitle">${escapeHtml(artist.name)}'s Songs (${artist.tracks.length})</div>` +
-      [...artist.tracks]
-        .sort((a, b) => b.durationMs - a.durationMs)
-        .map((t, i) => `
-          <div class="ap-tr" style="animation:up .2s ${i * 0.03}s ease both">
-            <div class="ap-tr-n">${i + 1}</div>
-            <div class="ap-tr-a">${t.albumArtSm ? `<img src="${escapeHtml(t.albumArtSm)}" alt="" loading="lazy"/>` : ''}</div>
-            <div class="ap-tr-i"><div class="ap-tr-nm">${escapeHtml(t.name)}</div><div class="ap-tr-al">${escapeHtml(t.albumName)}</div></div>
-            <div class="ap-tr-d">${fmtMs(t.durationMs)}</div>
-          </div>`).join('');
-  } else {
-    $('ap-body').innerHTML = '<div style="padding:40px 22px;text-align:center;color:var(--t2);font-size:14px;line-height:1.7">No tracks data.</div>';
-  }
+  setText('ap-nm', artist.name || '');
+  setText('ap-mins', (artist.pts || 0).toLocaleString());
+  setText('ap-cnt', artist.tracks.length);
+  $('ap-body').innerHTML = artist.tracks.length
+    ? `<div class="ap-stitle">${escapeHtml(artist.name)}'s Songs (${artist.tracks.length})</div>` +
+      [...artist.tracks].sort((a, b) => b.durationMs - a.durationMs).map((t, i) => `
+        <div class="ap-tr" style="animation:up .2s ${i * 0.03}s ease both">
+          <div class="ap-tr-n">${i + 1}</div>
+          <div class="ap-tr-a">${t.albumArtSm ? `<img src="${escapeHtml(t.albumArtSm)}" alt="" loading="lazy"/>` : ''}</div>
+          <div class="ap-tr-i"><div class="ap-tr-nm">${escapeHtml(t.name)}</div><div class="ap-tr-al">${escapeHtml(t.albumName)}</div></div>
+          <div class="ap-tr-d">${formatMs(t.durationMs)}</div>
+        </div>
+      `).join('')
+    : '<div style="padding:40px 22px;text-align:center;color:var(--t2);font-size:14px;line-height:1.7">No tracks data.</div>';
   document.body.style.overflow = 'hidden';
   bg.classList.add('on');
   requestAnimationFrame(() => panel.classList.add('on'));
@@ -1051,119 +973,290 @@ function closeFvPanel() {
   if (b) b.classList.remove('on');
 }
 
+function renderArtists(artists, trackCount) {
+  const el = $('ar-list');
+  if (!el) return;
+  if (!artists.length) {
+    el.innerHTML = '<div style="padding:20px;color:var(--t3);font-size:14px">No artist data.</div>';
+    return;
+  }
+  const max = artists[0].totalMs || 1;
+  el.innerHTML = '';
+  artists.forEach((a, i) => {
+    const pts = Math.round(a.totalMs / 60000);
+    const pct = Math.round((a.totalMs / max) * 100);
+    const row = document.createElement('div');
+    row.className = 'ar';
+    row.style.animation = `up .35s ${i * 0.06}s ease both`;
+    row.innerHTML = `
+      <div class="rk ${i === 0 ? 'g' : ''}">${i + 1}</div>
+      <div class="ai">🎵</div>
+      <div class="ainf">
+        <div class="an">${escapeHtml(a.name)}</div>
+        <div class="ag">${a.tracks.length} track${a.tracks.length !== 1 ? 's' : ''} in top ${trackCount}</div>
+        <div class="abar"><div class="abf" style="width:0"></div></div>
+      </div>
+      <div class="ar-r">
+        <div class="am">${pts.toLocaleString()}<small> pts</small></div>
+        <div class="as2">${a.tracks.length} song${a.tracks.length !== 1 ? 's' : ''}</div>
+      </div>
+      <div class="ac">›</div>
+    `;
+    row.addEventListener('click', () => openPanel({ name: a.name, pts, tracks: a.tracks }));
+    el.appendChild(row);
+    setTimeout(() => {
+      const bar = row.querySelector('.abf');
+      if (bar) bar.style.width = `${pct}%`;
+    }, 80 + i * 70);
+  });
+}
+
+function applyTab(tab, data) {
+  const cfg = TABS[tab];
+  const points = data.vibePoints || 0;
+  const tracksCount = data.tracks.length;
+  setText('badge-txt', cfg.label);
+  setText('ar-meta', `from top ${tracksCount}`);
+  setText('tr-meta', `top ${tracksCount}`);
+  setText('h-disclaimer', vibeStatus(points));
+  const [ve, vt] = detectVibe(data.genres || []);
+  setText('ve', ve);
+  setText('vt', vt);
+  animateCounter(points);
+  setText('s-tr', tracksCount);
+  setText('s-hr', '—');
+  setText('s-ar', data.artists.length);
+  setText('s-t1', data.artists[0]?.name || '—');
+  setText('s-mn', points.toLocaleString());
+  setText('s-vb', vt);
+  setText('stats-sub', cfg.statsLbl + ' overview');
+  setText('tracks-sub', cfg.statsLbl + ' top tracks');
+  renderArtists(data.artists, tracksCount);
+  renderTracks(data.tracks, 'home-tlist', true);
+  renderTracks(data.tracks, 'full-tlist', false);
+  renderNowPlaying(data.np);
+}
+
+async function onTab(el, tab) {
+  document.querySelectorAll('.pill').forEach((p) => p.classList.remove('on'));
+  if (el) el.classList.add('on');
+  $('err-box').innerHTML = '';
+  if (tabCache[tab]) {
+    applyTab(tab, tabCache[tab]);
+    return;
+  }
+  $('ar-list').innerHTML = '';
+  $('home-tlist').innerHTML = '';
+  $('full-tlist').innerHTML = '';
+  showSkeleton();
+  try {
+    const data = await loadTabData(tab);
+    tabCache[tab] = data;
+    hideSkeleton();
+    applyTab(tab, data);
+  } catch (e) {
+    hideSkeleton();
+    setText('ctr', '0');
+    $('err-box').innerHTML = `<div class="err">⚠️ ${escapeHtml(e.message || 'Failed')}</div>`;
+  }
+}
+
+const fbApp = firebase.initializeApp({
+  apiKey: 'AIzaSyBZaTbDIyXOtyLPEtJLLbdOw8L4eSmiNqY',
+  databaseURL: 'https://vibecheck-app-7e557-default-rtdb.europe-west1.firebasedatabase.app/',
+  projectId: 'vibecheck-app-7e557',
+});
+const db = firebase.database();
+
 function startPresence(uid) {
-  const presRef = _db.ref('presence/' + uid);
-  presRef.set({ online: true, lastSeen: Date.now() });
-  presRef.onDisconnect().set({ online: false, lastSeen: Date.now() });
+  const ref = db.ref('presence/' + uid);
+  ref.set({ online: true, lastSeen: Date.now() });
+  ref.onDisconnect().set({ online: false, lastSeen: Date.now() });
+}
+
+function renderLeaderboard() {
+  const el = $('lb-list');
+  if (!el) return;
+  if (!leaderboardRows.length) {
+    el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--t3)">No scores yet.</div>';
+    return;
+  }
+  const myUid = profile?.id;
+  const medals = ['gold', 'silver', 'bronze'];
+  const allSorted = [...leaderboardRows].sort((a, b) => (b.score || 0) - (a.score || 0));
+  const top25 = allSorted.slice(0, 25);
+  const myIndex = myUid ? allSorted.findIndex((r) => r.uid === myUid) : -1;
+  const myRow = myIndex >= 0 ? allSorted[myIndex] : null;
+  const inTop25 = myUid ? top25.some((r) => r.uid === myUid) : false;
+
+  const renderRow = (r, idx) => {
+    const isMe = r.uid === myUid;
+    const isOnline = !!leaderboardPresence[r.uid]?.online;
+    const safeName = escapeHtml(r.name || '—');
+    return `
+      <div class="lb-row ${isMe ? 'me' : ''}">
+        <div class="lb-pos ${idx < 3 ? medals[idx] : ''}">${idx < 3 ? ['🥇', '🥈', '🥉'][idx] : idx + 1}</div>
+        <div class="lb-info">
+          <div class="lb-name">${safeName}${isMe ? ' <span style="color:var(--sp);font-size:10px;font-weight:800">YOU</span>' : ''} <span style="font-size:10px;font-weight:700;color:${isOnline ? 'var(--sp)' : 'var(--t3)'}">${isOnline ? '● ONLINE' : ''}</span></div>
+          <div class="lb-meta">${escapeHtml(r.status ? ('🎵 ' + r.status) : (r.vibe || ''))}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+          <div class="lb-score">${Number(r.score || 0).toLocaleString()}</div>
+          ${isMe ? '' : `<button class="nudge-btn" onclick="sendNudge('${escapeHtml(r.uid)}','${safeName.replace(/'/g, '')}')">👋</button>`}
+        </div>
+      </div>
+    `;
+  };
+
+  let html = top25.map((r, i) => renderRow(r, i)).join('');
+  if (myRow && !inTop25) {
+    html += `
+      <div style="padding:8px 22px;color:var(--t3);font-size:11px">...</div>
+      ${renderRow(myRow, myIndex)}
+    `;
+  }
+  el.innerHTML = html;
+}
+
+function startLeaderboard() {
+  if (lbScoreListener) return;
+  lbScoreListener = db.ref('scores').on('value', (snap) => {
+    const rows = [];
+    snap.forEach((c) => rows.push({ uid: c.key, ...c.val() }));
+    leaderboardRows = rows;
+    renderLeaderboard();
+  });
+  lbPresenceListener = db.ref('presence').on('value', (snap) => {
+    leaderboardPresence = snap.val() || {};
+    renderLeaderboard();
+  });
+}
+
+async function refreshLeaderboardOnce() {
+  const snap = await db.ref('scores').once('value');
+  const rows = [];
+  snap.forEach((c) => rows.push({ uid: c.key, ...c.val() }));
+  leaderboardRows = rows;
+  renderLeaderboard();
 }
 
 async function saveStatus() {
-  if (!_profData) return;
+  if (!profile) return;
   const input = $('lb-status-input');
   const status = (input?.value || '').trim().slice(0, 50);
   if (!status) return;
-  await _db.ref('scores/' + _profData.id).update({ status });
-  if (input) input.value = '';
+  await db.ref('scores/' + profile.id).update({ status, updatedAt: Date.now() });
+  await refreshLeaderboardOnce();
 }
 
 async function saveMyScore() {
   const btn = $('lb-save-btn');
   const msg = $('lb-save-msg');
-  if (!_profData) return;
-  const yearData = _tabCache.year;
-  if (!yearData) { if (msg) msg.textContent = 'Open All Time tab first!'; return; }
-  const uid = _profData.id;
+  if (!profile) return;
+
+  if (!tabCache.year) {
+    const yearBtn = document.querySelector('.pill[data-tab="year"]');
+    await onTab(yearBtn, 'year');
+  }
+  const yearData = tabCache.year;
+  if (!yearData) {
+    if (msg) msg.textContent = 'Could not load All Time data.';
+    return;
+  }
+
+  const uid = profile.id;
+  const row = {
+    uid,
+    name: profile.display_name || profile.id,
+    score: yearData.vibePoints || 0,
+    vibe: vibeStatus(yearData.vibePoints || 0),
+    status: ($('lb-status-input')?.value || '').trim(),
+    updatedAt: Date.now(),
+  };
+
   if (btn) { btn.disabled = true; btn.textContent = 'Saving...'; }
   try {
-    await _db.ref('scores/' + uid).update({
-      name: _profData.display_name || _profData.id,
-      score: yearData.vibePoints || 0,
-      vibe: vibeStatus(yearData.vibePoints || 0),
-      status: ($('lb-status-input')?.value || '').trim(),
-      updatedAt: Date.now(),
+    await db.ref('scores/' + uid).set({
+      name: row.name,
+      score: row.score,
+      vibe: row.vibe,
+      status: row.status,
+      updatedAt: row.updatedAt,
     });
-    await _db.ref('topArtists/' + uid).set(yearData.artists.map((a) => ({ name: a.name, tracks: a.tracks.length })));
-    if (msg) msg.textContent = '✅ Saved!';
+    await db.ref('topArtists/' + uid).set(
+      yearData.artists.map((a) => ({ name: a.name, tracks: a.tracks.length }))
+    );
+
+    leaderboardRows = leaderboardRows.filter((r) => r.uid !== uid);
+    leaderboardRows.push(row);
+    renderLeaderboard();
+    await refreshLeaderboardOnce();
+
+    if (msg) msg.textContent = '✅ Score saved!';
     if (btn) btn.textContent = '✅ Saved';
     startPresence(uid);
-    startLeaderboard();
   } catch (e) {
-    if (msg) msg.textContent = '❌ ' + (e?.message || 'Failed');
+    if (msg) msg.textContent = '❌ ' + (e.message || 'Failed to save');
     if (btn) { btn.disabled = false; btn.textContent = '💾 Save My Score'; }
   }
 }
 
 async function sendNudge(toUid, toName) {
-  if (!_profData) return;
-  await _db.ref('nudges/' + toUid).push({ from: _profData.display_name || _profData.id, ts: Date.now() });
-  showToast('🎵 Vibe sent to ' + toName + '!');
-}
-
-function showToast(msg) {
+  if (!profile) return;
+  await db.ref('nudges/' + toUid).push({ from: profile.display_name || profile.id, ts: Date.now() });
   const toast = $('nudge-toast');
-  if (!toast) return;
-  toast.textContent = msg;
-  toast.style.display = 'block';
-  setTimeout(() => { toast.style.display = 'none'; }, 2800);
+  if (toast) {
+    toast.textContent = `🎵 Vibe sent to ${toName}!`;
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 2800);
+  }
 }
 
-function startLeaderboard() {
-  const el = $('lb-list');
-  if (!el || _lbListener) return;
-  const scoresRef = _db.ref('scores').orderByChild('score').limitToLast(500);
-  const presenceRef = _db.ref('presence');
-  let latestScores = [];
-  let latestPresence = {};
-
-  function render() {
-    if (!latestScores.length) {
-      el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--t3)">No scores yet.</div>';
-      return;
-    }
-    const myUid = _profData?.id;
-    const medals = ['gold', 'silver', 'bronze'];
-    el.innerHTML = latestScores
-      .sort((a, b) => (b.score || 0) - (a.score || 0))
-      .slice(0, 25)
-      .map((r, i) => {
-        const isMe = r.uid === myUid;
-        const isOnline = !!latestPresence[r.uid]?.online;
-        const safeName = escapeHtml(r.name || '—');
-        return `<div class="lb-row ${isMe ? 'me' : ''}">
-          <div class="lb-pos ${i < 3 ? medals[i] : ''}">${i < 3 ? ['🥇', '🥈', '🥉'][i] : i + 1}</div>
-          <div class="lb-info">
-            <div class="lb-name">${safeName}${isMe ? ' <span style="color:var(--sp);font-size:10px;font-weight:800">YOU</span>' : ''} <span style="font-size:10px;font-weight:700;color:${isOnline ? 'var(--sp)' : 'var(--t3)'}">${isOnline ? '● ONLINE' : ''}</span></div>
-            <div class="lb-meta">${escapeHtml(r.status ? ('🎵 ' + r.status) : (r.vibe || ''))}</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-            <div class="lb-score">${Number(r.score || 0).toLocaleString()}</div>
-            ${isMe ? '' : `<button onclick="sendNudge('${escapeHtml(r.uid)}','${safeName.replace(/'/g, '')}')" class="nudge-btn">👋</button>`}
-          </div>
-        </div>`;
-      }).join('');
+function renderFriends() {
+  const el = $('fr-list');
+  if (!el) return;
+  const list = friendsQuery
+    ? friendsRows.filter((r) => String(r.name || '').toLowerCase().includes(friendsQuery))
+    : friendsRows;
+  if (!list.length) {
+    el.innerHTML = '<div class="fr-empty"><div class="fr-empty-icon">👥</div><p>No friends found.</p></div>';
+    return;
   }
+  el.innerHTML = list.map((r) => {
+    const isMe = r.uid === profile?.id;
+    const initials = (r.name || '?').slice(0, 2).toUpperCase();
+    return `
+      <div class="fr-card ${isMe ? 'me-card' : ''}">
+        <div class="fr-avatar">${escapeHtml(initials)}</div>
+        <div class="fr-info">
+          <div class="fr-name">${escapeHtml(r.name || '—')}${isMe ? '<span class="you-badge">YOU</span>' : ''}</div>
+          <div class="fr-sub-row"><span class="fr-status">${escapeHtml(r.status || r.vibe || '')}</span></div>
+        </div>
+        <div class="fr-actions"><span class="fr-score-badge">${Number(r.score || 0).toLocaleString()}</span></div>
+      </div>
+    `;
+  }).join('');
+}
 
-  _lbListener = scoresRef.on('value', (snap) => {
+function startFriends() {
+  if (friendsListener) return;
+  friendsListener = db.ref('scores').on('value', (snap) => {
     const rows = [];
     snap.forEach((c) => rows.push({ uid: c.key, ...c.val() }));
-    latestScores = rows;
-    render();
-  });
-  _presenceListener = presenceRef.on('value', (snap) => {
-    latestPresence = snap.val() || {};
-    render();
+    friendsRows = rows.sort((a, b) => (b.score || 0) - (a.score || 0));
+    renderFriends();
   });
 }
 
 function onFrSearch(input) {
-  _frQuery = (input?.value || '').toLowerCase().trim();
+  friendsQuery = (input?.value || '').toLowerCase().trim();
   const box = $('fr-search-box');
-  if (box) box.classList.toggle('has-val', !!_frQuery);
+  if (box) box.classList.toggle('has-val', !!friendsQuery);
   renderFriends();
 }
 
 function clearFrSearch() {
-  _frQuery = '';
+  friendsQuery = '';
   const input = $('fr-search-input');
   if (input) input.value = '';
   const box = $('fr-search-box');
@@ -1171,85 +1264,49 @@ function clearFrSearch() {
   renderFriends();
 }
 
-function renderFriends() {
-  const el = $('fr-list');
-  if (!el) return;
-  const filtered = _frQuery
-    ? _frAllScores.filter((r) => String(r.name || '').toLowerCase().includes(_frQuery))
-    : _frAllScores;
-  if (!filtered.length) {
-    el.innerHTML = '<div class="fr-empty"><div class="fr-empty-icon">👥</div><p>No friends found.</p></div>';
-    return;
-  }
-  el.innerHTML = filtered.map((r) => {
-    const initials = (r.name || '?').slice(0, 2).toUpperCase();
-    const isMe = r.uid === _profData?.id;
-    return `<div class="fr-card ${isMe ? 'me-card' : ''}">
-      <div class="fr-avatar">${escapeHtml(initials)}</div>
-      <div class="fr-info">
-        <div class="fr-name">${escapeHtml(r.name || '—')}${isMe ? '<span class="you-badge">YOU</span>' : ''}</div>
-        <div class="fr-sub-row"><span class="fr-status">${escapeHtml(r.status || r.vibe || '')}</span></div>
-      </div>
-      <div class="fr-actions"><span class="fr-score-badge">${Number(r.score || 0).toLocaleString()}</span></div>
-    </div>`;
-  }).join('');
-}
-
-function startFriends() {
-  if (_frListener) return;
-  _frListener = _db.ref('scores').on('value', (snap) => {
-    const rows = [];
-    snap.forEach((c) => rows.push({ uid: c.key, ...c.val() }));
-    _frAllScores = rows.sort((a, b) => (b.score || 0) - (a.score || 0));
-    renderFriends();
-  });
-}
-
 function inviteFriends() {
   window.open('https://wa.me/?text=' + encodeURIComponent('Check my music vibe on VibeCheck!'), '_blank');
 }
 
-function goPage(nm) {
+function goPage(name) {
   ['home', 'stats', 'leaderboard', 'friends', 'profile'].forEach((n) => {
     const b = $(`bn-${n}`);
     const p = $(`pg-${n}`);
-    if (b) b.classList.toggle('on', n === nm);
-    if (p) p.classList.toggle('on', n === nm);
+    if (b) b.classList.toggle('on', n === name);
+    if (p) p.classList.toggle('on', n === name);
   });
-  if (nm === 'leaderboard') startLeaderboard();
-  if (nm === 'friends') startFriends();
-  if (nm === 'profile') fillProfile();
+  if (name === 'leaderboard') startLeaderboard();
+  if (name === 'friends') startFriends();
+  if (name === 'profile') fillProfile();
 }
 
 async function loadProfile() {
-  const p = await spApi('/me');
-  _profData = p;
-  st('u-nm', p.display_name || p.id);
+  const p = await spotify('/me');
+  profile = p;
+  setText('u-nm', p.display_name || p.id);
   const av = $('u-av');
-  if (av) {
-    av.innerHTML = p.images?.[0]?.url
-      ? `<img src="${escapeHtml(p.images[0].url)}" alt="avatar"/>`
-      : escapeHtml((p.display_name || 'U')[0].toUpperCase());
-  }
+  if (av) av.innerHTML = p.images?.[0]?.url ? `<img src="${escapeHtml(p.images[0].url)}" alt="avatar"/>` : 'U';
 }
 
 function fillProfile() {
-  if (!_profData) return;
-  const p = _profData;
+  if (!profile) return;
+  const p = profile;
   const big = $('p-av');
   if (big) {
     big.innerHTML = p.images?.[0]?.url
       ? `<img src="${escapeHtml(p.images[0].url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>`
       : escapeHtml((p.display_name || 'U')[0].toUpperCase());
   }
-  st('p-nm', p.display_name || p.id || '—');
-  st('p-id', p.id ? '@' + p.id : '');
-  st('p-plan', p.product ? p.product.charAt(0).toUpperCase() + p.product.slice(1) : 'Free');
-  st('p-ctry', p.country || '—');
-  st('p-fol', (p.followers?.total ?? 0).toLocaleString());
+  setText('p-nm', p.display_name || p.id || '—');
+  setText('p-id', p.id ? '@' + p.id : '');
+  setText('p-plan', p.product ? p.product.charAt(0).toUpperCase() + p.product.slice(1) : 'Free');
+  setText('p-ctry', p.country || '—');
+  setText('p-fol', (p.followers?.total ?? 0).toLocaleString());
 }
 
-function getTok() { return localStorage.getItem('tok'); }
+function getToken() {
+  return localStorage.getItem('tok');
+}
 
 function logout() {
   localStorage.removeItem('tok');
@@ -1258,32 +1315,35 @@ function logout() {
 }
 
 async function boot() {
-  const params = new URLSearchParams(location.search);
-  const code = params.get('code');
+  const code = new URLSearchParams(location.search).get('code');
   if (code) {
-    setLoad('Connecting...');
+    showLoading('Connecting...');
     try {
       await exchangeCode(code);
-      _token = getTok();
+      token = getToken();
       await loadProfile();
-      showScr('s-app');
+      showScreen('s-app');
       await onTab(document.querySelector('.pill[data-tab="year"]'), 'year');
+      startLeaderboard();
+      startPresence(profile.id);
       return;
     } catch (e) {
-      sh('err-box', `<div class="err">⚠️ ${escapeHtml(e.message || 'Login failed')}</div>`);
-      showScr('s-login');
+      $('err-box').innerHTML = `<div class="err">⚠️ ${escapeHtml(e.message || 'Login failed')}</div>`;
+      showScreen('s-login');
       return;
     }
   }
 
-  const t = getTok();
+  const t = getToken();
   if (t) {
-    _token = t;
-    setLoad('Restoring...');
+    token = t;
+    showLoading('Restoring...');
     try {
       await loadProfile();
-      showScr('s-app');
+      showScreen('s-app');
       await onTab(document.querySelector('.pill[data-tab="year"]'), 'year');
+      startLeaderboard();
+      startPresence(profile.id);
       return;
     } catch {
       logout();
@@ -1291,7 +1351,7 @@ async function boot() {
     }
   }
 
-  showScr('s-login');
+  showScreen('s-login');
 }
 
 boot();
