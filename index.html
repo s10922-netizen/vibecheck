@@ -4,7 +4,6 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>VibeCheck</title>
-<!-- Firebase Realtime Database SDK (compat version — works without bundler) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -59,7 +58,6 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .cw{min-height:88px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;position:relative}
 #ctr{font-size:clamp(58px,15vw,84px);font-weight:900;letter-spacing:-5px;line-height:1;font-variant-numeric:tabular-nums}
 .h-unit{font-size:15px;color:var(--t2);font-weight:500}
-/* transparent disclaimer line under the big number */
 .h-disclaimer{font-size:11px;color:var(--t3);margin-top:5px;line-height:1.5}
 #h-sub{font-size:12px;color:var(--t3);margin-top:3px;font-weight:500;min-height:16px}
 .vrow{display:flex;justify-content:center;margin-top:14px}
@@ -171,7 +169,7 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .play-btn svg{width:10px;height:10px;fill:#000;margin-left:1px}
 .err{margin:14px 22px;background:rgba(255,80,80,.07);border:1px solid rgba(255,80,80,.18);border-radius:12px;padding:13px 15px;font-size:13px;color:#f88;line-height:1.6}
 .err a{color:var(--sp)}
-/* ── LEADERBOARD ─────────────────────────────── */
+/* ── LEADERBOARD + FRIENDS ─────────────────────── */
 .lb-row{display:flex;align-items:center;gap:12px;padding:10px 22px;border-bottom:1px solid rgba(255,255,255,.05)}
 .lb-row:last-child{border-bottom:none}
 .lb-row.me{background:rgba(29,185,84,.07);border-radius:12px;border-bottom:none;margin:0 8px}
@@ -185,23 +183,116 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .lb-save-btn:hover{background:var(--sp2)}
 .lb-save-btn:disabled{background:var(--bg3);color:var(--t3);cursor:default}
 .lb-live{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:800;color:var(--sp);letter-spacing:1px;text-transform:uppercase}
-.lb-live .dot{width:5px;height:5px;border-radius:50%;background:var(--sp);animation:blink 1.4s ease infinite} ─────────────────────── */
+.lb-live .dot{width:5px;height:5px;border-radius:50%;background:var(--sp);animation:blink 1.4s ease infinite}
+
+/* ── SEARCH BAR ─────────────────────────────── */
+.fr-search-wrap{padding:0 22px 12px;position:sticky;top:0;z-index:10;background:var(--bg);padding-top:8px}
+.fr-search{display:flex;align-items:center;gap:10px;background:var(--bg3);border:1.5px solid var(--bg4);border-radius:50px;padding:10px 16px;transition:border-color .2s}
+.fr-search:focus-within{border-color:var(--sp)}
+.fr-search svg{width:15px;height:15px;stroke:var(--t3);flex-shrink:0;transition:stroke .2s}
+.fr-search:focus-within svg{stroke:var(--sp)}
+.fr-search input{flex:1;background:none;border:none;outline:none;font-family:var(--f);font-size:13px;color:var(--t);caret-color:var(--sp)}
+.fr-search input::placeholder{color:var(--t3)}
+.fr-search .fr-clr{background:none;border:none;cursor:pointer;color:var(--t3);font-size:16px;padding:0;line-height:1;display:none}
+.fr-search.has-val .fr-clr{display:block}
+
+/* ── FRIEND CARD ─────────────────────────────── */
+.fr-card{display:flex;align-items:center;gap:12px;padding:11px 22px;border-bottom:1px solid rgba(255,255,255,.05);transition:background .15s;animation:fi .2s ease}
+.fr-card:last-child{border-bottom:none}
+.fr-card.me-card{background:rgba(29,185,84,.06);border-radius:12px;border-bottom:none;margin:0 8px}
+.fr-card:hover{background:var(--bg3)}
+.fr-avatar{width:42px;height:42px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:var(--sp);flex-shrink:0;border:2px solid var(--bg4);position:relative}
+.fr-avatar .online-dot{position:absolute;bottom:0;right:0;width:10px;height:10px;border-radius:50%;background:var(--bg4);border:2px solid var(--bg)}
+.fr-avatar .online-dot.live{background:var(--sp)}
+.fr-info{flex:1;min-width:0}
+.fr-name{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fr-name .you-badge{font-size:9px;font-weight:800;background:var(--glow);color:var(--sp);border-radius:50px;padding:1px 6px;letter-spacing:.5px;flex-shrink:0}
+.fr-sub-row{display:flex;align-items:center;gap:6px;margin-top:2px}
+.fr-status{font-size:11px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+.fr-seen{font-size:10px;color:var(--t3);flex-shrink:0}
+.fr-seen.live{color:var(--sp)}
+.fr-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.nudge-btn{background:var(--bg3);border:1px solid var(--bg4);border-radius:50px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--t2);cursor:pointer;font-family:var(--f);transition:all .15s;white-space:nowrap}
+.nudge-btn:hover{border-color:var(--sp);color:var(--sp);background:var(--glow)}
+.nudge-btn:active{transform:scale(.95)}
+.fr-score-badge{font-size:12px;font-weight:800;color:var(--sp);font-variant-numeric:tabular-nums}
+
+.fr-empty{text-align:center;padding:48px 22px;color:var(--t3)}
+.fr-empty .fr-empty-icon{font-size:36px;margin-bottom:12px}
+.fr-empty p{font-size:14px;line-height:1.6}
+
+/* ── FRIEND REQUESTS ────────────────────────── */
+#fr-pending-section{overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1),opacity .3s;max-height:0;opacity:0}
+#fr-pending-section.visible{max-height:600px;opacity:1}
+.fr-pending-header{display:flex;align-items:center;justify-content:space-between;padding:0 22px 10px}
+.fr-pending-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--t2)}
+.fr-pending-badge{background:var(--sp);color:#000;font-size:10px;font-weight:900;border-radius:50px;padding:2px 7px;letter-spacing:0}
+.fr-req-card{display:flex;align-items:center;gap:12px;padding:11px 22px;border-bottom:1px solid rgba(255,255,255,.05);animation:fi .2s ease}
+.fr-req-card:last-child{border-bottom:none}
+.fr-req-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--bg3),var(--bg4));display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:var(--sp);flex-shrink:0;border:2px solid rgba(29,185,84,.3)}
+.fr-req-info{flex:1;min-width:0}
+.fr-req-name{font-size:14px;font-weight:700}
+.fr-req-meta{font-size:11px;color:var(--t2);margin-top:2px}
+.fr-req-actions{display:flex;gap:6px;flex-shrink:0}
+.btn-accept{background:var(--sp);color:#000;border:none;border-radius:50px;padding:7px 14px;font-size:12px;font-weight:800;cursor:pointer;font-family:var(--f);transition:background .15s,transform .12s}
+.btn-accept:hover{background:var(--sp2)}
+.btn-accept:active{transform:scale(.94)}
+.btn-decline{background:transparent;color:var(--t3);border:1px solid var(--bg4);border-radius:50px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--f);transition:all .15s}
+.btn-decline:hover{border-color:var(--t2);color:var(--t2)}
+.btn-decline:active{transform:scale(.94)}
+
+/* Add-friend button states on fr-card */
+.add-friend-btn{background:transparent;border:1.5px solid var(--sp);color:var(--sp);border-radius:50px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer;font-family:var(--f);transition:all .15s;white-space:nowrap}
+.add-friend-btn:hover{background:var(--glow)}
+.add-friend-btn:active{transform:scale(.94)}
+.add-friend-btn.pending{border-color:var(--t3);color:var(--t3);cursor:default}
+.add-friend-btn.friend{border-color:var(--sp);background:var(--glow);color:var(--sp);cursor:default}
+.pending-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(29,185,84,.3),transparent);margin:0 22px}
+
+/* ── FRIEND VIBE PANEL ───────────────────────── */
+/* Bottom-sheet panel reused for friend vibe data */
+#fv-bg{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:500;opacity:0;pointer-events:none;transition:opacity .28s ease}
+#fv-bg.on{opacity:1;pointer-events:all}
+#fv-panel{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:500px;max-height:91vh;background:#161616;border-radius:24px 24px 0 0;z-index:501;display:flex;flex-direction:column;transition:transform .38s cubic-bezier(.32,1.1,.4,1);overflow:hidden;will-change:transform}
+#fv-panel.on{transform:translateX(-50%) translateY(0)}
+.fv-handle{width:36px;height:4px;border-radius:2px;background:var(--bg4);margin:12px auto 0;flex-shrink:0}
+.fv-header{padding:20px 22px 0;flex-shrink:0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.fv-identity{display:flex;align-items:center;gap:14px}
+.fv-big-av{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--bg3),var(--bg4));display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:var(--sp);flex-shrink:0;border:2px solid rgba(29,185,84,.35)}
+.fv-nm{font-size:22px;font-weight:900;letter-spacing:-.6px}
+.fv-vibe-tag{display:inline-flex;align-items:center;gap:5px;background:var(--bg3);border-radius:50px;padding:4px 11px;font-size:12px;font-weight:700;margin-top:6px}
+.fv-x{width:32px;height:32px;border-radius:50%;background:var(--bg3);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:16px;flex-shrink:0;transition:background .15s}
+.fv-x:hover{background:var(--bg4);color:var(--t)}
+.fv-stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:16px 22px 4px;flex-shrink:0}
+.fv-stat{background:var(--bg2);border-radius:12px;border:1px solid var(--bg3);padding:12px;text-align:center}
+.fv-stat-v{font-size:18px;font-weight:800;color:var(--sp);font-variant-numeric:tabular-nums;line-height:1}
+.fv-stat-l{font-size:10px;color:var(--t2);font-weight:500;margin-top:4px}
+.fv-dv{height:1px;background:var(--bg3);margin:12px 22px}
+.fv-section-title{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--t2);padding:0 22px 10px}
+#fv-body{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;padding-bottom:32px}
+.fv-artist-row{display:flex;align-items:center;gap:10px;padding:8px 22px;border-bottom:1px solid rgba(255,255,255,.04)}
+.fv-artist-row:last-child{border-bottom:none}
+.fv-art-num{font-size:13px;font-weight:800;color:var(--t3);width:18px;text-align:center;flex-shrink:0}
+.fv-art-av{width:36px;height:36px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.fv-art-name{flex:1;font-size:13px;font-weight:700}
+.fv-art-pts{font-size:11px;font-weight:700;color:var(--sp)}
+.fv-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 22px;gap:14px;color:var(--t3);font-size:13px}
+.fv-lock{text-align:center;padding:40px 22px}
+.fv-lock-icon{font-size:40px;margin-bottom:12px}
+.fv-lock p{font-size:14px;color:var(--t2);line-height:1.7}
+
+/* ── NUDGE TOAST ─────────────────────────────── */
+#nudge-toast{display:none;position:fixed;top:80px;left:50%;transform:translateX(-50%);background:var(--sp);color:#000;font-weight:800;font-size:14px;padding:12px 24px;border-radius:50px;z-index:9999;white-space:nowrap;box-shadow:0 4px 24px rgba(29,185,84,.4)}
+
 @media (max-width: 480px) {
-  /* topbar: tighter top padding, hide username text */
   .topbar{padding-top:52px;padding-bottom:6px}
   #u-nm{display:none}
   .b-out{font-size:11px;padding:4px 10px}
-
-  /* pills: scroll horizontally, bigger tap targets */
   .pills{gap:6px;overflow-x:auto;padding-bottom:2px}
   .pill{padding:7px 14px;font-size:12px}
-
-  /* hero: less vertical space */
   .hero{padding:2px 16px 14px}
   #ctr{letter-spacing:-3px}
   .h-disclaimer{font-size:10px}
-
-  /* artist + track rows: tighter */
   .alist,.tlist{padding:0 14px}
   .ar{gap:9px;padding:8px 8px;margin:0 -8px}
   .ai{width:44px;height:44px;font-size:18px}
@@ -211,34 +302,27 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
   .ti{width:38px;height:38px}
   .tn{font-size:12px}
   .tar{font-size:10px}
-  /* hide duration on small screens — saves space for play button */
   .td{display:none}
-  /* play button slightly smaller */
   .play-btn{width:26px;height:26px}
-
-  /* section headers */
   .sh{padding:0 14px 10px}
   .st{font-size:16px}
   .dv{margin:16px 14px}
-
-  /* stat cards: smaller font */
   .sgrid{padding:0 14px;gap:8px}
   .scv{font-size:18px}
   .scl{font-size:10px}
-
-  /* now playing */
   .np{margin:0 14px}
-
-  /* artist panel: full width on small screens */
   #a-panel{max-width:100%}
   .ap-meta{padding:0 16px 14px}
   .ap-nm{font-size:22px}
   .ap-tr{padding:7px 16px}
+  .lb-row,.fr-card{padding:10px 14px}
+  .fr-search-wrap{padding:8px 14px 12px}
 }
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes eqa{from{transform:scaleY(.3)}to{transform:scaleY(1)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 @keyframes fi{from{opacity:0}to{opacity:1}}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
@@ -249,7 +333,7 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
   <h1 class="l-h">Your music,<br><em>decoded.</em></h1>
   <p class="l-p">Top artists, Vibe Points, honest stats — from your Spotify top 100 tracks.</p>
   <button class="b-sp" onclick="doLogin()">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="black" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="black"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
     Connect with Spotify
   </button>
   <p class="l-note">Read-only &middot; No playlist changes &middot; Ever</p>
@@ -267,7 +351,7 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 
   <div class="topbar">
     <div class="tb-b">
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="12" fill="#1DB954"/><path fill="#fff" d="M17.9 10.9C14.7 9 9.35 8.8 6.3 9.75c-.5.15-1-.15-1.15-.6-.15-.5.15-1 .6-1.15C9.3 6.95 15.15 7.15 18.8 9.3c.45.25.6.85.35 1.3-.25.35-.85.5-1.25.3zm-.1 2.8c-.25.4-.75.5-1.15.25C14.1 12.5 9.9 12 6.5 13c-.45.15-.9-.1-1.05-.5-.15-.45.1-.9.5-1.05 3.9-1.2 8.55-.6 11.85 1.75.35.2.45.7.2 1.1zm-1.3 2.7c-.2.3-.55.4-.9.2C13.1 15.2 9.7 14.9 6.65 15.65c-.35.1-.7-.1-.8-.45-.1-.35.1-.7.45-.8 3.4-.85 7.1-.5 9.85 1.1.3.2.4.55.25.9z"/></svg>
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#1DB954"/><path fill="#fff" d="M17.9 10.9C14.7 9 9.35 8.8 6.3 9.75c-.5.15-1-.15-1.15-.6-.15-.5.15-1 .6-1.15C9.3 6.95 15.15 7.15 18.8 9.3c.45.25.6.85.35 1.3-.25.35-.85.5-1.25.3zm-.1 2.8c-.25.4-.75.5-1.15.25C14.1 12.5 9.9 12 6.5 13c-.45.15-.9-.1-1.05-.5-.15-.45.1-.9.5-1.05 3.9-1.2 8.55-.6 11.85 1.75.35.2.45.7.2 1.1zm-1.3 2.7c-.2.3-.55.4-.9.2C13.1 15.2 9.7 14.9 6.65 15.65c-.35.1-.7-.1-.8-.45-.1-.35.1-.7.45-.8 3.4-.85 7.1-.5 9.85 1.1.3.2.4.55.25.9z"/></svg>
       VibeCheck
     </div>
     <div class="tb-r">
@@ -297,7 +381,6 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
         <div id="h-sub"></div>
         <div class="vrow"><div id="vtag"><span id="ve">&#127925;</span><span id="vt">Calculating...</span></div></div>
       </div>
-
       <div id="np-s">
         <div class="dv" style="margin-top:4px"></div>
         <div class="sh"><span class="st">Now Playing</span><span class="sm" style="color:var(--sp)">LIVE</span></div>
@@ -307,15 +390,12 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
           <div class="eq"><b></b><b></b><b></b><b></b></div>
         </div>
       </div>
-
       <div class="dv"></div>
       <div class="sh"><span class="st">Top Artists</span><span class="sm" id="ar-meta">from top 100</span></div>
       <div class="alist" id="ar-list"></div>
-
       <div class="dv"></div>
       <div class="sh"><span class="st">Top Tracks</span><span class="sm" id="tr-meta">top 100</span></div>
       <div class="tlist" id="home-tlist"></div>
-
       <div id="err-box"></div>
       <div style="height:8px"></div>
     </div>
@@ -384,8 +464,6 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
         <div class="lb-live"><span class="dot"></span>LIVE</div>
       </div>
       <div class="dv" style="margin-top:8px"></div>
-
-      <!-- My Status editor -->
       <div style="padding:0 22px 4px">
         <div style="display:flex;gap:8px;margin-bottom:10px">
           <input id="lb-status-input" maxlength="50" placeholder="What are you vibing to? &#127925;"
@@ -395,27 +473,21 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
         <button class="lb-save-btn" id="lb-save-btn" onclick="saveMyScore()">&#128190; Save My Score</button>
         <div id="lb-save-msg" style="font-size:12px;color:var(--t2);text-align:center;min-height:18px;margin-top:4px"></div>
       </div>
-
-      <!-- Invite button -->
       <div style="padding:0 22px 4px">
         <button onclick="inviteFriends()" style="width:100%;padding:12px;border-radius:50px;border:1px solid var(--bg4);background:transparent;color:var(--t2);font-family:var(--f);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
           &#128279; Invite Friends via WhatsApp
         </button>
       </div>
-
       <div class="dv"></div>
-      <!-- Nudge toast -->
-      <div id="nudge-toast" style="display:none;position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#1DB954;color:#000;font-weight:800;font-size:14px;padding:12px 24px;border-radius:50px;z-index:9999;animation:up .3s ease both">&#127925; Vibe sent!</div>
-      <!-- Live leaderboard list -->
-      <div id="lb-list" style="padding-bottom:8px">
-        <div class="empty">Loading leaderboard...</div>
-      </div>
+      <div id="lb-list" style="padding-bottom:8px"><div style="padding:20px;text-align:center;color:var(--t3)">Loading leaderboard...</div></div>
     </div>
   </div>
 
-  <!-- FRIENDS -->
+  <!-- FRIENDS ─────────────────────────────────── -->
   <div class="page" id="pg-friends">
     <div class="inn">
+
+      <!-- Header -->
       <div style="padding:28px 22px 12px;display:flex;align-items:center;justify-content:space-between">
         <div>
           <h2 style="font-size:24px;font-weight:900;letter-spacing:-.5px">Friends</h2>
@@ -423,15 +495,42 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
         </div>
         <div class="lb-live"><span class="dot"></span>LIVE</div>
       </div>
-      <!-- Add Friend / Invite button -->
+
+      <!-- Search bar -->
+      <div class="fr-search-wrap">
+        <div class="fr-search" id="fr-search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input id="fr-search-input" type="text" placeholder="Search by name..." autocomplete="off" oninput="onFrSearch(this)"/>
+          <button class="fr-clr" onclick="clearFrSearch()" title="Clear">&#10005;</button>
+        </div>
+      </div>
+
+      <!-- Invite button -->
       <div style="padding:0 22px 4px">
         <button onclick="inviteFriends()" style="width:100%;padding:13px;border-radius:50px;border:1.5px solid var(--sp);background:transparent;color:var(--sp);font-family:var(--f);font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
           &#128279; Add Friend — Invite via WhatsApp
         </button>
       </div>
+
+      <!-- Pending requests section (hidden until there are requests) -->
+      <div id="fr-pending-section">
+        <div class="fr-pending-header">
+          <div class="fr-pending-title">
+            <span>&#128276; Pending Requests</span>
+            <span class="fr-pending-badge" id="fr-pending-count">0</span>
+          </div>
+        </div>
+        <div id="fr-pending-list"></div>
+        <div class="pending-divider"></div>
+      </div>
+
       <div class="dv"></div>
+
+      <!-- Friends list -->
       <div id="fr-list" style="padding-bottom:8px">
-        <div class="empty">Loading...</div>
+        <div class="fr-empty"><div class="fr-empty-icon">&#128112;</div><p>Loading friends...</p></div>
       </div>
     </div>
   </div>
@@ -446,6 +545,9 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
       <button class="bn" id="bn-profile"        onclick="goPage('profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="bnl">Profile</span></button>
     </div>
   </div>
+
+  <!-- Nudge toast -->
+  <div id="nudge-toast">&#127925; Vibe sent!</div>
 
   <!-- ARTIST PANEL -->
   <div id="a-bg" onclick="closePanel()"></div>
@@ -467,39 +569,50 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
     <div id="ap-body"></div>
   </div>
 
+  <!-- FRIEND VIBE PANEL -->
+  <div id="fv-bg" onclick="closeFvPanel()"></div>
+  <div id="fv-panel" role="dialog" aria-modal="true">
+    <div class="fv-handle"></div>
+    <div class="fv-header">
+      <div class="fv-identity">
+        <div class="fv-big-av" id="fv-av">?</div>
+        <div>
+          <div class="fv-nm" id="fv-nm">—</div>
+          <div class="fv-vibe-tag" id="fv-vibe-tag"><span id="fv-ve">🎵</span><span id="fv-vt">—</span></div>
+        </div>
+      </div>
+      <button class="fv-x" onclick="closeFvPanel()">&#10005;</button>
+    </div>
+    <div class="fv-stats-row">
+      <div class="fv-stat"><div class="fv-stat-v" id="fv-score">—</div><div class="fv-stat-l">Vibe Points</div></div>
+      <div class="fv-stat"><div class="fv-stat-v" id="fv-tracks">—</div><div class="fv-stat-l">Top Tracks</div></div>
+      <div class="fv-stat"><div class="fv-stat-v" id="fv-artists">—</div><div class="fv-stat-l">Artists</div></div>
+    </div>
+    <div class="fv-dv"></div>
+    <div id="fv-body"></div>
+  </div>
+
 </div><!-- /s-app -->
 
 <script>
 'use strict';
 
-/* ═══════════════════════════════════════════
-   CONFIG
-═══════════════════════════════════════════ */
 const CLIENT_ID    = '22a39828c40d4acc8e50f21daaf65639';
 const REDIRECT_URI = 'https://s10922-netizen.github.io/vibecheck/';
 const SCOPES       = 'user-read-private user-read-email user-top-read user-read-recently-played user-read-currently-playing';
 
-/* ═══════════════════════════════════════════
-   TAB CONFIG
-═══════════════════════════════════════════ */
 const TABS = {
-  week:   { kind:'recent',                   label:'PAST WEEK',  meta:'7 days',   sub:'Your last 7 days',           statsLbl:'Past week'    },
-  month:  { kind:'top', range:'short_term',  label:'4 WEEKS',    meta:'4 weeks',  sub:'Your last 4 weeks',          statsLbl:'Last 4 weeks' },
-  medium: { kind:'top', range:'medium_term', label:'6 MONTHS',   meta:'6 months', sub:'Your last 6 months',         statsLbl:'Last 6 months'},
-  year:   { kind:'top', range:'long_term',   label:'ALL TIME',   meta:'all time', sub:'Your all-time favorites',    statsLbl:'All time'     },
+  week:   { kind:'recent',                   label:'PAST WEEK',  meta:'7 days',   sub:'Your last 7 days',        statsLbl:'Past week'    },
+  month:  { kind:'top', range:'short_term',  label:'4 WEEKS',    meta:'4 weeks',  sub:'Your last 4 weeks',       statsLbl:'Last 4 weeks' },
+  medium: { kind:'top', range:'medium_term', label:'6 MONTHS',   meta:'6 months', sub:'Your last 6 months',      statsLbl:'Last 6 months'},
+  year:   { kind:'top', range:'long_term',   label:'ALL TIME',   meta:'all time', sub:'Your all-time favorites', statsLbl:'All time'     },
 };
 
-/* ═══════════════════════════════════════════
-   STATE
-═══════════════════════════════════════════ */
 let _token    = null;
 let _profData = null;
-const _CACHE_VERSION = 'v3'; // bump this to invalidate cache after code updates
+const _CACHE_VERSION = 'v3';
 const _tabCache = {};
 
-/* ═══════════════════════════════════════════
-   DOM HELPERS
-═══════════════════════════════════════════ */
 const $   = id => document.getElementById(id);
 const st  = (id, v) => { const e=$(id); if(e) e.textContent=String(v); };
 const sh  = (id, v) => { const e=$(id); if(e) e.innerHTML=v; };
@@ -511,9 +624,7 @@ function showScr(id) {
 }
 function setLoad(msg) { st('rmsg', msg||'Loading...'); showScr('s-load'); }
 
-/* ═══════════════════════════════════════════
-   SKELETON
-═══════════════════════════════════════════ */
+/* ── SKELETON ─────────────────────────────────── */
 function showSkeleton() {
   const cEl=$('ctr'); if(cEl) cEl.style.visibility='hidden';
   const cw=document.querySelector('.cw');
@@ -534,9 +645,7 @@ function hideSkeleton() {
   const vt=$('vtag'); if(vt) vt.classList.remove('sk');
 }
 
-/* ═══════════════════════════════════════════
-   VIBE DETECTOR
-═══════════════════════════════════════════ */
+/* ── VIBE DETECTOR ────────────────────────────── */
 function detectVibe(genres) {
   const g=(genres||[]).join(' ').toLowerCase();
   if(g.includes('hip-hop')||g.includes('rap'))       return['&#128293;','Hip-Hop Head'];
@@ -551,9 +660,7 @@ function detectVibe(genres) {
   return['&#127925;','Eclectic Taste'];
 }
 
-/* ═══════════════════════════════════════════
-   PKCE AUTH
-═══════════════════════════════════════════ */
+/* ── PKCE AUTH ────────────────────────────────── */
 async function sha256(s) {
   const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
   return btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
@@ -565,15 +672,14 @@ function randStr(n=64) {
 }
 async function doLogin() {
   const v=randStr(), ch=await sha256(v);
-  localStorage.setItem('pkce_v', v);   // localStorage survives redirects on mobile
-  sessionStorage.setItem('pkce_v', v); // keep sessionStorage as fallback for desktop
+  localStorage.setItem('pkce_v', v);
+  sessionStorage.setItem('pkce_v', v);
   location.href='https://accounts.spotify.com/authorize?'+new URLSearchParams({
     client_id:CLIENT_ID,response_type:'code',redirect_uri:REDIRECT_URI,
     code_challenge_method:'S256',code_challenge:ch,scope:SCOPES,
   });
 }
 async function exchangeCode(code) {
-  // Try sessionStorage first (desktop), fall back to localStorage (mobile)
   const v = sessionStorage.getItem('pkce_v') || localStorage.getItem('pkce_v');
   if(!v) throw new Error('No PKCE verifier — please log in again.');
   const r=await fetch('https://accounts.spotify.com/api/token',{
@@ -587,9 +693,7 @@ async function exchangeCode(code) {
   history.replaceState({},'',location.pathname);
 }
 
-/* ═══════════════════════════════════════════
-   SPOTIFY API
-═══════════════════════════════════════════ */
+/* ── SPOTIFY API ──────────────────────────────── */
 async function spApi(path) {
   const r=await fetch('https://api.spotify.com/v1'+path,{headers:{Authorization:'Bearer '+_token}});
   if(r.status===401){ logout(); throw new Error('Session expired — please log in again.'); }
@@ -598,150 +702,41 @@ async function spApi(path) {
   return r.json();
 }
 
-/* ═══════════════════════════════════════════
-   getMyTopTracks(timeRange)
-   Two parallel requests: offset 0 and offset 50
-   → up to 100 unique tracks.
-   Minutes = simple sum of all 100 durations.
-═══════════════════════════════════════════ */
 async function getMyTopTracks(timeRange) {
   const [res1, res2] = await Promise.all([
     spApi(`/me/top/tracks?time_range=${timeRange}&limit=50&offset=0`),
     spApi(`/me/top/tracks?time_range=${timeRange}&limit=50&offset=50`),
   ]);
-
   const raw = [...(res1?.items||[]), ...(res2?.items||[])];
-
-  // Deduplicate by track ID
   const seen = new Set();
-  const unique = raw.filter(t => {
-    if(!t?.id || seen.has(t.id)) return false;
-    seen.add(t.id);
-    return true;
-  });
-
+  const unique = raw.filter(t => { if(!t?.id || seen.has(t.id)) return false; seen.add(t.id); return true; });
   return unique.map(t => ({
-    id:         t.id,
-    name:       t.name || 'Unknown Track',
-    durationMs: (typeof t.duration_ms==='number' && t.duration_ms>0) ? t.duration_ms : 210000,
-    albumName:  t.album?.name || '',
-    albumArt:   t.album?.images?.[1]?.url || t.album?.images?.[0]?.url || '',
-    albumArtSm: t.album?.images?.[2]?.url || t.album?.images?.[0]?.url || '',
-    spotifyUrl: t.external_urls?.spotify || '',
-    artists:    (t.artists||[]).filter(a=>a.id&&a.name).map(a=>({id:a.id,name:a.name})),
+    id: t.id, name: t.name||'Unknown Track',
+    durationMs: (typeof t.duration_ms==='number'&&t.duration_ms>0)?t.duration_ms:210000,
+    albumName: t.album?.name||'', albumArt: t.album?.images?.[1]?.url||t.album?.images?.[0]?.url||'',
+    albumArtSm: t.album?.images?.[2]?.url||t.album?.images?.[0]?.url||'',
+    spotifyUrl: t.external_urls?.spotify||'',
+    artists: (t.artists||[]).filter(a=>a.id&&a.name).map(a=>({id:a.id,name:a.name})),
   }));
 }
 
-/* ═══════════════════════════════════════════
-   calcVibePoints(tracks, tab)
-   Formula: rank × durMins, then scaled by a
-   tab multiplier so longer periods always
-   produce higher scores than shorter ones:
-     Past Week  × 1
-     4 Weeks    × 4
-     6 Months   × 12
-     All Time   × 52
-═══════════════════════════════════════════ */
 const TAB_MULTIPLIER = { week:1, month:4, medium:12, year:52 };
-
 function calcVibePoints(tracks, tab) {
   const total = tracks.length;
-  const raw = tracks.reduce((sum, track, i) => {
-    const rankWeight = total - i;
-    const durMins    = track.durationMs / 60000;
-    return sum + rankWeight * durMins;
-  }, 0);
-  const mult = TAB_MULTIPLIER[tab] || 1;
-  return Math.round(raw * mult);
+  const raw = tracks.reduce((sum, track, i) => sum + (total-i) * (track.durationMs/60000), 0);
+  return Math.round(raw * (TAB_MULTIPLIER[tab]||1));
 }
 
-/* ═══════════════════════════════════════════
-   vibeStatus(points) — fun titles per score range
-═══════════════════════════════════════════ */
 function vibeStatus(points) {
-  if (points >= 800000) return '👑 Music Legend';
-  if (points >= 400000) return '🔥 Main Character';
-  if (points >= 150000) return '🎧 Vibe Explorer';
-  if (points >= 30000)  return '✨ Rising Star';
+  if(points >= 800000) return '👑 Music Legend';
+  if(points >= 400000) return '🔥 Main Character';
+  if(points >= 150000) return '🎧 Vibe Explorer';
+  if(points >= 30000)  return '✨ Rising Star';
   return '🎵 Just Getting Started';
 }
 
-/* Fetch up to 50 recent plays. Used to count
-   how many times each track was actually played,
-   which replaces into real listening minutes.
-═══════════════════════════════════════════ */
-async function getRecentPlays() {
-  const res = await spApi('/me/player/recently-played?limit=50');
-  return (res?.items||[])
-    .filter(item => item?.track?.type==='track')
-    .map(item => ({
-      trackId:   item.track.id,
-      ms:        (typeof item.track.duration_ms==='number'&&item.track.duration_ms>0) ? item.track.duration_ms : 210000,
-      playedAt:  Date.parse(item.played_at),
-    }));
-}
-
-/* ═══════════════════════════════════════════
-   calcListeningMins(topTracks, recentPlays, range)
-   Combines top-tracks catalog with recent play
-   counts to estimate real listening minutes.
-
-   Logic:
-   1. Count how many times each top track appears
-      in recentPlays → gives a play rate.
-   2. For tracks with no recent plays, use rank
-      position to estimate (top track = ~3 plays,
-      last track = ~1 play).
-   3. Total = sum of (durationMs × estimatedPlays)
-
-   This gives numbers in the hundreds–thousands
-   range rather than a flat catalog sum.
-═══════════════════════════════════════════ */
-function calcListeningMins(topTracks, recentPlays) {
-  // Count recent plays per track ID
-  const playCounts = {};
-  for(const p of recentPlays) {
-    playCounts[p.trackId] = (playCounts[p.trackId]||0) + 1;
-  }
-
-  // Max plays seen in recent history (for scaling)
-  const maxRecentPlays = Math.max(...Object.values(playCounts), 1);
-
-  let totalMs = 0;
-  topTracks.forEach((track, index) => {
-    // Real recent play count for this track
-    const recentCount = playCounts[track.id] || 0;
-
-    // Estimated total plays over the period:
-    // If it appeared in recent 50 plays, scale up by rank.
-    // If not in recent, estimate by rank position (top=3, bottom=1).
-    let estimatedPlays;
-    if(recentCount > 0) {
-      // Scale: if it's played recentCount times in ~days, it's been played
-      // proportionally more over the full period. Use rank to boost.
-      const rankBoost = Math.max(1, (topTracks.length - index) / topTracks.length * 5);
-      estimatedPlays = Math.ceil(recentCount * rankBoost);
-    } else {
-      // Not in recent 50 — estimate by rank position
-      // Rank 1 = 3 plays, Rank 50 = 1 play (linear)
-      estimatedPlays = Math.max(1, Math.ceil(3 - (index / topTracks.length) * 2));
-    }
-
-    totalMs += track.durationMs * estimatedPlays;
-  });
-
-  return Math.round(totalMs / 60000);
-}
-
-/* ═══════════════════════════════════════════
-   STEP 2+3 — buildArtistMap(tracks)
-   Groups tracks by artist ID (strict — never by name).
-   Each artist gets: totalMs, tracks[], sorted descending.
-   Returns top 5.
-═══════════════════════════════════════════ */
 function buildArtistMap(tracks) {
-  const map = new Map(); // artistId → { id, name, totalMs, tracks[] }
-
+  const map = new Map();
   for(const track of tracks) {
     for(const artist of track.artists) {
       if(!map.has(artist.id)) map.set(artist.id,{id:artist.id,name:artist.name,totalMs:0,tracks:[]});
@@ -750,77 +745,42 @@ function buildArtistMap(tracks) {
       if(!e.tracks.some(t=>t.id===track.id)) e.tracks.push(track);
     }
   }
-
-  return Array.from(map.values())
-    .sort((a,b)=>b.totalMs-a.totalMs)
-    .slice(0,5);
+  return Array.from(map.values()).sort((a,b)=>b.totalMs-a.totalMs).slice(0,5);
 }
 
-/* ═══════════════════════════════════════════
-   STEP 4 — loadTabData(tab)
-   Fresh isolated fetch per tab. Zero caching.
-   Past Week: recently-played filtered to 7 days.
-   Others:    top-tracks with 2-page pagination.
-   Also fetches top-artists for genre/vibe data.
-═══════════════════════════════════════════ */
 async function loadTabData(tab) {
   const cfg = TABS[tab];
-
   if(cfg.kind==='recent') {
-    // ── Past Week ──────────────────────────────────────
     const [recentRes, np] = await Promise.all([
       spApi('/me/player/recently-played?limit=50'),
       spApi('/me/player/currently-playing').catch(()=>null),
     ]);
     const cutoff = Date.now()-7*24*3600*1000;
-    const allPlays = (recentRes?.items||[]).filter(
-      item=>item?.track?.type==='track' && Date.parse(item.played_at)>=cutoff
-    );
-
-    // Deduplicated track list
+    const allPlays = (recentRes?.items||[]).filter(item=>item?.track?.type==='track'&&Date.parse(item.played_at)>=cutoff);
     const seen=new Set();
-    const tracks=allPlays
-      .filter(item=>{ if(seen.has(item.track.id)) return false; seen.add(item.track.id); return true; })
+    const tracks=allPlays.filter(item=>{ if(seen.has(item.track.id)) return false; seen.add(item.track.id); return true; })
       .map(item=>{
-        const t=item.track;
-        const dur=(typeof t.duration_ms==='number'&&t.duration_ms>0)?t.duration_ms:210000;
-        return{
-          id:t.id, name:t.name||'Unknown', durationMs:dur,
-          albumName:t.album?.name||'',
+        const t=item.track; const dur=(typeof t.duration_ms==='number'&&t.duration_ms>0)?t.duration_ms:210000;
+        return{id:t.id,name:t.name||'Unknown',durationMs:dur,albumName:t.album?.name||'',
           albumArt:t.album?.images?.[1]?.url||t.album?.images?.[0]?.url||'',
           albumArtSm:t.album?.images?.[2]?.url||t.album?.images?.[0]?.url||'',
           spotifyUrl:t.external_urls?.spotify||'',
-          artists:(t.artists||[]).filter(a=>a.id&&a.name).map(a=>({id:a.id,name:a.name})),
-        };
+          artists:(t.artists||[]).filter(a=>a.id&&a.name).map(a=>({id:a.id,name:a.name}))};
       });
-
-    // Minutes = ALL plays including repeats
-    const totalMs=allPlays.reduce((s,item)=>{
-      const d=(typeof item.track.duration_ms==='number'&&item.track.duration_ms>0)?item.track.duration_ms:210000;
-      return s+d;
-    },0);
-
     const artists=buildArtistMap(tracks);
     return{tracks,artists,vibePoints:calcVibePoints(tracks,'week'),np,genres:[]};
   }
-
-  // ── Top tracks (month / 6 months / all time) ────────
   const [tracks, topArtistsRes, np] = await Promise.all([
     getMyTopTracks(cfg.range),
     spApi(`/me/top/artists?time_range=${cfg.range}&limit=10`),
     spApi('/me/player/currently-playing').catch(()=>null),
   ]);
-
   const genres  = (topArtistsRes?.items||[]).flatMap(a=>a.genres||[]);
   const artists = buildArtistMap(tracks);
-  const vibePoints = calcVibePoints(tracks, tab);
-
-  return{tracks,artists,vibePoints,np,genres};
+  return{tracks,artists,vibePoints:calcVibePoints(tracks,tab),np,genres};
 }
 
-/* ═══════════════════════════════════════════
-   FORMAT
-═══════════════════════════════════════════ */
+/* ── FORMAT / ANIMATE ─────────────────────────── */
 function fmtMs(ms) {
   if(!ms) return '';
   return `${Math.floor(ms/60000)}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}`;
@@ -836,25 +796,16 @@ function animCtr(target,dur=1100) {
   })(performance.now());
 }
 
-/* ═══════════════════════════════════════════
-   RENDER — ARTISTS
-   Shows top 5 derived from track durations.
-   Disclaimer label changes per tab.
-═══════════════════════════════════════════ */
+/* ── RENDER: ARTISTS ──────────────────────────── */
 function renderArtists(artists,trackCount) {
   const el=$('ar-list'); if(!el) return;
   el.innerHTML='';
-  if(!artists||!artists.length){el.innerHTML='<div class="empty">No artist data for this period.</div>';return;}
-
+  if(!artists||!artists.length){el.innerHTML='<div style="padding:20px;color:var(--t3);font-size:14px">No artist data.</div>';return;}
   const maxMs=artists[0].totalMs||1;
   artists.forEach((a,i)=>{
-    const pts = Math.round(calcVibePoints([a].map(x=>({...x,durationMs:x.totalMs/Math.max(x.tracks.length,1)}))));
-    // simpler: just show totalMs as minutes for the bar, but label as pts
-    const dispPts = Math.round(a.totalMs / 60000); // minutes of content = readable pts proxy
+    const dispPts=Math.round(a.totalMs/60000);
     const pct=Math.round((a.totalMs/maxMs)*100);
-    const row=document.createElement('div');
-    row.className='ar';
-    row.style.animation=`up .35s ${i*.06}s ease both`;
+    const row=document.createElement('div'); row.className='ar'; row.style.animation=`up .35s ${i*.06}s ease both`;
     row.innerHTML=`
       <div class="rk ${i===0?'g':''}">${i+1}</div>
       <div class="ai">&#127925;</div>
@@ -868,38 +819,31 @@ function renderArtists(artists,trackCount) {
         <div class="as2">${a.tracks.length} song${a.tracks.length!==1?'s':''}</div>
       </div>
       <div class="ac">&#8250;</div>`;
-
     row.addEventListener('click',()=>openPanel({...a,pts:dispPts}));
     el.appendChild(row);
     setTimeout(()=>{ const b=row.querySelector('.abf'); if(b) b.style.width=b.dataset.pct+'%'; },90+i*70);
   });
 }
 
-/* ═══════════════════════════════════════════
-   RENDER — TRACKS
-═══════════════════════════════════════════ */
+/* ── RENDER: TRACKS ───────────────────────────── */
 function renderTracks(tracks,elId,animate) {
-  const el=$(elId); if(!el) return;
-  el.innerHTML='';
-  if(!tracks||!tracks.length){el.innerHTML='<div class="empty">No track data for this period.</div>';return;}
+  const el=$(elId); if(!el) return; el.innerHTML='';
+  if(!tracks||!tracks.length){el.innerHTML='<div style="padding:20px;color:var(--t3);font-size:14px">No track data.</div>';return;}
   tracks.slice(0,100).forEach((t,i)=>{
     const artists=t.artists.map(a=>a.name).join(', ')||'Unknown';
-    const row=document.createElement('div');
-    row.className='tr';
+    const row=document.createElement('div'); row.className='tr';
     if(animate) row.style.animation=`up .28s ${i*.02}s ease both`;
     row.innerHTML=`
       <div class="trn" style="${i<3?'color:var(--sp);font-size:15px':''}">${i<3?['&#129351;','&#129352;','&#129353;'][i]:i+1}</div>
       <div class="ti">${t.albumArt?`<img src="${t.albumArt}" loading="lazy" alt=""/>`:''}</div>
       <div class="tinf"><div class="tn">${t.name}</div><div class="tar">${artists}</div></div>
       <div class="td">${fmtMs(t.durationMs)}</div>
-      ${t.spotifyUrl ? `<button class="play-btn" onclick="window.open('${t.spotifyUrl}','_blank')" title="Open in Spotify"><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9"/></svg></button>` : ''}`;
+      ${t.spotifyUrl?`<button class="play-btn" onclick="window.open('${t.spotifyUrl}','_blank')" title="Open in Spotify"><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9"/></svg></button>`:''}`;
     el.appendChild(row);
   });
 }
 
-/* ═══════════════════════════════════════════
-   RENDER — NOW PLAYING
-═══════════════════════════════════════════ */
+/* ── RENDER: NOW PLAYING ──────────────────────── */
 function renderNP(np) {
   const sec=$('np-s'); if(!sec) return;
   if(!np?.item){sec.classList.remove('on');return;}
@@ -910,133 +854,72 @@ function renderNP(np) {
   if(artEl){ const img=np.item.album?.images?.[0]?.url; artEl.innerHTML=img?`<img src="${img}" alt=""/>`:' &#127925;'; }
 }
 
-/* ═══════════════════════════════════════════
-   APPLY — write data object → DOM
-═══════════════════════════════════════════ */
+/* ── APPLY DATA → DOM ─────────────────────────── */
 function applyData(tab,data) {
-  const cfg=TABS[tab];
-  const trackCount=data.tracks.length;
-  const points=data.vibePoints||0;
-
-  st('badge-txt', cfg.label);
-  st('ar-meta',   `from top ${trackCount}`);
-  st('tr-meta',   `top ${trackCount}`);
-
-  // Disclaimer: personal score context
-  const disc=$('h-disclaimer');
-  if(disc) disc.textContent=vibeStatus(points);
-
+  const cfg=TABS[tab]; const trackCount=data.tracks.length; const points=data.vibePoints||0;
+  st('badge-txt',cfg.label); st('ar-meta',`from top ${trackCount}`); st('tr-meta',`top ${trackCount}`);
+  const disc=$('h-disclaimer'); if(disc) disc.textContent=vibeStatus(points);
   const [ve,vt]=detectVibe(data.genres||[]);
-  sh('ve',ve); st('vt',vt);
-  animCtr(points);
-
-  st('s-tr', trackCount);
-  st('s-hr', '—');
-  st('s-ar', data.artists.length);
-  st('s-t1', data.artists[0]?.name||'&#8212;');
-  st('s-mn', points.toLocaleString());
-  sh('s-vb', vt);
-  st('stats-sub',  cfg.statsLbl+' overview');
-  st('tracks-sub', cfg.statsLbl+' top tracks');
-
-  renderArtists(data.artists, trackCount);
+  sh('ve',ve); st('vt',vt); animCtr(points);
+  st('s-tr',trackCount); st('s-hr','—'); st('s-ar',data.artists.length);
+  st('s-t1',data.artists[0]?.name||'—'); st('s-mn',points.toLocaleString());
+  sh('s-vb',vt); st('stats-sub',cfg.statsLbl+' overview'); st('tracks-sub',cfg.statsLbl+' top tracks');
+  renderArtists(data.artists,trackCount);
   renderTracks(data.tracks,'home-tlist',true);
   renderTracks(data.tracks,'full-tlist',false);
-  renderNP(data.np);
-  clr('err-box');
+  renderNP(data.np); clr('err-box');
 }
 
-/* ═══════════════════════════════════════════
-   TAB SWITCHING
-   Wipes all containers, fetches fresh data,
-   applies to DOM. No tab caching.
-═══════════════════════════════════════════ */
+/* ── TAB SWITCHING ────────────────────────────── */
 async function onTab(el, tab) {
-  document.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
-  el.classList.add('on');
-  clr('err-box');
-
-  // If we have cached data, show it instantly — no skeleton, no wait
-  if (_tabCache[tab]) {
-    applyData(tab, _tabCache[tab]);
-    return;
-  }
-
-  // First visit: fetch fresh data
-  ['ar-list','home-tlist','full-tlist'].forEach(clr);
-  showSkeleton();
+  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('on')); el.classList.add('on'); clr('err-box');
+  if(_tabCache[tab]){ applyData(tab,_tabCache[tab]); return; }
+  ['ar-list','home-tlist','full-tlist'].forEach(clr); showSkeleton();
   try {
-    const data = await loadTabData(tab);
-    _tabCache[tab] = data;          // store for instant re-visits
-    hideSkeleton();
-    applyData(tab, data);
+    const data=await loadTabData(tab); _tabCache[tab]=data; hideSkeleton(); applyData(tab,data);
   } catch(err) {
     hideSkeleton(); st('ctr','0');
     sh('err-box',`<div class="err">&#9888; ${err.message}<br><small style="color:#aaa;margin-top:4px;display:block">Make sure <code>${REDIRECT_URI}</code> is listed as a Redirect URI in your <a href="https://developer.spotify.com/dashboard" target="_blank">Spotify Dashboard</a>.</small></div>`);
   }
 }
 
-/* ═══════════════════════════════════════════
-   ARTIST PANEL
-   Receives a frozen snapshot — no globals.
-   Always wipes before writing.
-   Shows ONLY this artist's own tracks.
-═══════════════════════════════════════════ */
+/* ── ARTIST PANEL ─────────────────────────────── */
 function openPanel(artist) {
   const panel=$('a-panel'),bg=$('a-bg'); if(!panel||!bg) return;
-
-  // Wipe first, always
   $('ap-body').innerHTML=''; $('ap-hero-img').innerHTML='&#127925;'; $('ap-hero-img').style.fontSize='72px';
   st('ap-nm',''); st('ap-mins','0'); st('ap-cnt','0');
-
-  st('ap-nm',   artist.name||'');
-  st('ap-mins', artist.pts>0 ? artist.pts.toLocaleString() : '0');
-  st('ap-cnt',  artist.tracks.length);
-
-  // Build track list HTML
+  st('ap-nm',artist.name||''); st('ap-mins',artist.pts>0?artist.pts.toLocaleString():'0'); st('ap-cnt',artist.tracks.length);
   let html='';
-  if(artist.tracks.length>0) {
+  if(artist.tracks.length>0){
     html+=`<div class="ap-stitle">${artist.name}'s Songs (${artist.tracks.length})</div>`;
-    html+=[...artist.tracks]
-      .sort((a,b)=>b.durationMs-a.durationMs)
-      .map((t,i)=>`
-        <div class="ap-tr" style="animation:up .2s ${i*.03}s ease both">
-          <div class="ap-tr-n">${i+1}</div>
-          <div class="ap-tr-a">${t.albumArtSm?`<img src="${t.albumArtSm}" alt="" loading="lazy"/>`:''}</div>
-          <div class="ap-tr-i">
-            <div class="ap-tr-nm">${t.name}</div>
-            <div class="ap-tr-al">${t.albumName}</div>
-          </div>
-          <div class="ap-tr-d">${fmtMs(t.durationMs)}</div>
-        </div>`).join('');
+    html+=[...artist.tracks].sort((a,b)=>b.durationMs-a.durationMs).map((t,i)=>`
+      <div class="ap-tr" style="animation:up .2s ${i*.03}s ease both">
+        <div class="ap-tr-n">${i+1}</div>
+        <div class="ap-tr-a">${t.albumArtSm?`<img src="${t.albumArtSm}" alt="" loading="lazy"/>`:''}</div>
+        <div class="ap-tr-i"><div class="ap-tr-nm">${t.name}</div><div class="ap-tr-al">${t.albumName}</div></div>
+        <div class="ap-tr-d">${fmtMs(t.durationMs)}</div>
+      </div>`).join('');
   } else {
-    html=`<div style="padding:40px 22px;text-align:center;color:var(--t2);font-size:14px;line-height:1.7">No tracks from <strong>${artist.name}</strong> in the top 100 for this period.</div>`;
+    html=`<div style="padding:40px 22px;text-align:center;color:var(--t2);font-size:14px;line-height:1.7">No tracks from <strong>${artist.name}</strong> for this period.</div>`;
   }
   $('ap-body').innerHTML=html;
-
-  document.body.style.overflow='hidden';
-  bg.classList.add('on');
+  document.body.style.overflow='hidden'; bg.classList.add('on');
   requestAnimationFrame(()=>panel.classList.add('on'));
-
-  // Swipe to dismiss
   let sy=0,dr=false;
   const onTS=e=>{sy=e.touches[0].clientY;dr=true;};
   const onTM=e=>{if(!dr)return;const d=e.touches[0].clientY-sy;if(d>0)panel.style.transform=`translateX(-50%) translateY(${d}px)`;};
   const onTE=e=>{dr=false;const d=e.changedTouches[0].clientY-sy;panel.style.transform='';if(d>80)closePanel();panel.removeEventListener('touchstart',onTS);panel.removeEventListener('touchmove',onTM);panel.removeEventListener('touchend',onTE);};
-  panel.addEventListener('touchstart',onTS,{passive:true});
-  panel.addEventListener('touchmove',onTM,{passive:true});
-  panel.addEventListener('touchend',onTE);
+  panel.addEventListener('touchstart',onTS,{passive:true}); panel.addEventListener('touchmove',onTM,{passive:true}); panel.addEventListener('touchend',onTE);
 }
 function closePanel() {
   const p=$('a-panel'),b=$('a-bg');
-  if(p) p.classList.remove('on'); if(b) b.classList.remove('on');
-  document.body.style.overflow='';
+  if(p) p.classList.remove('on'); if(b) b.classList.remove('on'); document.body.style.overflow='';
 }
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePanel();closeFvPanel();}});
 
-/* ═══════════════════════════════════════════
-   FIREBASE — Realtime Database
-═══════════════════════════════════════════ */
+/* ══════════════════════════════════════════════
+   FIREBASE
+══════════════════════════════════════════════ */
 const _fbApp = firebase.initializeApp({
   apiKey:      'AIzaSyBZaTbDIyXOtyLPEtJLLbdOw8L4eSmiNqY',
   databaseURL: 'https://vibecheck-app-7e557-default-rtdb.europe-west1.firebasedatabase.app/',
@@ -1046,311 +929,518 @@ const _db = firebase.database();
 let _lbListener   = null;
 let _nudgeListener = null;
 
-/* ─── 1. PRESENCE — Last Seen / Online ──────────
-   On load: write online=true + timestamp.
-   On disconnect: Firebase auto-writes online=false.
-─────────────────────────────────────────────── */
 function startPresence(uid) {
-  const presRef = _db.ref('presence/' + uid);
-  presRef.set({ online: true, lastSeen: Date.now() });
-  presRef.onDisconnect().set({ online: false, lastSeen: Date.now() });
+  const presRef = _db.ref('presence/'+uid);
+  presRef.set({ online:true, lastSeen:Date.now() });
+  presRef.onDisconnect().set({ online:false, lastSeen:Date.now() });
 }
 
 function fmtLastSeen(p) {
-  if (!p) return '';
-  if (p.online) return '<span style="color:var(--sp);font-size:10px;font-weight:800">● ONLINE</span>';
-  const diff = Date.now() - (p.lastSeen || 0);
-  const m = Math.floor(diff / 60000);
-  if (m < 2)  return '<span style="color:var(--t3);font-size:10px">just now</span>';
-  if (m < 60) return `<span style="color:var(--t3);font-size:10px">${m}m ago</span>`;
-  const h = Math.floor(m / 60);
-  if (h < 24) return `<span style="color:var(--t3);font-size:10px">${h}h ago</span>`;
-  return `<span style="color:var(--t3);font-size:10px">${Math.floor(h/24)}d ago</span>`;
+  if(!p) return '';
+  if(p.online) return 'online';
+  const diff=Date.now()-(p.lastSeen||0), m=Math.floor(diff/60000);
+  if(m<2)  return 'just now';
+  if(m<60) return `${m}m ago`;
+  const h=Math.floor(m/60);
+  if(h<24) return `${h}h ago`;
+  return `${Math.floor(h/24)}d ago`;
 }
 
-/* ─── 2. SAVE STATUS ─────────────────────────── */
 async function saveStatus() {
-  if (!_profData) return;
-  const input = $('lb-status-input');
-  const status = (input?.value || '').trim().slice(0, 50);
-  if (!status) return;
-  await _db.ref('scores/' + _profData.id).update({ status });
-  if (input) input.value = '';
+  if(!_profData) return;
+  const input=$('lb-status-input');
+  const status=(input?.value||'').trim().slice(0,50);
+  if(!status) return;
+  await _db.ref('scores/'+_profData.id).update({status});
+  if(input) input.value='';
 }
 
-/* ─── 3. SAVE SCORE ─────────────────────────── */
 async function saveMyScore() {
-  const btn = $('lb-save-btn'), msg = $('lb-save-msg');
-  if (!_profData) { if(msg) msg.textContent = 'Load your stats first.'; return; }
-  const yearData = _tabCache['year'];
-  if (!yearData) { if(msg) msg.textContent = 'Open the All Time tab first.'; return; }
-
-  const uid   = _profData.id;
-  const name  = _profData.display_name || _profData.id;
-  const score = yearData.vibePoints || 0;
-  const vibe  = vibeStatus(score);
-
-  if(btn){ btn.disabled=true; btn.textContent='Saving...'; }
+  const btn=$('lb-save-btn'), msg=$('lb-save-msg');
+  if(!_profData){if(msg)msg.textContent='Load your stats first.';return;}
+  const yearData=_tabCache['year'];
+  if(!yearData){if(msg)msg.textContent='Open the All Time tab first.';return;}
+  const uid=_profData.id, name=_profData.display_name||_profData.id;
+  const score=yearData.vibePoints||0, vibe=vibeStatus(score);
+  if(btn){btn.disabled=true;btn.textContent='Saving...';}
   try {
-    await _db.ref('scores/' + uid).update({ name, score, vibe, updatedAt: Date.now() });
-    if(msg) msg.textContent = '✅ Score saved!';
-    if(btn) btn.textContent = '✅ Saved';
-    startPresence(uid); // mark online after saving
+    await _db.ref('scores/'+uid).update({name,score,vibe,updatedAt:Date.now()});
+    if(msg) msg.textContent='✅ Score saved!';
+    if(btn) btn.textContent='✅ Saved';
+    startPresence(uid);
   } catch(e) {
-    if(msg) msg.textContent = '❌ ' + e.message;
-    if(btn){ btn.disabled=false; btn.textContent='💾 Save My Score'; }
+    if(msg) msg.textContent='❌ '+e.message;
+    if(btn){btn.disabled=false;btn.textContent='💾 Save My Score';}
   }
 }
 
-/* ─── 4. SEND NUDGE ─────────────────────────── */
 async function sendNudge(toUid, toName) {
-  if (!_profData) return;
-  const fromName = _profData.display_name || _profData.id;
-  await _db.ref('nudges/' + toUid).push({
-    from: fromName, ts: Date.now(),
-  });
-  // Show toast to sender
-  const toast = $('nudge-toast');
-  if (toast) {
-    toast.style.display = 'block';
-    setTimeout(() => { toast.style.display = 'none'; }, 2500);
-  }
+  if(!_profData) return;
+  const fromName=_profData.display_name||_profData.id;
+  await _db.ref('nudges/'+toUid).push({from:fromName,ts:Date.now()});
+  showToast('&#127925; Vibe sent to '+toName+'!');
 }
 
-/* ─── 5. LISTEN FOR INCOMING NUDGES ─────────── */
+function showToast(msg) {
+  const toast=$('nudge-toast'); if(!toast) return;
+  toast.innerHTML=msg; toast.style.display='block';
+  clearTimeout(toast._t);
+  toast._t=setTimeout(()=>{ toast.style.display='none'; }, 2800);
+}
+
 function listenNudges(uid) {
-  if (_nudgeListener) return;
-  const ref = _db.ref('nudges/' + uid);
-  _nudgeListener = ref.on('child_added', snap => {
-    const d = snap.val();
-    if (!d || (Date.now() - d.ts) > 30000) return; // ignore old nudges
-    ref.child(snap.key).remove(); // consume it
-    const toast = $('nudge-toast');
-    if (toast) {
-      toast.textContent = `✨ ${d.from} sent you a vibe!`;
-      toast.style.display = 'block';
-      setTimeout(() => { toast.style.display = 'none'; }, 3000);
+  if(_nudgeListener) return;
+  const ref=_db.ref('nudges/'+uid);
+  _nudgeListener=ref.on('child_added',snap=>{
+    const d=snap.val();
+    if(!d||(Date.now()-d.ts)>30000) return;
+    ref.child(snap.key).remove();
+    if(d.type==='friendAccepted') {
+      showToast(`&#129309; ${d.from} accepted your friend request!`);
+    } else {
+      showToast(`&#10024; ${d.from} sent you a vibe!`);
     }
   });
 }
 
-/* ─── 6. LEADERBOARD LISTENER ────────────────
-   Fetches scores + presence in parallel (realtime).
-─────────────────────────────────────────────── */
+/* ── LEADERBOARD ──────────────────────────────── */
 function startLeaderboard() {
-  const el = $('lb-list');
-  if (!el || _lbListener) return;
-
-  const scoresRef   = _db.ref('scores').orderByChild('score').limitToLast(25);
-  const presenceRef = _db.ref('presence');
-
-  let latestScores   = [];
-  let latestPresence = {};
-
+  const el=$('lb-list'); if(!el||_lbListener) return;
+  const scoresRef=_db.ref('scores').orderByChild('score').limitToLast(25);
+  const presenceRef=_db.ref('presence');
+  let latestScores=[], latestPresence={};
   function render() {
-    if (!latestScores.length) {
-      el.innerHTML = '<div class="empty">No scores yet — be the first!</div>';
+    if(!latestScores.length){el.innerHTML='<div style="padding:20px;text-align:center;color:var(--t3)">No scores yet — be the first!</div>';return;}
+    const myUid=_profData?.id, medals=['gold','silver','bronze'];
+    el.innerHTML=latestScores.map((r,i)=>{
+      const isMe=r.uid===myUid, p=latestPresence[r.uid];
+      const isOnline=p?.online;
+      const nudgeBtn=isMe?'':
+        `<button onclick="sendNudge('${r.uid}','${(r.name||'').replace(/'/g,'')}')"
+          class="nudge-btn">&#127925;</button>`;
+      return`<div class="lb-row ${isMe?'me':''}">
+        <div class="lb-pos ${medals[i]||''}">${i<3?['🥇','🥈','🥉'][i]:i+1}</div>
+        <div class="lb-info">
+          <div class="lb-name">${r.name||'—'}${isMe?' <span style="color:var(--sp);font-size:10px;font-weight:800">YOU</span>':''}
+            <span style="font-size:10px;font-weight:700;color:${isOnline?'var(--sp)':'var(--t3)'}">${isOnline?'● ONLINE':''}</span>
+          </div>
+          <div class="lb-meta">${r.status?'🎵 '+r.status:(r.vibe||'')}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+          <div class="lb-score">${Number(r.score||0).toLocaleString()}</div>${nudgeBtn}
+        </div>
+      </div>`;
+    }).join('');
+  }
+  _lbListener=scoresRef.on('value',snap=>{
+    const rows=[]; snap.forEach(c=>rows.push({uid:c.key,...c.val()}));
+    latestScores=rows.sort((a,b)=>b.score-a.score); render();
+  });
+  presenceRef.on('value',snap=>{ latestPresence=snap.val()||{}; render(); });
+}
+
+/* ══════════════════════════════════════════════
+   FRIENDS — live search + friend requests
+   Firebase structure:
+     /friendRequests/{toUid}/{fromUid} = { fromName, sentAt }
+     /friends/{uid}/{otherUid} = true   (mutual, written on accept)
+══════════════════════════════════════════════ */
+let _frListener      = null;
+let _frAllScores     = [];
+let _frPresence      = {};
+let _frQuery         = '';
+let _frFriends       = {};   // uid → true  (my confirmed friends)
+let _frSentReqs      = {};   // uid → true  (I sent a request to them)
+let _frIncoming      = {};   // requestKey → { fromUid, fromName, sentAt }
+
+/* ── SEARCH ───────────────────────────────────── */
+function onFrSearch(input) {
+  _frQuery = input.value.toLowerCase().trim();
+  const box=$('fr-search-box');
+  if(box) box.classList.toggle('has-val', _frQuery.length>0);
+  renderFriends();
+}
+function clearFrSearch() {
+  _frQuery='';
+  const inp=$('fr-search-input'); if(inp) inp.value='';
+  const box=$('fr-search-box'); if(box) box.classList.remove('has-val');
+  renderFriends();
+}
+
+/* ── SEND FRIEND REQUEST ──────────────────────── */
+async function sendFriendRequest(targetUid, targetName) {
+  if(!_profData) return;
+  const myUid  = _profData.id;
+  const myName = _profData.display_name || _profData.id;
+  if(myUid === targetUid) return;
+
+  // Write to /friendRequests/{targetUid}/{myUid}
+  await _db.ref(`friendRequests/${targetUid}/${myUid}`).set({
+    fromName: myName,
+    sentAt:   Date.now(),
+  });
+
+  // Track locally so button updates immediately
+  _frSentReqs[targetUid] = true;
+  renderFriends();
+  showToast('&#128276; Friend request sent to ' + targetName + '!');
+}
+
+/* ── ACCEPT FRIEND REQUEST ────────────────────── */
+async function acceptFriendRequest(fromUid, fromName, reqKey) {
+  if(!_profData) return;
+  const myUid  = _profData.id;
+  const myName = _profData.display_name || _profData.id;
+
+  // Write mutual friendship
+  await Promise.all([
+    _db.ref(`friends/${myUid}/${fromUid}`).set(true),
+    _db.ref(`friends/${fromUid}/${myUid}`).set(true),
+    // Remove the pending request
+    _db.ref(`friendRequests/${myUid}/${fromUid}`).remove(),
+  ]);
+
+  // Send a nudge-style notification to the sender
+  await _db.ref(`nudges/${fromUid}`).push({ from: myName, ts: Date.now(), type: 'friendAccepted' });
+
+  showToast('&#129309; Now friends with ' + fromName + '!');
+}
+
+/* ── DECLINE FRIEND REQUEST ───────────────────── */
+async function declineFriendRequest(fromUid) {
+  if(!_profData) return;
+  await _db.ref(`friendRequests/${_profData.id}/${fromUid}`).remove();
+}
+
+/* ── RENDER PENDING REQUESTS ──────────────────── */
+function renderPendingRequests() {
+  const section = $('fr-pending-section');
+  const list    = $('fr-pending-list');
+  const badge   = $('fr-pending-count');
+  if(!section || !list) return;
+
+  const reqs = Object.entries(_frIncoming); // [[fromUid, {fromName,sentAt}], ...]
+
+  if(!reqs.length) {
+    section.classList.remove('visible');
+    return;
+  }
+
+  section.classList.add('visible');
+  if(badge) badge.textContent = reqs.length;
+
+  list.innerHTML = reqs.map(([fromUid, d]) => {
+    const initials = (d.fromName||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const ago = fmtLastSeen({ lastSeen: d.sentAt });
+    return `<div class="fr-req-card" id="req-${fromUid}">
+      <div class="fr-req-avatar">${initials}</div>
+      <div class="fr-req-info">
+        <div class="fr-req-name">${d.fromName||'—'}</div>
+        <div class="fr-req-meta">Wants to be friends · ${ago}</div>
+      </div>
+      <div class="fr-req-actions">
+        <button class="btn-accept" onclick="acceptFriendRequest('${fromUid}','${(d.fromName||'').replace(/'/g,'')}','req-${fromUid}')">&#10003; Accept</button>
+        <button class="btn-decline" onclick="declineFriendRequest('${fromUid}')">&#10005;</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── RENDER FRIENDS LIST ──────────────────────── */
+function renderFriends() {
+  const el=$('fr-list'); if(!el) return;
+  const myUid=_profData?.id;
+
+  let list = _frQuery
+    ? _frAllScores.filter(r=>(r.name||'').toLowerCase().includes(_frQuery))
+    : [..._frAllScores];
+
+  // Sort: friends first, then online, then lastSeen desc
+  list.sort((a,b)=>{
+    const aFr=!!_frFriends[a.uid], bFr=!!_frFriends[b.uid];
+    if(aFr && !bFr) return -1;
+    if(!aFr && bFr) return 1;
+    const pa=_frPresence[a.uid], pb=_frPresence[b.uid];
+    if(pa?.online&&!pb?.online) return -1;
+    if(!pa?.online&&pb?.online) return 1;
+    return (pb.lastSeen||0)-(pa.lastSeen||0);
+  });
+
+  const sub=$('fr-sub');
+  if(sub) sub.textContent=_frQuery
+    ? `${list.length} result${list.length!==1?'s':''} for "${_frQuery}"`
+    : `${_frAllScores.length} people on VibeCheck`;
+
+  if(!list.length) {
+    el.innerHTML=`<div class="fr-empty"><div class="fr-empty-icon">${_frQuery?'🔍':'🎵'}</div><p>${_frQuery?'No one found matching "'+_frQuery+'"':'No one here yet — invite friends!'}</p></div>`;
+    return;
+  }
+
+  el.innerHTML=list.map((r,i)=>{
+    const isMe     = r.uid===myUid;
+    const isFriend = !!_frFriends[r.uid];
+    const isPending= !!_frSentReqs[r.uid];
+    const p        = _frPresence[r.uid]||{};
+    const isOnline = !!p.online;
+    const seenTxt  = fmtLastSeen(p);
+    const initials = (r.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const scoreStr = r.score ? Number(r.score).toLocaleString() : null;
+
+    // Right-side action
+    let actionBtn;
+    if(isMe) {
+      actionBtn=`<span style="font-size:11px;color:var(--t3);font-weight:600">You</span>`;
+    } else if(isFriend) {
+      actionBtn=`<button class="add-friend-btn friend" disabled>&#129309; Friends</button>`;
+    } else if(isPending) {
+      actionBtn=`<button class="add-friend-btn pending" disabled>&#128276; Sent</button>`;
+    } else {
+      actionBtn=`<button class="add-friend-btn" onclick="sendFriendRequest('${r.uid}','${(r.name||'').replace(/'/g,'')}')">&#10010; Add</button>`;
+    }
+
+    // Nudge only for friends
+    const nudgeBtn = isFriend && !isMe
+      ? `<button class="nudge-btn" onclick="sendNudge('${r.uid}','${(r.name||'').replace(/'/g,'')}')">&#127925;</button>`
+      : '';
+
+    return`<div class="fr-card ${isMe?'me-card':isFriend?'fr-friend-card':''}" style="animation:fi .18s ${i*.022}s ease both${isFriend&&!isMe?';cursor:pointer':''}" ${isFriend&&!isMe?`onclick="openFriendVibe('${r.uid}','${(r.name||'').replace(/'/g,'')}')"`:''}>
+      <div class="fr-avatar">
+        ${initials}
+        <span class="online-dot ${isOnline?'live':''}"></span>
+      </div>
+      <div class="fr-info">
+        <div class="fr-name">
+          ${r.name||'—'}
+          ${isMe?'<span class="you-badge">YOU</span>':''}
+          ${isFriend&&!isMe?'<span class="you-badge" style="background:rgba(29,185,84,.15)">&#129309;</span>':''}
+        </div>
+        <div class="fr-sub-row">
+          ${r.status?`<span class="fr-status">🎵 ${r.status}`:(r.vibe?`<span class="fr-status">${r.vibe}`:'<span class="fr-status" style="color:var(--t3)">No status set')}</span>
+          ${seenTxt?`<span class="fr-seen ${isOnline?'live':''}">${isOnline?'● Now':seenTxt}</span>`:''}
+        </div>
+      </div>
+      <div class="fr-actions">
+        ${scoreStr?`<span class="fr-score-badge">${scoreStr}</span>`:''}
+        ${actionBtn}
+        ${nudgeBtn}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── START FRIENDS (initialise all listeners) ─── */
+function startFriends() {
+  const el=$('fr-list'); if(!el||_frListener) return;
+  const myUid=_profData?.id; if(!myUid) return;
+
+  // 1. All scores (everyone on VibeCheck)
+  _frListener=_db.ref('scores').on('value',snap=>{
+    const rows=[]; snap.forEach(c=>rows.push({uid:c.key,...c.val()}));
+    _frAllScores=rows; renderFriends();
+  });
+
+  // 2. Presence
+  _db.ref('presence').on('value',snap=>{ _frPresence=snap.val()||{}; renderFriends(); });
+
+  // 3. My confirmed friends
+  _db.ref(`friends/${myUid}`).on('value',snap=>{ _frFriends=snap.val()||{}; renderFriends(); });
+
+  // 4. Requests I sent (to track pending state on buttons)
+  _db.ref(`friendRequests`).on('value', snap => {
+    _frSentReqs = {};
+    snap.forEach(toSnap => {
+      const toUid = toSnap.key;
+      toSnap.forEach(fromSnap => {
+        if(fromSnap.key === myUid) _frSentReqs[toUid] = true;
+      });
+    });
+    renderFriends();
+  });
+
+  // 5. Incoming requests for ME
+  _db.ref(`friendRequests/${myUid}`).on('value', snap => {
+    _frIncoming = {};
+    snap.forEach(c => { _frIncoming[c.key] = c.val(); });
+    renderPendingRequests();
+  });
+}
+
+/* ══════════════════════════════════════════════
+   FRIEND VIBE PANEL
+   Opens a bottom-sheet showing a friend's
+   Vibe stats (score, top artists, vibe tag).
+   Data source: /scores/{uid} from Firebase.
+   Only accessible for confirmed friends.
+══════════════════════════════════════════════ */
+async function openFriendVibe(uid, name) {
+  const panel=$('fv-panel'), bg=$('fv-bg'); if(!panel||!bg) return;
+  const initials=(name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+
+  // Reset
+  $('fv-av').textContent   = initials;
+  $('fv-nm').textContent   = name||'—';
+  $('fv-ve').textContent   = '🎵';
+  $('fv-vt').textContent   = '—';
+  $('fv-score').textContent= '—';
+  $('fv-tracks').textContent='—';
+  $('fv-artists').textContent='—';
+  $('fv-body').innerHTML   = `<div class="fv-loading"><div class="ring"></div><span>Loading ${name}'s vibe...</span></div>`;
+
+  // Open panel
+  document.body.style.overflow='hidden';
+  bg.classList.add('on');
+  requestAnimationFrame(()=>panel.classList.add('on'));
+
+  // Swipe-to-dismiss
+  let sy=0,dr=false;
+  const onTS=e=>{sy=e.touches[0].clientY;dr=true;};
+  const onTM=e=>{if(!dr)return;const d=e.touches[0].clientY-sy;if(d>0)panel.style.transform=`translateX(-50%) translateY(${d}px)`;};
+  const onTE=e=>{dr=false;const d=e.changedTouches[0].clientY-sy;panel.style.transform='';if(d>80)closeFvPanel();panel.removeEventListener('touchstart',onTS);panel.removeEventListener('touchmove',onTM);panel.removeEventListener('touchend',onTE);};
+  panel.addEventListener('touchstart',onTS,{passive:true});
+  panel.addEventListener('touchmove',onTM,{passive:true});
+  panel.addEventListener('touchend',onTE);
+
+  // Fetch score data from Firebase
+  try {
+    const snap = await _db.ref('scores/'+uid).get();
+    const d    = snap.val();
+
+    if(!d) {
+      $('fv-body').innerHTML=`<div class="fv-lock"><div class="fv-lock-icon">🎵</div><p>${name} hasn't saved their score yet.<br><span style="color:var(--t3);font-size:12px">Tell them to open VibeCheck and tap Save Score!</span></p></div>`;
       return;
     }
-    const myUid  = _profData?.id;
-    const medals = ['gold','silver','bronze'];
 
-    el.innerHTML = latestScores.map((r, i) => {
-      const isMe = r.uid === myUid;
-      const p    = latestPresence[r.uid];
-      const nudgeBtn = isMe ? '' :
-        `<button onclick="sendNudge('${r.uid}','${r.name.replace(/'/g,'')}')"
-          style="background:var(--bg3);border:none;border-radius:50px;padding:5px 10px;font-size:11px;font-weight:700;color:var(--sp);cursor:pointer;flex-shrink:0">
-          &#127925;
-        </button>`;
-      return `
-        <div class="lb-row ${isMe?'me':''}">
-          <div class="lb-pos ${medals[i]||''}">${i<3?['🥇','🥈','🥉'][i]:i+1}</div>
-          <div class="lb-info">
-            <div class="lb-name" style="display:flex;align-items:center;gap:6px">
-              ${r.name}${isMe?' <span style="color:var(--sp);font-size:10px">YOU</span>':''}
-              ${fmtLastSeen(p)}
-            </div>
-            <div class="lb-meta">${r.status ? '🎵 '+r.status : (r.vibe||'')}</div>
+    // Vibe tag
+    const vibe   = d.vibe || '🎵 Just Getting Started';
+    const vibeEmoji = vibe.split(' ')[0] || '🎵';
+    const vibeText  = vibe.split(' ').slice(1).join(' ') || vibe;
+    $('fv-ve').textContent = vibeEmoji;
+    $('fv-vt').textContent = vibeText;
+    $('fv-score').textContent  = d.score ? Number(d.score).toLocaleString() : '0';
+
+    // Top artists from Firebase if available, else show score only
+    const artistsSnap = await _db.ref('topArtists/'+uid).get();
+    const artistsData = artistsSnap.val();
+
+    if(artistsData && Array.isArray(artistsData)) {
+      $('fv-tracks').textContent  = artistsData.length || '—';
+      $('fv-artists').textContent = artistsData.length || '—';
+
+      $('fv-body').innerHTML = `
+        <div class="fv-section-title">🎤 Top Artists</div>
+        ${artistsData.slice(0,5).map((a,i)=>`
+          <div class="fv-artist-row">
+            <div class="fv-art-num">${i+1}</div>
+            <div class="fv-art-av">🎵</div>
+            <div class="fv-art-name">${a.name||'—'}</div>
+            <div class="fv-art-pts">${a.tracks||0} tracks</div>
+          </div>`).join('')}
+        ${d.status?`<div style="padding:16px 22px 0;font-size:13px;color:var(--t2)">🎵 "${d.status}"</div>`:''}`;
+    } else {
+      // No detailed artist data — show summary card
+      $('fv-tracks').textContent  = '—';
+      $('fv-artists').textContent = '—';
+      $('fv-body').innerHTML = `
+        <div style="padding:24px 22px">
+          <div style="background:var(--bg2);border:1px solid var(--bg3);border-radius:${getComputedStyle(document.documentElement).getPropertyValue('--r')};padding:20px;text-align:center">
+            <div style="font-size:32px;margin-bottom:10px">${vibeEmoji}</div>
+            <div style="font-size:16px;font-weight:800;margin-bottom:6px">${vibeText}</div>
+            <div style="font-size:13px;color:var(--t2)">${Number(d.score||0).toLocaleString()} Vibe Points</div>
+            ${d.status?`<div style="margin-top:12px;font-size:12px;color:var(--t3);font-style:italic">"${d.status}"</div>`:''}
           </div>
-          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-            <div class="lb-score">${Number(r.score).toLocaleString()}</div>
-            ${nudgeBtn}
-          </div>
+          <p style="font-size:12px;color:var(--t3);text-align:center;margin-top:14px;line-height:1.6">Detailed artist breakdown available<br>when ${name} saves their data again.</p>
         </div>`;
-    }).join('');
+    }
+  } catch(e) {
+    $('fv-body').innerHTML=`<div class="fv-lock"><div class="fv-lock-icon">⚠️</div><p>Couldn't load ${name}'s vibe.<br><span style="color:var(--t3);font-size:12px">${e.message}</span></p></div>`;
   }
-
-  // Listen to scores
-  _lbListener = scoresRef.on('value', snap => {
-    const rows = [];
-    snap.forEach(c => { rows.push({ uid: c.key, ...c.val() }); });
-    latestScores = rows.sort((a,b) => b.score - a.score);
-    render();
-  });
-
-  // Listen to presence (updates last-seen in real time)
-  presenceRef.on('value', snap => {
-    latestPresence = snap.val() || {};
-    render();
-  });
 }
 
-/* ─── 7. INVITE FRIENDS via WhatsApp ────────── */
+function closeFvPanel() {
+  const p=$('fv-panel'),b=$('fv-bg');
+  if(p) p.classList.remove('on'); if(b) b.classList.remove('on');
+  document.body.style.overflow='';
+}
+
+/* ── INVITE ───────────────────────────────────── */
 function inviteFriends() {
-  const myName  = _profData?.display_name || 'I';
-  const score   = (_tabCache['year']?.vibePoints || 0).toLocaleString();
-  const status  = vibeStatus(_tabCache['year']?.vibePoints || 0);
-  const url     = 'https://s10922-netizen.github.io/vibecheck/';
-  const text    = `🎵 ${myName} scored ${score} Vibe Points on VibeCheck!\n${status}\n\nCheck your own music vibe 👉 ${url}`;
-  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+  const myName=_profData?.display_name||'I';
+  const score=(_tabCache['year']?.vibePoints||0).toLocaleString();
+  const status=vibeStatus(_tabCache['year']?.vibePoints||0);
+  const url='https://s10922-netizen.github.io/vibecheck/';
+  const text=`🎵 ${myName} scored ${score} Vibe Points on VibeCheck!\n${status}\n\nCheck your own music vibe 👉 ${url}`;
+  window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');
 }
 
-/* ═══════════════════════════════════════════
-   FRIENDS — live list of all users in DB
-   Same data source as leaderboard (scores +
-   presence), shown sorted by online-first then
-   last-seen. Nudge button included.
-═══════════════════════════════════════════ */
-let _frListener = null;
-
-function startFriends() {
-  const el = $('fr-list'); if(!el || _frListener) return;
-
-  let latestScores = [], latestPresence = {};
-
-  function render() {
-    const myUid = _profData?.id;
-    // Sort: online first, then by lastSeen desc
-    const sorted = [...latestScores].sort((a,b) => {
-      const pa = latestPresence[a.uid], pb = latestPresence[b.uid];
-      if (pa?.online && !pb?.online) return -1;
-      if (!pa?.online && pb?.online) return 1;
-      return (pb.lastSeen||0) - (pa.lastSeen||0);
-    });
-
-    const sub = $('fr-sub');
-    if(sub) sub.textContent = `${sorted.length} people on VibeCheck`;
-
-    if(!sorted.length){ el.innerHTML='<div class="empty">No one yet — invite friends!</div>'; return; }
-
-    el.innerHTML = sorted.map(r => {
-      const isMe = r.uid === myUid;
-      const p    = latestPresence[r.uid] || {};
-      const nudgeBtn = isMe ? '<span style="font-size:11px;color:var(--t3)">You</span>' :
-        `<button onclick="sendNudge('${r.uid}','${r.name.replace(/'/g,'')}')"
-          style="background:var(--bg3);border:none;border-radius:50px;padding:5px 12px;font-size:12px;font-weight:700;color:var(--sp);cursor:pointer">
-          &#127925; Nudge
-        </button>`;
-      return `
-        <div class="lb-row ${isMe?'me':''}">
-          <div style="width:10px;height:10px;border-radius:50%;background:${p.online?'var(--sp)':'var(--bg4)'};flex-shrink:0;margin-right:2px"></div>
-          <div class="lb-info">
-            <div class="lb-name" style="display:flex;align-items:center;gap:6px">
-              ${r.name} ${fmtLastSeen(p)}
-            </div>
-            <div class="lb-meta">${r.status ? '🎵 '+r.status : (r.vibe||'')}</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-            ${nudgeBtn}
-          </div>
-        </div>`;
-    }).join('');
-  }
-
-  _frListener = _db.ref('scores').on('value', snap => {
-    const rows=[]; snap.forEach(c=>rows.push({uid:c.key,...c.val()}));
-    latestScores=rows; render();
-  });
-  _db.ref('presence').on('value', snap => {
-    latestPresence=snap.val()||{}; render();
-  });
-}
-
-/* ═══════════════════════════════════════════
-   BOTTOM NAV
-═══════════════════════════════════════════ */
+/* ── BOTTOM NAV ───────────────────────────────── */
 function goPage(nm) {
-  ['home','stats','leaderboard','friends','profile'].forEach(n => {
-    const b = $(`bn-${n}`); if(b) b.classList.toggle('on', n===nm);
+  ['home','stats','leaderboard','friends','profile'].forEach(n=>{
+    const b=$(`bn-${n}`); if(b) b.classList.toggle('on',n===nm);
   });
-  ['pg-home','pg-stats','pg-leaderboard','pg-friends','pg-profile'].forEach(id => {
-    const p = $(id); if(p) p.classList.toggle('on', id===`pg-${nm}`);
+  ['pg-home','pg-stats','pg-leaderboard','pg-friends','pg-profile'].forEach(id=>{
+    const p=$(id); if(p) p.classList.toggle('on',id===`pg-${nm}`);
   });
-  const pw = $('pill-wrap');
-  if(pw) pw.style.display = nm==='home' ? '' : 'none';
+  const pw=$('pill-wrap'); if(pw) pw.style.display=nm==='home'?'':'none';
   if(nm==='profile')     fillProfile();
   if(nm==='leaderboard') startLeaderboard();
   if(nm==='friends')     startFriends();
 }
 
-/* ═══════════════════════════════════════════
-   PROFILE
-═══════════════════════════════════════════ */
+/* ── PROFILE ──────────────────────────────────── */
 async function loadProfile() {
   const p=await spApi('/me'); _profData=p;
   const av=$('u-av'); st('u-nm',p.display_name||p.id);
-  if(av){ av.innerHTML=p.images?.[0]?.url?`<img src="${p.images[0].url}" alt="av"/>`:(p.display_name||'U')[0].toUpperCase(); }
+  if(av){ av.innerHTML=p.images?.[0]?.url?`<img src="${p.images[0].url}" alt="av"/>`:( p.display_name||'U')[0].toUpperCase(); }
 }
 function fillProfile() {
   if(!_profData) return; const p=_profData;
   const big=$('p-av');
   if(big){ big.innerHTML=p.images?.[0]?.url?`<img src="${p.images[0].url}" style="width:100%;height:100%;object-fit:cover"/>`:(p.display_name||'U')[0].toUpperCase(); }
-  st('p-nm',  p.display_name||p.id||'');
-  st('p-id',  p.id?'@'+p.id:'');
+  st('p-nm',p.display_name||p.id||''); st('p-id',p.id?'@'+p.id:'');
   st('p-plan',p.product?p.product[0].toUpperCase()+p.product.slice(1):'');
-  st('p-ctry',p.country||'');
-  st('p-fol', (p.followers?.total??0).toLocaleString());
+  st('p-ctry',p.country||''); st('p-fol',(p.followers?.total??0).toLocaleString());
 }
 
-/* ═══════════════════════════════════════════
-   BOOT
-═══════════════════════════════════════════ */
-function getTok() { return _token || sessionStorage.getItem('tok') || localStorage.getItem('tok') || null; }
-function logout() { sessionStorage.clear(); localStorage.removeItem('tok'); localStorage.removeItem('pkce_v'); _token=null; _profData=null; Object.keys(_tabCache).forEach(k=>delete _tabCache[k]); location.href=location.pathname; }
+/* ── BOOT ─────────────────────────────────────── */
+function getTok(){ return _token||sessionStorage.getItem('tok')||localStorage.getItem('tok')||null; }
+function logout(){
+  sessionStorage.clear(); localStorage.removeItem('tok'); localStorage.removeItem('pkce_v');
+  _token=null; _profData=null; Object.keys(_tabCache).forEach(k=>delete _tabCache[k]);
+  location.href=location.pathname;
+}
 
 async function boot() {
-  // Clear tab cache if code was updated
-  if (localStorage.getItem('vc_cache_ver') !== _CACHE_VERSION) {
-    localStorage.setItem('vc_cache_ver', _CACHE_VERSION);
-    Object.keys(_tabCache).forEach(k => delete _tabCache[k]);
+  if(localStorage.getItem('vc_cache_ver')!==_CACHE_VERSION){
+    localStorage.setItem('vc_cache_ver',_CACHE_VERSION);
+    Object.keys(_tabCache).forEach(k=>delete _tabCache[k]);
   }
-  const params  = new URLSearchParams(location.search);
-  const code    = params.get('code');
-  const oauthErr= params.get('error');
-
-  if (oauthErr) {
+  const params=new URLSearchParams(location.search);
+  const code=params.get('code'), oauthErr=params.get('error');
+  if(oauthErr){
     showScr('s-login');
-    sh('err-box', `<div class="err">Spotify error: <strong>${oauthErr}</strong><br><small>${params.get('error_description')||''}</small></div>`);
+    sh('err-box',`<div class="err">Spotify error: <strong>${oauthErr}</strong><br><small>${params.get('error_description')||''}</small></div>`);
     return;
   }
-
-  if (code) {
+  if(code){
     setLoad('Connecting to Spotify...');
     try {
       await exchangeCode(code);
-      _token = sessionStorage.getItem('tok') || localStorage.getItem('tok');
-      setLoad('Loading your profile...'); await loadProfile();
-      showScr('s-app');
-      await onTab(document.querySelector('.pill[data-tab="year"]'), 'year');
-    } catch(e) {
+      _token=sessionStorage.getItem('tok')||localStorage.getItem('tok');
+      setLoad('Loading your profile...'); await loadProfile(); showScr('s-app');
+      await onTab(document.querySelector('.pill[data-tab="year"]'),'year');
+    } catch(e){
       showScr('s-login');
-      // Show the full error so we can diagnose
-      sh('err-box', `<div class="err">&#9888; ${e.message}<br><small style="color:#aaa;margin-top:4px;display:block">REDIRECT sent: <code>${REDIRECT_URI}</code></small></div>`);
+      sh('err-box',`<div class="err">&#9888; ${e.message}<br><small style="color:#aaa;margin-top:4px;display:block">REDIRECT sent: <code>${REDIRECT_URI}</code></small></div>`);
     }
     return;
   }
-
-  const t = getTok();
-  if (t) {
-    _token = t; setLoad('Restoring session...');
-    try {
-      await loadProfile(); showScr('s-app');
-      await onTab(document.querySelector('.pill[data-tab="year"]'), 'year');
-    } catch { sessionStorage.clear(); localStorage.removeItem('tok'); showScr('s-login'); }
+  const t=getTok();
+  if(t){
+    _token=t; setLoad('Restoring session...');
+    try { await loadProfile(); showScr('s-app'); await onTab(document.querySelector('.pill[data-tab="year"]'),'year'); }
+    catch { sessionStorage.clear(); localStorage.removeItem('tok'); showScr('s-login'); }
     return;
   }
-
   showScr('s-login');
 }
 
