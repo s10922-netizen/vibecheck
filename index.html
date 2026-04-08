@@ -4,6 +4,9 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>VibeCheck</title>
+<!-- Firebase Realtime Database SDK (compat version — works without bundler) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -168,7 +171,21 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .play-btn svg{width:10px;height:10px;fill:#000;margin-left:1px}
 .err{margin:14px 22px;background:rgba(255,80,80,.07);border:1px solid rgba(255,80,80,.18);border-radius:12px;padding:13px 15px;font-size:13px;color:#f88;line-height:1.6}
 .err a{color:var(--sp)}
-/* ── MOBILE OPTIMISATIONS ─────────────────────── */
+/* ── LEADERBOARD ─────────────────────────────── */
+.lb-row{display:flex;align-items:center;gap:12px;padding:10px 22px;border-bottom:1px solid rgba(255,255,255,.05)}
+.lb-row:last-child{border-bottom:none}
+.lb-row.me{background:rgba(29,185,84,.07);border-radius:12px;border-bottom:none;margin:0 8px}
+.lb-pos{font-size:15px;font-weight:800;width:28px;text-align:center;flex-shrink:0;color:var(--t3)}
+.lb-pos.gold{color:#FFD700}.lb-pos.silver{color:#C0C0C0}.lb-pos.bronze{color:#CD7F32}
+.lb-info{flex:1;min-width:0}
+.lb-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-meta{font-size:11px;color:var(--t2);margin-top:2px}
+.lb-score{font-size:14px;font-weight:800;color:var(--sp);font-variant-numeric:tabular-nums;flex-shrink:0}
+.lb-save-btn{width:100%;padding:14px;border-radius:50px;background:var(--sp);color:#000;font-family:var(--f);font-size:15px;font-weight:800;border:none;cursor:pointer;transition:background .15s,transform .12s;margin-bottom:12px}
+.lb-save-btn:hover{background:var(--sp2)}
+.lb-save-btn:disabled{background:var(--bg3);color:var(--t3);cursor:default}
+.lb-live{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:800;color:var(--sp);letter-spacing:1px;text-transform:uppercase}
+.lb-live .dot{width:5px;height:5px;border-radius:50%;background:var(--sp);animation:blink 1.4s ease infinite} ─────────────────────── */
 @media (max-width: 480px) {
   /* topbar: tighter top padding, hide username text */
   .topbar{padding-top:52px;padding-bottom:6px}
@@ -356,13 +373,37 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
     </div>
   </div>
 
+  <!-- LEADERBOARD -->
+  <div class="page" id="pg-leaderboard">
+    <div class="inn">
+      <div style="padding:28px 22px 8px;display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <h2 style="font-size:24px;font-weight:900;letter-spacing:-.5px">Leaderboard</h2>
+          <p style="font-size:13px;color:var(--t2);margin-top:4px">Top 25 Vibe Scores</p>
+        </div>
+        <div class="lb-live"><span class="dot"></span>LIVE</div>
+      </div>
+      <div class="dv" style="margin-top:8px"></div>
+      <!-- Save score button -->
+      <div style="padding:0 22px 4px">
+        <button class="lb-save-btn" id="lb-save-btn" onclick="saveMyScore()">&#128190; Save My Score to Leaderboard</button>
+        <div id="lb-save-msg" style="font-size:12px;color:var(--t2);text-align:center;min-height:18px"></div>
+      </div>
+      <div class="dv"></div>
+      <!-- Live leaderboard list -->
+      <div id="lb-list" style="padding-bottom:8px">
+        <div class="empty">Loading leaderboard...</div>
+      </div>
+    </div>
+  </div>
+
   <!-- BOTTOM NAV -->
   <div class="bnav">
     <div class="bni">
-      <button class="bn on" id="bn-home" onclick="goPage('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="bnl">Home</span></button>
-      <button class="bn" id="bn-stats" onclick="goPage('stats')"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span class="bnl">Stats</span></button>
-      <button class="bn" id="bn-tracks" onclick="goPage('tracks')"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span class="bnl">Tracks</span></button>
-      <button class="bn" id="bn-profile" onclick="goPage('profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="bnl">Profile</span></button>
+      <button class="bn on" id="bn-home"        onclick="goPage('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="bnl">Home</span></button>
+      <button class="bn" id="bn-stats"          onclick="goPage('stats')"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span class="bnl">Stats</span></button>
+      <button class="bn" id="bn-leaderboard"    onclick="goPage('leaderboard')"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span class="bnl">Ranks</span></button>
+      <button class="bn" id="bn-profile"        onclick="goPage('profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="bnl">Profile</span></button>
     </div>
   </div>
 
@@ -954,13 +995,118 @@ function closePanel() {
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel();});
 
 /* ═══════════════════════════════════════════
-   BOTTOM NAV
+   FIREBASE — Realtime Database
+   Database URL: europe-west1 region
+═══════════════════════════════════════════ */
+const _fbApp = firebase.initializeApp({
+  apiKey:      'AIzaSyBZaTbDIyXOtyLPEtJLLbdOw8L4eSmiNqY',
+  databaseURL: 'https://vibecheck-app-7e557-default-rtdb.europe-west1.firebasedatabase.app/',
+  projectId:   'vibecheck-app-7e557',
+});
+const _db = firebase.database();
+
+// Active leaderboard listener — stored so we can detach if needed
+let _lbListener = null;
+
+/* ═══════════════════════════════════════════
+   saveMyScore()
+   Writes the current user's display name +
+   latest All-Time vibe score to Firebase.
+   Path: /scores/<spotifyUserId>
+   One entry per user — overwrites on re-save.
+═══════════════════════════════════════════ */
+async function saveMyScore() {
+  const btn = $('lb-save-btn');
+  const msg = $('lb-save-msg');
+  if (!_profData) { if(msg) msg.textContent = 'Load your stats first.'; return; }
+
+  // Get the All-Time score from cache
+  const yearData = _tabCache['year'];
+  if (!yearData) {
+    if(msg) msg.textContent = 'Please open the All Time tab first to generate your score.';
+    return;
+  }
+
+  const uid   = _profData.id;
+  const name  = _profData.display_name || _profData.id;
+  const score = yearData.vibePoints || 0;
+  const vibe  = vibeStatus(score);
+
+  if(btn){ btn.disabled = true; btn.textContent = 'Saving...'; }
+
+  try {
+    await _db.ref('scores/' + uid).set({
+      name,
+      score,
+      vibe,
+      updatedAt: Date.now(),
+    });
+    if(msg) msg.textContent = '✅ Score saved! You\'re on the leaderboard.';
+    if(btn){ btn.textContent = '✅ Score Saved'; }
+  } catch(e) {
+    if(msg) msg.textContent = '❌ Failed to save: ' + e.message;
+    if(btn){ btn.disabled = false; btn.textContent = '💾 Save My Score'; }
+  }
+}
+
+/* ═══════════════════════════════════════════
+   startLeaderboard()
+   Subscribes to /scores ordered by score desc.
+   Updates the UI in real-time whenever any
+   user saves a new score.
+═══════════════════════════════════════════ */
+function startLeaderboard() {
+  const el = $('lb-list');
+  if (!el) return;
+  if (_lbListener) return; // already listening
+
+  const ref = _db.ref('scores').orderByChild('score').limitToLast(25);
+
+  _lbListener = ref.on('value', snapshot => {
+    const rows = [];
+    snapshot.forEach(child => { rows.push({ uid: child.key, ...child.val() }); });
+    rows.sort((a, b) => b.score - a.score); // highest first
+
+    if (!rows.length) {
+      el.innerHTML = '<div class="empty">No scores yet — be the first!</div>';
+      return;
+    }
+
+    const myUid = _profData?.id;
+    const medals = ['gold','silver','bronze'];
+
+    el.innerHTML = rows.map((r, i) => {
+      const isMe = r.uid === myUid;
+      const posClass = medals[i] || '';
+      return `
+        <div class="lb-row ${isMe ? 'me' : ''}">
+          <div class="lb-pos ${posClass}">${i < 3 ? ['🥇','🥈','🥉'][i] : i+1}</div>
+          <div class="lb-info">
+            <div class="lb-name">${r.name}${isMe ? ' <span style="color:var(--sp);font-size:10px">YOU</span>' : ''}</div>
+            <div class="lb-meta">${r.vibe || ''}</div>
+          </div>
+          <div class="lb-score">${Number(r.score).toLocaleString()}</div>
+        </div>`;
+    }).join('');
+  }, err => {
+    el.innerHTML = `<div class="empty">Error loading leaderboard: ${err.message}</div>`;
+  });
+}
+
+/* ═══════════════════════════════════════════
+   BOTTOM NAV — updated to include leaderboard
 ═══════════════════════════════════════════ */
 function goPage(nm) {
-  ['home','stats','tracks','profile'].forEach(n=>{const b=$(`bn-${n}`);if(b)b.classList.toggle('on',n===nm);});
-  ['pg-home','pg-stats','pg-tracks','pg-profile'].forEach(id=>{const p=$(id);if(p)p.classList.toggle('on',id===`pg-${nm}`);});
-  const pw=$('pill-wrap'); if(pw) pw.style.display=nm==='home'?'':'none';
-  if(nm==='profile') fillProfile();
+  ['home','stats','leaderboard','profile'].forEach(n => {
+    const b = $(`bn-${n}`); if(b) b.classList.toggle('on', n===nm);
+  });
+  ['pg-home','pg-stats','pg-leaderboard','pg-profile'].forEach(id => {
+    const p = $(id); if(p) p.classList.toggle('on', id===`pg-${nm}`);
+  });
+  const pw = $('pill-wrap');
+  if(pw) pw.style.display = nm==='home' ? '' : 'none';
+  if(nm === 'profile')     fillProfile();
+  if(nm === 'leaderboard') startLeaderboard(); // start live listener on first visit
 }
 
 /* ═══════════════════════════════════════════
