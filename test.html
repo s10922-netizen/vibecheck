@@ -671,32 +671,60 @@ function detectVibe(genres) {
 }
 
 /* ── PKCE AUTH ────────────────────────────────── */
-async function sha256(s) {
-  const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
-  return btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-}
-function randStr(n=64) {
-  const c='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
-  const a=new Uint8Array(n); crypto.getRandomValues(a);
-  return [...a].map(b=>c[b%c.length]).join('');
-}
-async function doLogin() {
-  const v=randStr(), ch=await sha256(v);
-  localStorage.setItem('pkce_v', v);
-  sessionStorage.setItem('pkce_v', v);
-  location.href='https://accounts.spotify.com/authorize?'+new URLSearchParams({
-    client_id:CLIENT_ID,response_type:'code',redirect_uri:REDIRECT_URI,
-    code_challenge_method:'S256',code_challenge:ch,scope:SCOPES,
-  });
-}
-async function exchangeCode(code) {
-  const v = sessionStorage.getItem('pkce_v') || localStorage.getItem('pkce_v');
-  if(!v) throw new Error('No PKCE verifier — please log in again.');
-  const r=await fetch('https://accounts.spotify.com/api/token',{
-    method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
-    body:new URLSearchParams({grant_type:'authorization_code',code,redirect_uri:REDIRECT_URI,client_id:CLIENT_ID,code_verifier:v}),
-  });
-  if(!r.ok){ const e=await r.json().catch(()=>({})); throw new Error(e.error_description||'Token exchange failed'); }
+async function saveMyScore() {
+  const btn = $('lb-save-btn'), msg = $('lb-save-msg');
+  if (!_profData) return;
+  
+  const yearData = _tabCache['year'];
+  if (!yearData) { 
+    if (msg) msg.textContent = 'Open All Time tab first!'; 
+    return; 
+  }
+
+  const uid = _profData.id;
+  const name = _profData.display_name || _profData.id;
+  const score = yearData.vibePoints || 0;
+  const vibe = vibeStatus(score);
+  
+  const statusInput = $('lb-status-input');
+  const currentStatus = statusInput ? statusInput.value.trim() : "";
+
+  if (btn) { 
+    btn.disabled = true; 
+    btn.textContent = 'Saving...'; 
+  }
+  
+  try {
+    // שומר נתונים בבסיס הנתונים
+    await _db.ref('scores/' + uid).update({
+      name: name,
+      score: score,
+      vibe: vibe,
+      status: currentStatus, 
+      updatedAt: Date.now()
+    });
+    
+    // שומר אמנים
+    await _db.ref('topArtists/' + uid).set(yearData.artists.map(a => ({
+      name: a.name,
+      tracks: a.tracks.length
+    })));
+
+    if (msg) msg.textContent = '✅ Saved!';
+    if (btn) btn.textContent = '✅ Saved';
+    
+    // מעדכן את הטבלה מיד
+    startLeaderboard(); 
+    startPresence(uid);
+
+  } catch (e) {
+    if (msg) msg.textContent = '❌ ' + e.message;
+    if (btn) { 
+      btn.disabled = false; 
+      btn.textContent = '💾 Save My Score'; 
+    }
+  }
+}(()=>({})); throw new Error(e.error_description||'Token exchange failed'); }
   const d=await r.json();
   _token=d.access_token; sessionStorage.setItem('tok',_token); localStorage.setItem('tok',_token);
   sessionStorage.removeItem('pkce_v'); localStorage.removeItem('pkce_v');
