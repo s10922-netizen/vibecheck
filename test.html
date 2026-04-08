@@ -1011,6 +1011,7 @@ function showToast(msg) {
 
 function startLeaderboard() {
   const el=$('lb-list'); if(!el||_lbListener) return;
+  // השורה הזו מושכת את 25 האנשים הכי חזקים בדירוג
   const scoresRef=_db.ref('scores').orderByChild('score').limitToLast(25);
   const presenceRef=_db.ref('presence');
   let latestScores=[], latestPresence={};
@@ -1023,7 +1024,7 @@ function startLeaderboard() {
       const nudgeBtn = isMe ? '' : `<button onclick="sendNudge('${r.uid}','${(r.name||'').replace(/'/g,'')}')" class="nudge-btn">👋</button>`;
       
       return `<div class="lb-row ${isMe?'me':''}">
-        <div class="lb-pos ${medals[i]||''}">${i<3?['🥇','🥈','🥉'][i]:i+1}</div>
+        <div class="lb-pos ${i<3?medals[i]:''}">${i<3?['🥇','🥈','🥉'][i]:i+1}</div>
         <div class="lb-info">
           <div class="lb-name">${r.name||'—'}${isMe?' <span style="color:var(--sp);font-size:10px;font-weight:800">YOU</span>':''}
             <span style="font-size:10px;font-weight:700;color:${isOnline?'var(--sp)':'var(--t3)'}">${isOnline?'● ONLINE':''}</span>
@@ -1036,9 +1037,12 @@ function startLeaderboard() {
       </div>`;
     }).join('');
   }
+  
   _lbListener=scoresRef.on('value',snap=>{
     const rows=[]; snap.forEach(c=>rows.push({uid:c.key,...c.val()}));
-    latestScores=rows.sort((a,b)=>b.score-a.score); render();
+    // כאן אנחנו הופכים את הסדר כדי שהכי גבוה יהיה ראשון
+    latestScores=rows.sort((a,b)=>b.score-a.score); 
+    render();
   });
   presenceRef.on('value',snap=>{ latestPresence=snap.val()||{}; render(); });
 }
