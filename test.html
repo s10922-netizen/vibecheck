@@ -989,6 +989,8 @@ async function saveMyScore() {
 
     if (msg) msg.textContent = '✅ Saved!';
     if (btn) btn.textContent = '✅ Saved';
+startLeaderboard() // השורה החדשה שלך!
+    
     startPresence(uid);
   } catch (e) {
     if (msg) msg.textContent = '❌ ' + e.message;
