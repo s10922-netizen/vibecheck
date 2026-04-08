@@ -9,15 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --sp:#1DB954;--sp2:#1ed760;--glow:rgba(29,185,84,.15);
-  --bg:#090909;--bg2:#131313;--bg3:#1c1c1c;--bg4:#252525;
-  --t:#fff;--t2:#b3b3b3;--t3:#555;
-  --r:14px;--f:'DM Sans',-apple-system,sans-serif;--nav:62px
-}
+:root{--sp:#1DB954;--sp2:#1ed760;--glow:rgba(29,185,84,.15);--bg:#090909;--bg2:#131313;--bg3:#1c1c1c;--bg4:#252525;--t:#fff;--t2:#b3b3b3;--t3:#555;--r:14px;--f:'DM Sans',-apple-system,sans-serif;--nav:62px}
 html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:100vh;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
-.scr{display:none;min-height:100vh;flex-direction:column}
-.scr.on{display:flex}
+.scr{display:none;min-height:100vh;flex-direction:column}.scr.on{display:flex}
 #s-login{align-items:center;justify-content:center;padding:48px 24px;text-align:center;position:relative;overflow:hidden}
 #s-login::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(29,185,84,.1)0%,transparent 68%);top:-100px;left:50%;transform:translateX(-50%);pointer-events:none}
 #s-load{align-items:center;justify-content:center;gap:18px}
@@ -26,8 +20,7 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .l-h em{font-style:normal;color:var(--sp)}
 .l-p{font-size:15px;color:var(--t2);max-width:280px;line-height:1.65;margin-bottom:38px;animation:up .5s .14s ease both}
 .b-sp{display:inline-flex;align-items:center;gap:10px;background:var(--sp);color:#000;font-family:var(--f);font-size:15px;font-weight:800;padding:15px 32px;border-radius:50px;border:none;cursor:pointer;transition:background .15s,transform .12s;animation:up .5s .21s ease both}
-.b-sp:hover{background:var(--sp2);transform:scale(1.04)}
-.b-sp:active{transform:scale(.97)}
+.b-sp:hover{background:var(--sp2);transform:scale(1.04)}.b-sp:active{transform:scale(.97)}
 .l-note{margin-top:12px;font-size:12px;color:var(--t3);animation:up .5s .28s ease both}
 .ring{width:42px;height:42px;border:3px solid var(--bg3);border-top-color:var(--sp);border-radius:50%;animation:spin .75s linear infinite}
 .rmsg{font-size:13px;color:var(--t2);font-weight:500}
@@ -44,11 +37,9 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .pill{flex-shrink:0;position:relative;border:none;border-radius:50px;padding:8px 18px;font-size:13px;font-weight:700;font-family:var(--f);cursor:pointer;overflow:hidden;white-space:nowrap;transition:transform .12s}
 .pill::before{content:'';position:absolute;inset:0;border-radius:50px;border:1.5px solid var(--bg4);background:var(--bg3);transition:all .2s}
 .pill span{position:relative;z-index:1;color:var(--t2);transition:color .2s}
-.pill.on::before{background:var(--sp);border-color:var(--sp)}
-.pill.on span{color:#000}
-.pill:not(.on):hover span{color:var(--t)}
-.pill:active{transform:scale(.96)}
-.page{display:none;flex:1;flex-direction:column;animation:fi .18s ease}
+.pill.on::before{background:var(--sp);border-color:var(--sp)}.pill.on span{color:#000}
+.pill:not(.on):hover span{color:var(--t)}.pill:active{transform:scale(.96)}
+.page{display:none;flex:1;flex-direction:column;animation:fi .18s ease;height:calc(100vh - 70px);overflow-y:auto;padding-bottom:100px;-webkit-overflow-scrolling:touch}
 .page.on{display:flex}
 .inn{flex:1;max-width:500px;width:100%;margin:0 auto;padding-bottom:calc(var(--nav)+20px)}
 .hero{padding:4px 22px 20px;text-align:center;position:relative;overflow:hidden}
@@ -62,11 +53,9 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 #h-sub{font-size:12px;color:var(--t3);margin-top:3px;font-weight:500;min-height:16px}
 .vrow{display:flex;justify-content:center;margin-top:14px}
 #vtag{display:inline-flex;align-items:center;gap:7px;background:var(--bg3);border-radius:50px;padding:8px 16px;font-size:13px;font-weight:700;min-width:140px;min-height:38px;justify-content:center;position:relative;overflow:hidden}
-#ve,#vt{position:relative;z-index:1}
-#ve{font-size:18px}
+#ve,#vt{position:relative;z-index:1}#ve{font-size:18px}
 #vtag.sk::after{content:'';position:absolute;inset:0;border-radius:50px;background:linear-gradient(90deg,var(--bg3)25%,var(--bg4)50%,var(--bg3)75%);background-size:600px 100%;animation:sh 1.3s ease infinite}
-#np-s{overflow:hidden;transition:max-height .3s,opacity .3s;max-height:0;opacity:0}
-#np-s.on{max-height:130px;opacity:1}
+#np-s{overflow:hidden;transition:max-height .3s,opacity .3s;max-height:0;opacity:0}#np-s.on{max-height:130px;opacity:1}
 .np{margin:0 22px;background:var(--bg2);border-radius:var(--r);padding:13px;border:1px solid var(--bg3);display:flex;align-items:center;gap:12px}
 .np-a{width:44px;height:44px;border-radius:8px;background:var(--bg3);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:18px}
 .np-a img{width:100%;height:100%;object-fit:cover}
@@ -76,31 +65,22 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .np-lv{font-size:9px;font-weight:800;color:var(--sp);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px}
 .eq{display:flex;gap:2px;align-items:flex-end;height:16px;flex-shrink:0}
 .eq b{width:3px;background:var(--sp);border-radius:2px;display:block;animation:eqa 1s ease-in-out infinite alternate}
-.eq b:nth-child(1){height:5px;animation-delay:0s}
-.eq b:nth-child(2){height:13px;animation-delay:.18s}
-.eq b:nth-child(3){height:9px;animation-delay:.36s}
-.eq b:nth-child(4){height:15px;animation-delay:.09s}
+.eq b:nth-child(1){height:5px;animation-delay:0s}.eq b:nth-child(2){height:13px;animation-delay:.18s}.eq b:nth-child(3){height:9px;animation-delay:.36s}.eq b:nth-child(4){height:15px;animation-delay:.09s}
 .dv{height:1px;background:var(--bg3);margin:20px 22px}
 .sh{display:flex;align-items:baseline;justify-content:space-between;padding:0 22px 12px}
-.st{font-size:18px;font-weight:800;letter-spacing:-.3px}
-.sm{font-size:11px;color:var(--t2);font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.st{font-size:18px;font-weight:800;letter-spacing:-.3px}.sm{font-size:11px;color:var(--t2);font-weight:700;letter-spacing:.5px;text-transform:uppercase}
 .alist{padding:0 22px}
 .ar{display:flex;align-items:center;gap:12px;padding:9px 10px;border-radius:12px;margin:0 -10px;transition:background .15s;cursor:pointer}
-.ar:hover{background:var(--bg3)}
-.ar:active{transform:scale(.99)}
-.rk{font-size:15px;font-weight:800;color:var(--t3);width:18px;text-align:center;flex-shrink:0}
-.rk.g{color:var(--sp)}
+.ar:hover{background:var(--bg3)}.ar:active{transform:scale(.99)}
+.rk{font-size:15px;font-weight:800;color:var(--t3);width:18px;text-align:center;flex-shrink:0}.rk.g{color:var(--sp)}
 .ai{width:52px;height:52px;border-radius:50%;background:var(--bg3);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:22px}
 .ai img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.ainf{flex:1;min-width:0}
-.an{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ainf{flex:1;min-width:0}.an{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ag{font-size:11px;color:var(--t2);margin-top:2px}
 .abar{height:2px;background:var(--bg4);border-radius:2px;margin-top:6px;overflow:hidden}
 .abf{height:100%;background:var(--sp);border-radius:2px;width:0;transition:width .9s cubic-bezier(.22,.68,0,1.2)}
-.ar-r{text-align:right;flex-shrink:0}
-.am{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
-.am small{font-size:10px;font-weight:400;color:var(--t2)}
-.as2{font-size:10px;color:var(--sp);font-weight:700;margin-top:2px}
+.ar-r{text-align:right;flex-shrink:0}.am{font-size:13px;font-weight:800;font-variant-numeric:tabular-nums}
+.am small{font-size:10px;font-weight:400;color:var(--t2)}.as2{font-size:10px;color:var(--sp);font-weight:700;margin-top:2px}
 .ac{font-size:16px;color:var(--t3);padding-left:2px;flex-shrink:0}
 .tlist{padding:0 22px}
 .tr{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:10px;margin:0 -10px;transition:background .15s}
@@ -108,8 +88,7 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .trn{font-size:13px;font-weight:700;color:var(--t3);width:22px;text-align:center;flex-shrink:0}
 .ti{width:44px;height:44px;border-radius:6px;background:var(--bg3);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:16px}
 .ti img{width:100%;height:100%;object-fit:cover;border-radius:6px}
-.tinf{flex:1;min-width:0}
-.tn{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tinf{flex:1;min-width:0}.tn{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tar{font-size:11px;color:var(--t2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .td{font-size:11px;color:var(--t3);font-weight:600;flex-shrink:0;font-variant-numeric:tabular-nums}
 .sgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 22px}
@@ -121,17 +100,14 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .bnav{position:fixed;bottom:0;left:0;right:0;height:var(--nav);background:rgba(9,9,9,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--bg3);display:flex;align-items:center;justify-content:center;z-index:200}
 .bni{max-width:500px;width:100%;display:flex}
 .bn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 0;cursor:pointer;background:none;border:none;font-family:var(--f);color:var(--t3);transition:color .15s;-webkit-tap-highlight-color:transparent}
-.bn.on{color:var(--sp)}
-.bn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
-.bn.on svg{transform:scale(1.1)}
-.bnl{font-size:10px;font-weight:700;letter-spacing:.3px}
+.bn.on{color:var(--sp)}.bn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .15s}
+.bn.on svg{transform:scale(1.1)}.bnl{font-size:10px;font-weight:700;letter-spacing:.3px}
 @keyframes sh{0%{background-position:-600px 0}100%{background-position:600px 0}}
 .sk{background:linear-gradient(90deg,var(--bg3)25%,var(--bg4)50%,var(--bg3)75%);background-size:600px 100%;animation:sh 1.3s ease infinite;border-radius:8px}
 .csk{position:absolute;left:50%;transform:translateX(-50%);height:70px;width:52%;border-radius:10px}
 .skr{display:flex;align-items:center;gap:12px;padding:9px 10px;margin:0 -10px}
 .skc{width:52px;height:52px;border-radius:50%;flex-shrink:0}
-.skls{flex:1;display:flex;flex-direction:column;gap:7px}
-.skl{border-radius:6px}
+.skls{flex:1;display:flex;flex-direction:column;gap:7px}.skl{border-radius:6px}
 .skrc{display:flex;flex-direction:column;gap:5px;align-items:flex-end;width:46px}
 .sksv{height:26px;width:55%;border-radius:6px;display:block}
 #a-bg{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:500;opacity:0;pointer-events:none;transition:opacity .28s ease}
@@ -147,8 +123,7 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .ap-x:hover{background:rgba(0,0,0,.9)}
 .ap-meta{padding:0 22px 16px;flex-shrink:0}
 .ap-nm{font-size:26px;font-weight:900;letter-spacing:-.8px;margin-bottom:10px}
-.ap-row{display:flex;gap:24px}
-.ap-s{display:flex;flex-direction:column}
+.ap-row{display:flex;gap:24px}.ap-s{display:flex;flex-direction:column}
 .ap-sv{font-size:22px;font-weight:800;color:var(--sp);font-variant-numeric:tabular-nums}
 .ap-sl{font-size:10px;color:var(--t2);font-weight:600;margin-top:1px;text-transform:uppercase;letter-spacing:.5px}
 .ap-dv{height:1px;background:var(--bg3);margin:0 22px;flex-shrink:0}
@@ -164,28 +139,22 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .ap-tr-al{font-size:11px;color:var(--t2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ap-tr-d{font-size:11px;color:var(--t3);font-weight:600;flex-shrink:0;font-variant-numeric:tabular-nums}
 .play-btn{width:28px;height:28px;border-radius:50%;background:var(--sp);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s,background .15s;-webkit-tap-highlight-color:transparent}
-.play-btn:hover{background:var(--sp2);transform:scale(1.1)}
-.play-btn:active{transform:scale(.95)}
+.play-btn:hover{background:var(--sp2);transform:scale(1.1)}.play-btn:active{transform:scale(.95)}
 .play-btn svg{width:10px;height:10px;fill:#000;margin-left:1px}
 .err{margin:14px 22px;background:rgba(255,80,80,.07);border:1px solid rgba(255,80,80,.18);border-radius:12px;padding:13px 15px;font-size:13px;color:#f88;line-height:1.6}
 .err a{color:var(--sp)}
-/* ── LEADERBOARD + FRIENDS ─────────────────────── */
 .lb-row{display:flex;align-items:center;gap:12px;padding:10px 22px;border-bottom:1px solid rgba(255,255,255,.05)}
 .lb-row:last-child{border-bottom:none}
 .lb-row.me{background:rgba(29,185,84,.07);border-radius:12px;border-bottom:none;margin:0 8px}
 .lb-pos{font-size:15px;font-weight:800;width:28px;text-align:center;flex-shrink:0;color:var(--t3)}
 .lb-pos.gold{color:#FFD700}.lb-pos.silver{color:#C0C0C0}.lb-pos.bronze{color:#CD7F32}
-.lb-info{flex:1;min-width:0}
-.lb-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-info{flex:1;min-width:0}.lb-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lb-meta{font-size:11px;color:var(--t2);margin-top:2px}
 .lb-score{font-size:14px;font-weight:800;color:var(--sp);font-variant-numeric:tabular-nums;flex-shrink:0}
 .lb-save-btn{width:100%;padding:14px;border-radius:50px;background:var(--sp);color:#000;font-family:var(--f);font-size:15px;font-weight:800;border:none;cursor:pointer;transition:background .15s,transform .12s;margin-bottom:12px}
-.lb-save-btn:hover{background:var(--sp2)}
-.lb-save-btn:disabled{background:var(--bg3);color:var(--t3);cursor:default}
+.lb-save-btn:hover{background:var(--sp2)}.lb-save-btn:disabled{background:var(--bg3);color:var(--t3);cursor:default}
 .lb-live{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:800;color:var(--sp);letter-spacing:1px;text-transform:uppercase}
 .lb-live .dot{width:5px;height:5px;border-radius:50%;background:var(--sp);animation:blink 1.4s ease infinite}
-
-/* ── SEARCH BAR ─────────────────────────────── */
 .fr-search-wrap{padding:0 22px 12px;position:sticky;top:0;z-index:10;background:var(--bg);padding-top:8px}
 .fr-search{display:flex;align-items:center;gap:10px;background:var(--bg3);border:1.5px solid var(--bg4);border-radius:50px;padding:10px 16px;transition:border-color .2s}
 .fr-search:focus-within{border-color:var(--sp)}
@@ -195,143 +164,41 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
 .fr-search input::placeholder{color:var(--t3)}
 .fr-search .fr-clr{background:none;border:none;cursor:pointer;color:var(--t3);font-size:16px;padding:0;line-height:1;display:none}
 .fr-search.has-val .fr-clr{display:block}
-
-/* ── FRIEND CARD ─────────────────────────────── */
 .fr-card{display:flex;align-items:center;gap:12px;padding:11px 22px;border-bottom:1px solid rgba(255,255,255,.05);transition:background .15s;animation:fi .2s ease}
 .fr-card:last-child{border-bottom:none}
 .fr-card.me-card{background:rgba(29,185,84,.06);border-radius:12px;border-bottom:none;margin:0 8px}
 .fr-card:hover{background:var(--bg3)}
-.fr-avatar{width:42px;height:42px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:var(--sp);flex-shrink:0;border:2px solid var(--bg4);position:relative}
-.fr-avatar .online-dot{position:absolute;bottom:0;right:0;width:10px;height:10px;border-radius:50%;background:var(--bg4);border:2px solid var(--bg)}
-.fr-avatar .online-dot.live{background:var(--sp)}
+.fr-avatar{width:42px;height:42px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:var(--sp);flex-shrink:0;border:2px solid var(--bg4)}
 .fr-info{flex:1;min-width:0}
-.fr-name{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fr-name{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px}
 .fr-name .you-badge{font-size:9px;font-weight:800;background:var(--glow);color:var(--sp);border-radius:50px;padding:1px 6px;letter-spacing:.5px;flex-shrink:0}
 .fr-sub-row{display:flex;align-items:center;gap:6px;margin-top:2px}
 .fr-status{font-size:11px;color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
-.fr-seen{font-size:10px;color:var(--t3);flex-shrink:0}
-.fr-seen.live{color:var(--sp)}
 .fr-actions{display:flex;align-items:center;gap:6px;flex-shrink:0}
 .nudge-btn{background:var(--bg3);border:1px solid var(--bg4);border-radius:50px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--t2);cursor:pointer;font-family:var(--f);transition:all .15s;white-space:nowrap}
-.nudge-btn:hover{border-color:var(--sp);color:var(--sp);background:var(--glow)}
-.nudge-btn:active{transform:scale(.95)}
+.nudge-btn:hover{border-color:var(--sp);color:var(--sp);background:var(--glow)}.nudge-btn:active{transform:scale(.95)}
 .fr-score-badge{font-size:12px;font-weight:800;color:var(--sp);font-variant-numeric:tabular-nums}
-
 .fr-empty{text-align:center;padding:48px 22px;color:var(--t3)}
-.fr-empty .fr-empty-icon{font-size:36px;margin-bottom:12px}
-.fr-empty p{font-size:14px;line-height:1.6}
-
-/* ── FRIEND REQUESTS ────────────────────────── */
-#fr-pending-section{overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1),opacity .3s;max-height:0;opacity:0}
-#fr-pending-section.visible{max-height:600px;opacity:1}
-.fr-pending-header{display:flex;align-items:center;justify-content:space-between;padding:0 22px 10px}
-.fr-pending-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--t2)}
-.fr-pending-badge{background:var(--sp);color:#000;font-size:10px;font-weight:900;border-radius:50px;padding:2px 7px;letter-spacing:0}
-.fr-req-card{display:flex;align-items:center;gap:12px;padding:11px 22px;border-bottom:1px solid rgba(255,255,255,.05);animation:fi .2s ease}
-.fr-req-card:last-child{border-bottom:none}
-.fr-req-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--bg3),var(--bg4));display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:var(--sp);flex-shrink:0;border:2px solid rgba(29,185,84,.3)}
-.fr-req-info{flex:1;min-width:0}
-.fr-req-name{font-size:14px;font-weight:700}
-.fr-req-meta{font-size:11px;color:var(--t2);margin-top:2px}
-.fr-req-actions{display:flex;gap:6px;flex-shrink:0}
-.btn-accept{background:var(--sp);color:#000;border:none;border-radius:50px;padding:7px 14px;font-size:12px;font-weight:800;cursor:pointer;font-family:var(--f);transition:background .15s,transform .12s}
-.btn-accept:hover{background:var(--sp2)}
-.btn-accept:active{transform:scale(.94)}
-.btn-decline{background:transparent;color:var(--t3);border:1px solid var(--bg4);border-radius:50px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--f);transition:all .15s}
-.btn-decline:hover{border-color:var(--t2);color:var(--t2)}
-.btn-decline:active{transform:scale(.94)}
-
-/* Add-friend button states on fr-card */
-.add-friend-btn{background:transparent;border:1.5px solid var(--sp);color:var(--sp);border-radius:50px;padding:6px 12px;font-size:12px;font-weight:800;cursor:pointer;font-family:var(--f);transition:all .15s;white-space:nowrap}
-.add-friend-btn:hover{background:var(--glow)}
-.add-friend-btn:active{transform:scale(.94)}
-.add-friend-btn.pending{border-color:var(--t3);color:var(--t3);cursor:default}
-.add-friend-btn.friend{border-color:var(--sp);background:var(--glow);color:var(--sp);cursor:default}
-.pending-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(29,185,84,.3),transparent);margin:0 22px}
-
-/* ── FRIEND VIBE PANEL ───────────────────────── */
-/* Bottom-sheet panel reused for friend vibe data */
-#fv-bg{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);z-index:500;opacity:0;pointer-events:none;transition:opacity .28s ease}
-#fv-bg.on{opacity:1;pointer-events:all}
-#fv-panel{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:500px;max-height:91vh;background:#161616;border-radius:24px 24px 0 0;z-index:501;display:flex;flex-direction:column;transition:transform .38s cubic-bezier(.32,1.1,.4,1);overflow:hidden;will-change:transform}
-#fv-panel.on{transform:translateX(-50%) translateY(0)}
-.fv-handle{width:36px;height:4px;border-radius:2px;background:var(--bg4);margin:12px auto 0;flex-shrink:0}
-.fv-header{padding:20px 22px 0;flex-shrink:0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
-.fv-identity{display:flex;align-items:center;gap:14px}
-.fv-big-av{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--bg3),var(--bg4));display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:var(--sp);flex-shrink:0;border:2px solid rgba(29,185,84,.35)}
-.fv-nm{font-size:22px;font-weight:900;letter-spacing:-.6px}
-.fv-vibe-tag{display:inline-flex;align-items:center;gap:5px;background:var(--bg3);border-radius:50px;padding:4px 11px;font-size:12px;font-weight:700;margin-top:6px}
-.fv-x{width:32px;height:32px;border-radius:50%;background:var(--bg3);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:16px;flex-shrink:0;transition:background .15s}
-.fv-x:hover{background:var(--bg4);color:var(--t)}
-.fv-stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:16px 22px 4px;flex-shrink:0}
-.fv-stat{background:var(--bg2);border-radius:12px;border:1px solid var(--bg3);padding:12px;text-align:center}
-.fv-stat-v{font-size:18px;font-weight:800;color:var(--sp);font-variant-numeric:tabular-nums;line-height:1}
-.fv-stat-l{font-size:10px;color:var(--t2);font-weight:500;margin-top:4px}
-.fv-dv{height:1px;background:var(--bg3);margin:12px 22px}
-.fv-section-title{font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--t2);padding:0 22px 10px}
-#fv-body{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;padding-bottom:32px}
-.fv-artist-row{display:flex;align-items:center;gap:10px;padding:8px 22px;border-bottom:1px solid rgba(255,255,255,.04)}
-.fv-artist-row:last-child{border-bottom:none}
-.fv-art-num{font-size:13px;font-weight:800;color:var(--t3);width:18px;text-align:center;flex-shrink:0}
-.fv-art-av{width:36px;height:36px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.fv-art-name{flex:1;font-size:13px;font-weight:700}
-.fv-art-pts{font-size:11px;font-weight:700;color:var(--sp)}
-.fv-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 22px;gap:14px;color:var(--t3);font-size:13px}
-.fv-lock{text-align:center;padding:40px 22px}
-.fv-lock-icon{font-size:40px;margin-bottom:12px}
-.fv-lock p{font-size:14px;color:var(--t2);line-height:1.7}
-
-/* ── NUDGE TOAST ─────────────────────────────── */
+.fr-empty .fr-empty-icon{font-size:36px;margin-bottom:12px}.fr-empty p{font-size:14px;line-height:1.6}
 #nudge-toast{display:none;position:fixed;top:80px;left:50%;transform:translateX(-50%);background:var(--sp);color:#000;font-weight:800;font-size:14px;padding:12px 24px;border-radius:50px;z-index:9999;white-space:nowrap;box-shadow:0 4px 24px rgba(29,185,84,.4)}
-
-@media (max-width: 480px) {
-  .topbar{padding-top:52px;padding-bottom:6px}
-  #u-nm{display:none}
-  .b-out{font-size:11px;padding:4px 10px}
-  .pills{gap:6px;overflow-x:auto;padding-bottom:2px}
-  .pill{padding:7px 14px;font-size:12px}
-  .hero{padding:2px 16px 14px}
-  #ctr{letter-spacing:-3px}
-  .h-disclaimer{font-size:10px}
-  .alist,.tlist{padding:0 14px}
-  .ar{gap:9px;padding:8px 8px;margin:0 -8px}
-  .ai{width:44px;height:44px;font-size:18px}
-  .an{font-size:13px}
-  .ag{font-size:10px}
-  .tr{gap:9px;padding:7px 8px;margin:0 -8px}
-  .ti{width:38px;height:38px}
-  .tn{font-size:12px}
-  .tar{font-size:10px}
-  .td{display:none}
-  .play-btn{width:26px;height:26px}
-  .sh{padding:0 14px 10px}
-  .st{font-size:16px}
-  .dv{margin:16px 14px}
-  .sgrid{padding:0 14px;gap:8px}
-  .scv{font-size:18px}
-  .scl{font-size:10px}
-  .np{margin:0 14px}
-  #a-panel{max-width:100%}
-  .ap-meta{padding:0 16px 14px}
-  .ap-nm{font-size:22px}
-  .ap-tr{padding:7px 16px}
-  .lb-row,.fr-card{padding:10px 14px}
-  .fr-search-wrap{padding:8px 14px 12px}
+@media(max-width:480px){
+  .topbar{padding-top:52px;padding-bottom:6px}#u-nm{display:none}.b-out{font-size:11px;padding:4px 10px}
+  .pills{gap:6px;overflow-x:auto;padding-bottom:2px}.pill{padding:7px 14px;font-size:12px}
+  .hero{padding:2px 16px 14px}#ctr{letter-spacing:-3px}
+  .alist,.tlist{padding:0 14px}.ar{gap:9px;padding:8px 8px;margin:0 -8px}.ai{width:44px;height:44px;font-size:18px}
+  .tr{gap:9px;padding:7px 8px;margin:0 -8px}.ti{width:38px;height:38px}.td{display:none}.play-btn{width:26px;height:26px}
+  .sh{padding:0 14px 10px}.dv{margin:16px 14px}.sgrid{padding:0 14px;gap:8px}.scv{font-size:18px}.np{margin:0 14px}
+  #a-panel{max-width:100%}.lb-row,.fr-card{padding:10px 14px}.fr-search-wrap{padding:8px 14px 12px}
 }
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes eqa{from{transform:scaleY(.3)}to{transform:scaleY(1)}}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-@keyframes fi{from{opacity:0}to{opacity:1}}
-@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes eqa{from{transform:scaleY(.3)}to{transform:scaleY(1)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}@keyframes fi{from{opacity:0}to{opacity:1}}@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
-
-<!-- LOGIN -->
 <div id="s-login" class="scr">
   <svg class="l-ico" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="40" fill="#1DB954"/><path fill="#fff" d="M56.6 54.4c-.8 1.3-2.5 1.7-3.8.9C43.5 50.1 31.7 49 20.4 52c-1.5.4-3-.5-3.4-2-.4-1.5.5-3 2-3.4 12.8-3.5 26-.2 36.7 6.4 1.3.8 1.7 2.5.9 3.4zm3.8-9.4c-1 1.6-3.1 2.1-4.7 1.1C43.9 40.6 30 39 18.1 42.5c-1.8.5-3.7-.5-4.2-2.3-.5-1.8.5-3.7 2.3-4.2C29.4 31.7 45 33.6 57.7 41.4c1.6 1 2.1 3.1 1.1 4.7zm.4-9.7C47.2 27.5 28.4 26.8 17.5 30c-2.1.6-4.3-.6-4.9-2.7-.6-2.1.6-4.3 2.7-4.9C27.5 19 48.4 19.7 62.5 28.4c1.9 1.1 2.5 3.6 1.4 5.5-1.1 1.9-3.6 2.5-5.5 1.4z"/></svg>
   <h1 class="l-h">Your music,<br><em>decoded.</em></h1>
-  <p class="l-p">Top artists, Vibe Points, honest stats — from your Spotify top 100 tracks.</p>
+  <p class="l-p">Top artists, Vibe Points, honest stats.</p>
   <button class="b-sp" onclick="doLogin()">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="black"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
     Connect with Spotify
@@ -339,16 +206,8 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
   <p class="l-note">Read-only &middot; No playlist changes &middot; Ever</p>
   <div id="err-box" style="margin-top:16px;max-width:320px"></div>
 </div>
-
-<!-- LOADING -->
-<div id="s-load" class="scr">
-  <div class="ring"></div>
-  <div class="rmsg" id="rmsg">Loading...</div>
-</div>
-
-<!-- APP -->
+<div id="s-load" class="scr"><div class="ring"></div><div class="rmsg" id="rmsg">Loading...</div></div>
 <div id="s-app" class="scr">
-
   <div class="topbar">
     <div class="tb-b">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#1DB954"/><path fill="#fff" d="M17.9 10.9C14.7 9 9.35 8.8 6.3 9.75c-.5.15-1-.15-1.15-.6-.15-.5.15-1 .6-1.15C9.3 6.95 15.15 7.15 18.8 9.3c.45.25.6.85.35 1.3-.25.35-.85.5-1.25.3zm-.1 2.8c-.25.4-.75.5-1.15.25C14.1 12.5 9.9 12 6.5 13c-.45.15-.9-.1-1.05-.5-.15-.45.1-.9.5-1.05 3.9-1.2 8.55-.6 11.85 1.75.35.2.45.7.2 1.1zm-1.3 2.7c-.2.3-.55.4-.9.2C13.1 15.2 9.7 14.9 6.65 15.65c-.35.1-.7-.1-.8-.45-.1-.35.1-.7.45-.8 3.4-.85 7.1-.5 9.85 1.1.3.2.4.55.25.9z"/></svg>
@@ -360,7 +219,6 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
       <button class="b-out" onclick="logout()">Log out</button>
     </div>
   </div>
-
   <div class="pill-wrap" id="pill-wrap">
     <div class="pills">
       <button class="pill" data-tab="week"   onclick="onTab(this,'week')"><span>Past Week</span></button>
@@ -369,1081 +227,187 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
       <button class="pill on" data-tab="year" onclick="onTab(this,'year')"><span>All Time</span></button>
     </div>
   </div>
-
   <!-- HOME -->
-  <div class="page on" id="pg-home">
-    <div class="inn">
-      <div class="hero">
-        <div class="badge"><span class="dot"></span><span id="badge-txt">ALL TIME</span></div>
-        <div class="cw"><span id="ctr">0</span></div>
-        <div class="h-unit">Vibe Points</div>
-        <div class="h-disclaimer" id="h-disclaimer">Calculating your status...</div>
-        <div id="h-sub"></div>
-        <div class="vrow"><div id="vtag"><span id="ve">&#127925;</span><span id="vt">Calculating...</span></div></div>
-      </div>
-      <div id="np-s">
-        <div class="dv" style="margin-top:4px"></div>
-        <div class="sh"><span class="st">Now Playing</span><span class="sm" style="color:var(--sp)">LIVE</span></div>
-        <div class="np">
-          <div class="np-a" id="np-art">&#127925;</div>
-          <div class="np-i"><div id="np-t"></div><div id="np-a2"></div><div class="np-lv">&#9679; Live</div></div>
-          <div class="eq"><b></b><b></b><b></b><b></b></div>
-        </div>
-      </div>
-      <div class="dv"></div>
-      <div class="sh"><span class="st">Top Artists</span><span class="sm" id="ar-meta">from top 100</span></div>
-      <div class="alist" id="ar-list"></div>
-      <div class="dv"></div>
-      <div class="sh"><span class="st">Top Tracks</span><span class="sm" id="tr-meta">top 100</span></div>
-      <div class="tlist" id="home-tlist"></div>
-      <div id="err-box"></div>
-      <div style="height:8px"></div>
+  <div class="page on" id="pg-home"><div class="inn">
+    <div class="hero">
+      <div class="badge"><span class="dot"></span><span id="badge-txt">ALL TIME</span></div>
+      <div class="cw"><span id="ctr">0</span></div>
+      <div class="h-unit">Vibe Points</div>
+      <div class="h-disclaimer" id="h-disclaimer">Calculating your status...</div>
+      <div id="h-sub"></div>
+      <div class="vrow"><div id="vtag"><span id="ve">&#127925;</span><span id="vt">Calculating...</span></div></div>
     </div>
-  </div>
-
+    <div id="np-s">
+      <div class="dv" style="margin-top:4px"></div>
+      <div class="sh"><span class="st">Now Playing</span><span class="sm" style="color:var(--sp)">LIVE</span></div>
+      <div class="np"><div class="np-a" id="np-art">&#127925;</div><div class="np-i"><div id="np-t"></div><div id="np-a2"></div><div class="np-lv">&#9679; Live</div></div><div class="eq"><b></b><b></b><b></b><b></b></div></div>
+    </div>
+    <div class="dv"></div>
+    <div class="sh"><span class="st">Top Artists</span><span class="sm" id="ar-meta">from top 100</span></div>
+    <div class="alist" id="ar-list"></div>
+    <div class="dv"></div>
+    <div class="sh"><span class="st">Top Tracks</span><span class="sm" id="tr-meta">top 100</span></div>
+    <div class="tlist" id="home-tlist"></div>
+    <div id="err-box"></div><div style="height:8px"></div>
+  </div></div>
   <!-- STATS -->
-  <div class="page" id="pg-stats">
-    <div class="inn">
-      <div style="padding:28px 22px 8px">
-        <h2 style="font-size:24px;font-weight:900;letter-spacing:-.5px">Your Stats</h2>
-        <p style="font-size:13px;color:var(--t2);margin-top:4px" id="stats-sub">All-time overview</p>
-      </div>
-      <div class="dv" style="margin-top:8px"></div>
-      <div class="sgrid">
-        <div class="sc"><div class="sci"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div><div class="scv" id="s-tr">0</div><div class="scl">Top tracks</div></div>
-        <div class="sc"><div class="sci"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="scv" id="s-hr">0</div><div class="scl">Total hours</div></div>
-        <div class="sc"><div class="sci"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="scv" id="s-ar">0</div><div class="scl">Artists</div></div>
-        <div class="sc"><div class="sci"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="scv" id="s-t1" style="font-size:15px;letter-spacing:-.3px">&#8212;</div><div class="scl">Top artist</div></div>
-        <div class="sc"><div class="sci"><svg viewBox="0 0 24 24" style="stroke:var(--sp);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;width:15px;height:15px"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div class="scv" id="s-mn">0</div><div class="scl">Vibe Points</div></div>
-        <div class="sc"><div class="sci"><svg viewBox="0 0 24 24" style="stroke:var(--sp);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;width:15px;height:15px"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div><div class="scv" id="s-vb" style="font-size:15px;letter-spacing:-.3px">&#8212;</div><div class="scl">Your vibe</div></div>
-      </div>
+  <div class="page" id="pg-stats"><div class="inn">
+    <div style="padding:28px 22px 8px"><h2 style="font-size:24px;font-weight:900;letter-spacing:-.5px">Your Stats</h2><p style="font-size:13px;color:var(--t2);margin-top:4px" id="stats-sub">All-time overview</p></div>
+    <div class="dv" style="margin-top:8px"></div>
+    <div class="sgrid">
+      <div class="sc"><div class="sci"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div><div class="scv" id="s-tr">0</div><div class="scl">Top tracks</div></div>
+      <div class="sc"><div class="sci"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="scv" id="s-hr">&#8212;</div><div class="scl">Hours</div></div>
+      <div class="sc"><div class="sci"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="scv" id="s-ar">0</div><div class="scl">Artists</div></div>
+      <div class="sc"><div class="sci"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="scv" id="s-t1" style="font-size:15px">&#8212;</div><div class="scl">Top artist</div></div>
+      <div class="sc"><div class="sci"><svg viewBox="0 0 24 24" style="stroke:var(--sp);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;width:15px;height:15px"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div><div class="scv" id="s-mn">0</div><div class="scl">Vibe Points</div></div>
+      <div class="sc"><div class="sci"><svg viewBox="0 0 24 24" style="stroke:var(--sp);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;width:15px;height:15px"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></div><div class="scv" id="s-vb" style="font-size:15px">&#8212;</div><div class="scl">Your vibe</div></div>
     </div>
-  </div>
-
+  </div></div>
   <!-- TRACKS -->
-  <div class="page" id="pg-tracks">
-    <div class="inn">
-      <div style="padding:28px 22px 8px">
-        <h2 style="font-size:24px;font-weight:900;letter-spacing:-.5px">Top Tracks</h2>
-        <p style="font-size:13px;color:var(--t2);margin-top:4px" id="tracks-sub">Your favorites</p>
-      </div>
-      <div class="dv" style="margin-top:8px"></div>
-      <div class="tlist" id="full-tlist"></div>
-    </div>
-  </div>
-
+  <div class="page" id="pg-tracks"><div class="inn">
+    <div style="padding:28px 22px 8px"><h2 style="font-size:24px;font-weight:900;letter-spacing:-.5px">Top Tracks</h2><p style="font-size:13px;color:var(--t2);margin-top:4px" id="tracks-sub">Your favorites</p></div>
+    <div class="dv" style="margin-top:8px"></div>
+    <div class="tlist" id="full-tlist"></div>
+  </div></div>
   <!-- PROFILE -->
-  <div class="page" id="pg-profile">
-    <div class="inn">
-      <div style="padding:36px 22px 0;text-align:center">
-        <div class="av" id="p-av" style="width:72px;height:72px;font-size:28px;margin:0 auto 14px;border-width:3px">?</div>
-        <div id="p-nm" style="font-size:20px;font-weight:800;letter-spacing:-.5px">&#8212;</div>
-        <div id="p-id" style="font-size:13px;color:var(--t2);margin-top:3px">&#8212;</div>
-      </div>
-      <div class="dv"></div>
-      <div style="padding:0 22px;display:flex;flex-direction:column;gap:10px">
-        <div class="sc"><div class="scl" style="margin-bottom:4px">Plan</div><div class="scv" id="p-plan" style="font-size:16px">&#8212;</div></div>
-        <div class="sc"><div class="scl" style="margin-bottom:4px">Country</div><div class="scv" id="p-ctry" style="font-size:16px">&#8212;</div></div>
-        <div class="sc"><div class="scl" style="margin-bottom:4px">Followers</div><div class="scv" id="p-fol" style="font-size:16px">&#8212;</div></div>
-      </div>
-      <div class="dv"></div>
-      <div style="padding:0 22px 28px">
-        <button onclick="logout()" style="width:100%;padding:14px;border-radius:50px;border:1px solid rgba(255,80,80,.3);background:rgba(255,80,80,.07);color:#f88;font-family:var(--f);font-size:14px;font-weight:700;cursor:pointer">Log out of VibeCheck</button>
-      </div>
+  <div class="page" id="pg-profile"><div class="inn">
+    <div style="padding:36px 22px 0;text-align:center">
+      <div class="av" id="p-av" style="width:72px;height:72px;font-size:28px;margin:0 auto 14px;border-width:3px">?</div>
+      <div id="p-nm" style="font-size:20px;font-weight:800;letter-spacing:-.5px">&#8212;</div>
+      <div id="p-id" style="font-size:13px;color:var(--t2);margin-top:3px">&#8212;</div>
     </div>
-  </div>
-
+    <div class="dv"></div>
+    <div style="padding:0 22px;display:flex;flex-direction:column;gap:10px">
+      <div class="sc"><div class="scl" style="margin-bottom:4px">Plan</div><div class="scv" id="p-plan" style="font-size:16px">&#8212;</div></div>
+      <div class="sc"><div class="scl" style="margin-bottom:4px">Country</div><div class="scv" id="p-ctry" style="font-size:16px">&#8212;</div></div>
+      <div class="sc"><div class="scl" style="margin-bottom:4px">Followers</div><div class="scv" id="p-fol" style="font-size:16px">&#8212;</div></div>
+    </div>
+    <div class="dv"></div>
+    <div style="padding:0 22px 28px"><button onclick="logout()" style="width:100%;padding:14px;border-radius:50px;border:1px solid rgba(255,80,80,.3);background:rgba(255,80,80,.07);color:#f88;font-family:var(--f);font-size:14px;font-weight:700;cursor:pointer">Log out of VibeCheck</button></div>
+  </div></div>
   <!-- LEADERBOARD -->
-  <div class="page" id="pg-leaderboard">
-    <div class="inn">
-      <div style="padding:28px 22px 8px;display:flex;align-items:center;justify-content:space-between">
-        <div>
-          <h2 style="font-size:24px;font-weight:900;letter-spacing:-.5px">Leaderboard</h2>
-          <p style="font-size:13px;color:var(--t2);margin-top:4px">Top 25 Vibe Scores</p>
-        </div>
-        <div class="lb-live"><span class="dot"></span>LIVE</div>
-      </div>
-      <div class="dv" style="margin-top:8px"></div>
-      <div style="padding:0 22px 4px">
-        <div style="display:flex;gap:8px;margin-bottom:10px">
-          <input id="lb-status-input" maxlength="50" placeholder="What are you vibing to? &#127925;"
-            style="flex:1;background:var(--bg3);border:1px solid var(--bg4);border-radius:50px;padding:10px 16px;color:var(--t);font-family:var(--f);font-size:13px;outline:none"/>
-          <button onclick="saveStatus()" style="background:var(--bg3);border:1px solid var(--bg4);color:var(--sp);font-family:var(--f);font-size:13px;font-weight:700;padding:10px 16px;border-radius:50px;cursor:pointer;white-space:nowrap">Set &#10003;</button>
-        </div>
-        <button class="lb-save-btn" id="lb-save-btn" onclick="saveMyScore()">&#128190; Save My Score</button>
-        <div id="lb-save-msg" style="font-size:12px;color:var(--t2);text-align:center;min-height:18px;margin-top:4px"></div>
-      </div>
-      <div style="padding:0 22px 4px">
-        <button onclick="inviteFriends()" style="width:100%;padding:12px;border-radius:50px;border:1px solid var(--bg4);background:transparent;color:var(--t2);font-family:var(--f);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
-          &#128279; Invite Friends via WhatsApp
-        </button>
-      </div>
-      <div class="dv"></div>
-      <div id="lb-list" style="padding-bottom:8px"><div style="padding:20px;text-align:center;color:var(--t3)">Loading leaderboard...</div></div>
+  <div class="page" id="pg-leaderboard"><div class="inn">
+    <div style="padding:28px 22px 8px;display:flex;align-items:center;justify-content:space-between">
+      <div><h2 style="font-size:24px;font-weight:900;letter-spacing:-.5px">Leaderboard</h2><p style="font-size:13px;color:var(--t2);margin-top:4px">Top 25 Vibe Scores</p></div>
+      <div class="lb-live"><span class="dot"></span>LIVE</div>
     </div>
-  </div>
-
-  <!-- FRIENDS ─────────────────────────────────── -->
-  <div class="page" id="pg-friends">
-    <div class="inn">
-
-      <!-- Header -->
-      <div style="padding:28px 22px 12px;display:flex;align-items:center;justify-content:space-between">
-        <div>
-          <h2 style="font-size:24px;font-weight:900;letter-spacing:-.5px">Friends</h2>
-          <p style="font-size:13px;color:var(--t2);margin-top:4px" id="fr-sub">Everyone on VibeCheck</p>
-        </div>
-        <div class="lb-live"><span class="dot"></span>LIVE</div>
+    <div class="dv" style="margin-top:8px"></div>
+    <div style="padding:0 22px 4px">
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <input id="lb-status-input" maxlength="50" placeholder="What are you vibing to? &#127925;" style="flex:1;background:var(--bg3);border:1px solid var(--bg4);border-radius:50px;padding:10px 16px;color:var(--t);font-family:var(--f);font-size:13px;outline:none"/>
+        <button onclick="saveStatus()" style="background:var(--bg3);border:1px solid var(--bg4);color:var(--sp);font-family:var(--f);font-size:13px;font-weight:700;padding:10px 16px;border-radius:50px;cursor:pointer;white-space:nowrap">Set &#10003;</button>
       </div>
-
-      <!-- Search bar -->
-      <div class="fr-search-wrap">
-        <div class="fr-search" id="fr-search-box">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-          <input id="fr-search-input" type="text" placeholder="Search by name..." autocomplete="off" oninput="onFrSearch(this)"/>
-          <button class="fr-clr" onclick="clearFrSearch()" title="Clear">&#10005;</button>
-        </div>
-      </div>
-
-      <!-- Invite button -->
-      <div style="padding:0 22px 4px">
-        <button onclick="inviteFriends()" style="width:100%;padding:13px;border-radius:50px;border:1.5px solid var(--sp);background:transparent;color:var(--sp);font-family:var(--f);font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
-          &#128279; Add Friend — Invite via WhatsApp
-        </button>
-      </div>
-
-      <!-- Pending requests section (hidden until there are requests) -->
-      <div id="fr-pending-section">
-        <div class="fr-pending-header">
-          <div class="fr-pending-title">
-            <span>&#128276; Pending Requests</span>
-            <span class="fr-pending-badge" id="fr-pending-count">0</span>
-          </div>
-        </div>
-        <div id="fr-pending-list"></div>
-        <div class="pending-divider"></div>
-      </div>
-
-      <div class="dv"></div>
-
-      <!-- Friends list -->
-      <div id="fr-list" style="padding-bottom:8px">
-        <div class="fr-empty"><div class="fr-empty-icon">&#128112;</div><p>Loading friends...</p></div>
+      <button class="lb-save-btn" id="lb-save-btn" onclick="saveMyScore()">&#128190; Save My Score</button>
+      <div id="lb-save-msg" style="font-size:12px;color:var(--t2);text-align:center;min-height:18px;margin-top:4px"></div>
+    </div>
+    <div style="padding:0 22px 4px">
+      <button onclick="inviteFriends()" style="width:100%;padding:12px;border-radius:50px;border:1px solid var(--bg4);background:transparent;color:var(--t2);font-family:var(--f);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">&#128279; Invite Friends via WhatsApp</button>
+    </div>
+    <div class="dv"></div>
+    <div id="lb-list" style="padding-bottom:8px"><div style="padding:20px;text-align:center;color:var(--t3)">Loading leaderboard...</div></div>
+  </div></div>
+  <!-- FRIENDS -->
+  <div class="page" id="pg-friends"><div class="inn">
+    <div style="padding:28px 22px 12px;display:flex;align-items:center;justify-content:space-between">
+      <div><h2 style="font-size:24px;font-weight:900;letter-spacing:-.5px">Friends</h2><p style="font-size:13px;color:var(--t2);margin-top:4px" id="fr-sub">Everyone on VibeCheck</p></div>
+      <div class="lb-live"><span class="dot"></span>LIVE</div>
+    </div>
+    <div class="fr-search-wrap">
+      <div class="fr-search" id="fr-search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="fr-search-input" type="text" placeholder="Search by name..." autocomplete="off" oninput="onFrSearch(this)"/>
+        <button class="fr-clr" onclick="clearFrSearch()" title="Clear">&#10005;</button>
       </div>
     </div>
-  </div>
-
+    <div style="padding:0 22px 4px">
+      <button onclick="inviteFriends()" style="width:100%;padding:13px;border-radius:50px;border:1.5px solid var(--sp);background:transparent;color:var(--sp);font-family:var(--f);font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">&#128279; Add Friend &#8212; Invite via WhatsApp</button>
+    </div>
+    <div class="dv"></div>
+    <div id="fr-list" style="padding-bottom:8px"><div class="fr-empty"><div class="fr-empty-icon">&#128105;</div><p>Loading friends...</p></div></div>
+  </div></div>
   <!-- BOTTOM NAV -->
-  <div class="bnav">
-    <div class="bni">
-      <button class="bn on" id="bn-home"        onclick="goPage('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="bnl">Home</span></button>
-      <button class="bn" id="bn-stats"          onclick="goPage('stats')"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span class="bnl">Stats</span></button>
-      <button class="bn" id="bn-leaderboard"    onclick="goPage('leaderboard')"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span class="bnl">Ranks</span></button>
-      <button class="bn" id="bn-friends"        onclick="goPage('friends')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="bnl">Friends</span></button>
-      <button class="bn" id="bn-profile"        onclick="goPage('profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="bnl">Profile</span></button>
-    </div>
-  </div>
-
-  <!-- Nudge toast -->
+  <div class="bnav"><div class="bni">
+    <button class="bn on" id="bn-home"       onclick="goPage('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="bnl">Home</span></button>
+    <button class="bn" id="bn-stats"         onclick="goPage('stats')"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span class="bnl">Stats</span></button>
+    <button class="bn" id="bn-leaderboard"   onclick="goPage('leaderboard')"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span class="bnl">Ranks</span></button>
+    <button class="bn" id="bn-friends"       onclick="goPage('friends')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="bnl">Friends</span></button>
+    <button class="bn" id="bn-profile"       onclick="goPage('profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="bnl">Profile</span></button>
+  </div></div>
   <div id="nudge-toast">&#127925; Vibe sent!</div>
-
   <!-- ARTIST PANEL -->
   <div id="a-bg" onclick="closePanel()"></div>
   <div id="a-panel" role="dialog" aria-modal="true">
     <div class="ap-handle"></div>
-    <div class="ap-hero-wrap">
-      <div id="ap-hero-img">&#127925;</div>
-      <div class="ap-hero-grad"></div>
-      <button class="ap-x" onclick="closePanel()">&#10005;</button>
-    </div>
+    <div class="ap-hero-wrap"><div id="ap-hero-img">&#127925;</div><div class="ap-hero-grad"></div><button class="ap-x" onclick="closePanel()">&#10005;</button></div>
     <div class="ap-meta">
       <div class="ap-nm" id="ap-nm">&#8212;</div>
-      <div class="ap-row">
-        <div class="ap-s"><span class="ap-sv" id="ap-mins">0</span><span class="ap-sl">pts</span></div>
-        <div class="ap-s"><span class="ap-sv" id="ap-cnt">0</span><span class="ap-sl">songs</span></div>
-      </div>
+      <div class="ap-row"><div class="ap-s"><span class="ap-sv" id="ap-mins">0</span><span class="ap-sl">pts</span></div><div class="ap-s"><span class="ap-sv" id="ap-cnt">0</span><span class="ap-sl">songs</span></div></div>
     </div>
     <div class="ap-dv"></div>
     <div id="ap-body"></div>
   </div>
-
-  <!-- FRIEND VIBE PANEL -->
-  <div id="fv-bg" onclick="closeFvPanel()"></div>
-  <div id="fv-panel" role="dialog" aria-modal="true">
-    <div class="fv-handle"></div>
-    <div class="fv-header">
-      <div class="fv-identity">
-        <div class="fv-big-av" id="fv-av">?</div>
-        <div>
-          <div class="fv-nm" id="fv-nm">—</div>
-          <div class="fv-vibe-tag" id="fv-vibe-tag"><span id="fv-ve">🎵</span><span id="fv-vt">—</span></div>
-        </div>
-      </div>
-      <button class="fv-x" onclick="closeFvPanel()">&#10005;</button>
-    </div>
-    <div class="fv-stats-row">
-      <div class="fv-stat"><div class="fv-stat-v" id="fv-score">—</div><div class="fv-stat-l">Vibe Points</div></div>
-      <div class="fv-stat"><div class="fv-stat-v" id="fv-tracks">—</div><div class="fv-stat-l">Top Tracks</div></div>
-      <div class="fv-stat"><div class="fv-stat-v" id="fv-artists">—</div><div class="fv-stat-l">Artists</div></div>
-    </div>
-    <div class="fv-dv"></div>
-    <div id="fv-body"></div>
-  </div>
-
-</div><!-- /s-app -->
-
+</div>
 <script>
 'use strict';
-
-const CLIENT_ID    = '22a39828c40d4acc8e50f21daaf65639';
-const REDIRECT_URI = 'https://s10922-netizen.github.io/vibecheck/';
-const SCOPES       = 'user-read-private user-read-email user-top-read user-read-recently-played user-read-currently-playing';
-
-const TABS = {
-  week:   { kind:'recent',                   label:'PAST WEEK',  meta:'7 days',   sub:'Your last 7 days',        statsLbl:'Past week'    },
-  month:  { kind:'top', range:'short_term',  label:'4 WEEKS',    meta:'4 weeks',  sub:'Your last 4 weeks',       statsLbl:'Last 4 weeks' },
-  medium: { kind:'top', range:'medium_term', label:'6 MONTHS',   meta:'6 months', sub:'Your last 6 months',      statsLbl:'Last 6 months'},
-  year:   { kind:'top', range:'long_term',   label:'ALL TIME',   meta:'all time', sub:'Your all-time favorites', statsLbl:'All time'     },
-};
-
-let _token    = null;
-let _profData = null;
-const _CACHE_VERSION = 'v3';
-const _tabCache = {};
-
-const $   = id => document.getElementById(id);
-const st  = (id, v) => { const e=$(id); if(e) e.textContent=String(v); };
-const sh  = (id, v) => { const e=$(id); if(e) e.innerHTML=v; };
-const clr = id     => { const e=$(id); if(e) e.innerHTML=''; };
-
-function showScr(id) {
-  document.querySelectorAll('.scr').forEach(s => { s.classList.remove('on'); s.style.display=''; });
-  const t=$(id); if(t){ t.style.display='flex'; t.classList.add('on'); }
-}
-function setLoad(msg) { st('rmsg', msg||'Loading...'); showScr('s-load'); }
-
-/* ── SKELETON ─────────────────────────────────── */
-function showSkeleton() {
-  const cEl=$('ctr'); if(cEl) cEl.style.visibility='hidden';
-  const cw=document.querySelector('.cw');
-  if(cw&&!cw.querySelector('.csk')){ const s=document.createElement('div'); s.className='sk csk'; cw.appendChild(s); }
-  const vt=$('vtag'); if(vt){ vt.classList.add('sk'); st('ve',''); st('vt',''); }
-  sh('ar-list', Array.from({length:5},(_,i)=>`
-    <div class="skr" style="opacity:${1-i*.13}">
-      <div style="width:18px;flex-shrink:0"></div>
-      <div class="sk skc"></div>
-      <div class="skls"><div class="sk skl" style="height:13px;width:78%"></div><div class="sk skl" style="height:11px;width:52%"></div><div class="sk skl" style="height:2px;width:90%;margin-top:4px"></div></div>
-      <div class="skrc"><div class="sk skl" style="height:13px;width:100%"></div><div class="sk skl" style="height:10px;width:70%"></div></div>
-    </div>`).join(''));
-  ['s-tr','s-hr','s-ar','s-t1','s-mn','s-vb'].forEach(id=>{ const e=$(id); if(e) e.innerHTML='<span class="sk sksv"></span>'; });
-}
-function hideSkeleton() {
-  const cw=document.querySelector('.cw'); const csk=cw&&cw.querySelector('.csk'); if(csk) csk.remove();
-  const cEl=$('ctr'); if(cEl) cEl.style.visibility='visible';
-  const vt=$('vtag'); if(vt) vt.classList.remove('sk');
-}
-
-/* ── VIBE DETECTOR ────────────────────────────── */
-function detectVibe(genres) {
-  const g=(genres||[]).join(' ').toLowerCase();
-  if(g.includes('hip-hop')||g.includes('rap'))       return['&#128293;','Hip-Hop Head'];
-  if(g.includes('pop'))                               return['&#10024;','Pop Obsessed'];
-  if(g.includes('rock')||g.includes('metal'))        return['&#127928;','Rock Soul'];
-  if(g.includes('r&b')||g.includes('soul'))          return['&#127769;','R&B Vibes'];
-  if(g.includes('electronic')||g.includes('house'))  return['&#9889;','Club Energy'];
-  if(g.includes('latin')||g.includes('reggaeton'))   return['&#128122;','Latin Heat'];
-  if(g.includes('jazz'))                              return['&#127927;','Jazz Lover'];
-  if(g.includes('classical')||g.includes('piano'))   return['&#127929;','Classical Soul'];
-  if(g.includes('indie')||g.includes('alternative')) return['&#127807;','Indie Spirit'];
-  return['&#127925;','Eclectic Taste'];
-}
-
-/* ── PKCE AUTH ────────────────────────────────── */
-async function sha256(s) {
-  const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
-  return btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-}
-function randStr(n=64) {
-  const c='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
-  const a=new Uint8Array(n); crypto.getRandomValues(a);
-  return [...a].map(b=>c[b%c.length]).join('');
-}
-async function doLogin() {
-  const v=randStr(), ch=await sha256(v);
-  localStorage.setItem('pkce_v', v);
-  sessionStorage.setItem('pkce_v', v);
-  location.href='https://accounts.spotify.com/authorize?'+new URLSearchParams({
-    client_id:CLIENT_ID,response_type:'code',redirect_uri:REDIRECT_URI,
-    code_challenge_method:'S256',code_challenge:ch,scope:SCOPES,
-  });
-}
-async function exchangeCode(code) {
-  const v = sessionStorage.getItem('pkce_v') || localStorage.getItem('pkce_v');
-  if(!v) throw new Error('No PKCE verifier — please log in again.');
-  const r=await fetch('https://accounts.spotify.com/api/token',{
-    method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
-    body:new URLSearchParams({grant_type:'authorization_code',code,redirect_uri:REDIRECT_URI,client_id:CLIENT_ID,code_verifier:v}),
-  });
-  if(!r.ok){ const e=await r.json().catch(()=>({})); throw new Error(e.error_description||'Token exchange failed'); }
-  const d=await r.json();
-  _token=d.access_token; sessionStorage.setItem('tok',_token); localStorage.setItem('tok',_token);
-  sessionStorage.removeItem('pkce_v'); localStorage.removeItem('pkce_v');
-  history.replaceState({},'',location.pathname);
-}
-
-/* ── SPOTIFY API ──────────────────────────────── */
-async function spApi(path) {
-  const r=await fetch('https://api.spotify.com/v1'+path,{headers:{Authorization:'Bearer '+_token}});
-  if(r.status===401){ logout(); throw new Error('Session expired — please log in again.'); }
-  if(r.status===204) return null;
-  if(!r.ok) throw new Error('Spotify API '+r.status);
-  return r.json();
-}
-
-async function getMyTopTracks(timeRange) {
-  const [res1, res2] = await Promise.all([
-    spApi(`/me/top/tracks?time_range=${timeRange}&limit=50&offset=0`),
-    spApi(`/me/top/tracks?time_range=${timeRange}&limit=50&offset=50`),
-  ]);
-  const raw = [...(res1?.items||[]), ...(res2?.items||[])];
-  const seen = new Set();
-  const unique = raw.filter(t => { if(!t?.id || seen.has(t.id)) return false; seen.add(t.id); return true; });
-  return unique.map(t => ({
-    id: t.id, name: t.name||'Unknown Track',
-    durationMs: (typeof t.duration_ms==='number'&&t.duration_ms>0)?t.duration_ms:210000,
-    albumName: t.album?.name||'', albumArt: t.album?.images?.[1]?.url||t.album?.images?.[0]?.url||'',
-    albumArtSm: t.album?.images?.[2]?.url||t.album?.images?.[0]?.url||'',
-    spotifyUrl: t.external_urls?.spotify||'',
-    artists: (t.artists||[]).filter(a=>a.id&&a.name).map(a=>({id:a.id,name:a.name})),
-  }));
-}
-
-const TAB_MULTIPLIER = { week:1, month:4, medium:12, year:52 };
-function calcVibePoints(tracks, tab) {
-  const total = tracks.length;
-  const raw = tracks.reduce((sum, track, i) => sum + (total-i) * (track.durationMs/60000), 0);
-  return Math.round(raw * (TAB_MULTIPLIER[tab]||1));
-}
-
-function vibeStatus(points) {
-  if(points >= 800000) return '👑 Music Legend';
-  if(points >= 400000) return '🔥 Main Character';
-  if(points >= 150000) return '🎧 Vibe Explorer';
-  if(points >= 30000)  return '✨ Rising Star';
-  return '🎵 Just Getting Started';
-}
-
-function buildArtistMap(tracks) {
-  const map = new Map();
-  for(const track of tracks) {
-    for(const artist of track.artists) {
-      if(!map.has(artist.id)) map.set(artist.id,{id:artist.id,name:artist.name,totalMs:0,tracks:[]});
-      const e=map.get(artist.id);
-      e.totalMs+=track.durationMs;
-      if(!e.tracks.some(t=>t.id===track.id)) e.tracks.push(track);
-    }
-  }
-  return Array.from(map.values()).sort((a,b)=>b.totalMs-a.totalMs).slice(0,5);
-}
-
-async function loadTabData(tab) {
-  const cfg = TABS[tab];
-  if(cfg.kind==='recent') {
-    const [recentRes, np] = await Promise.all([
-      spApi('/me/player/recently-played?limit=50'),
-      spApi('/me/player/currently-playing').catch(()=>null),
-    ]);
-    const cutoff = Date.now()-7*24*3600*1000;
-    const allPlays = (recentRes?.items||[]).filter(item=>item?.track?.type==='track'&&Date.parse(item.played_at)>=cutoff);
-    const seen=new Set();
-    const tracks=allPlays.filter(item=>{ if(seen.has(item.track.id)) return false; seen.add(item.track.id); return true; })
-      .map(item=>{
-        const t=item.track; const dur=(typeof t.duration_ms==='number'&&t.duration_ms>0)?t.duration_ms:210000;
-        return{id:t.id,name:t.name||'Unknown',durationMs:dur,albumName:t.album?.name||'',
-          albumArt:t.album?.images?.[1]?.url||t.album?.images?.[0]?.url||'',
-          albumArtSm:t.album?.images?.[2]?.url||t.album?.images?.[0]?.url||'',
-          spotifyUrl:t.external_urls?.spotify||'',
-          artists:(t.artists||[]).filter(a=>a.id&&a.name).map(a=>({id:a.id,name:a.name}))};
-      });
-    const artists=buildArtistMap(tracks);
-    return{tracks,artists,vibePoints:calcVibePoints(tracks,'week'),np,genres:[]};
-  }
-  const [tracks, topArtistsRes, np] = await Promise.all([
-    getMyTopTracks(cfg.range),
-    spApi(`/me/top/artists?time_range=${cfg.range}&limit=10`),
-    spApi('/me/player/currently-playing').catch(()=>null),
-  ]);
-  const genres  = (topArtistsRes?.items||[]).flatMap(a=>a.genres||[]);
-  const artists = buildArtistMap(tracks);
-  return{tracks,artists,vibePoints:calcVibePoints(tracks,tab),np,genres};
-}
-
-/* ── FORMAT / ANIMATE ─────────────────────────── */
-function fmtMs(ms) {
-  if(!ms) return '';
-  return `${Math.floor(ms/60000)}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}`;
-}
-function animCtr(target,dur=1100) {
-  const el=$('ctr'); if(!el) return;
-  const from=parseInt(el.textContent.replace(/[^0-9]/g,''))||0;
-  const t0=performance.now();
-  (function step(now){
-    const p=Math.min((now-t0)/dur,1),e=1-Math.pow(1-p,3);
-    el.textContent=Math.round(from+(target-from)*e).toLocaleString();
-    if(p<1) requestAnimationFrame(step);
-  })(performance.now());
-}
-
-/* ── RENDER: ARTISTS ──────────────────────────── */
-function renderArtists(artists,trackCount) {
-  const el=$('ar-list'); if(!el) return;
-  el.innerHTML='';
-  if(!artists||!artists.length){el.innerHTML='<div style="padding:20px;color:var(--t3);font-size:14px">No artist data.</div>';return;}
-  const maxMs=artists[0].totalMs||1;
-  artists.forEach((a,i)=>{
-    const dispPts=Math.round(a.totalMs/60000);
-    const pct=Math.round((a.totalMs/maxMs)*100);
-    const row=document.createElement('div'); row.className='ar'; row.style.animation=`up .35s ${i*.06}s ease both`;
-    row.innerHTML=`
-      <div class="rk ${i===0?'g':''}">${i+1}</div>
-      <div class="ai">&#127925;</div>
-      <div class="ainf">
-        <div class="an">${a.name}</div>
-        <div class="ag">${a.tracks.length} track${a.tracks.length!==1?'s':''} in top ${trackCount}</div>
-        <div class="abar"><div class="abf" data-pct="${pct}"></div></div>
-      </div>
-      <div class="ar-r">
-        <div class="am">${dispPts.toLocaleString()}<small> pts</small></div>
-        <div class="as2">${a.tracks.length} song${a.tracks.length!==1?'s':''}</div>
-      </div>
-      <div class="ac">&#8250;</div>`;
-    row.addEventListener('click',()=>openPanel({...a,pts:dispPts}));
-    el.appendChild(row);
-    setTimeout(()=>{ const b=row.querySelector('.abf'); if(b) b.style.width=b.dataset.pct+'%'; },90+i*70);
-  });
-}
-
-/* ── RENDER: TRACKS ───────────────────────────── */
-function renderTracks(tracks,elId,animate) {
-  const el=$(elId); if(!el) return; el.innerHTML='';
-  if(!tracks||!tracks.length){el.innerHTML='<div style="padding:20px;color:var(--t3);font-size:14px">No track data.</div>';return;}
-  tracks.slice(0,100).forEach((t,i)=>{
-    const artists=t.artists.map(a=>a.name).join(', ')||'Unknown';
-    const row=document.createElement('div'); row.className='tr';
-    if(animate) row.style.animation=`up .28s ${i*.02}s ease both`;
-    row.innerHTML=`
-      <div class="trn" style="${i<3?'color:var(--sp);font-size:15px':''}">${i<3?['&#129351;','&#129352;','&#129353;'][i]:i+1}</div>
-      <div class="ti">${t.albumArt?`<img src="${t.albumArt}" loading="lazy" alt=""/>`:''}</div>
-      <div class="tinf"><div class="tn">${t.name}</div><div class="tar">${artists}</div></div>
-      <div class="td">${fmtMs(t.durationMs)}</div>
-      ${t.spotifyUrl?`<button class="play-btn" onclick="window.open('${t.spotifyUrl}','_blank')" title="Open in Spotify"><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9"/></svg></button>`:''}`;
-    el.appendChild(row);
-  });
-}
-
-/* ── RENDER: NOW PLAYING ──────────────────────── */
-function renderNP(np) {
-  const sec=$('np-s'); if(!sec) return;
-  if(!np?.item){sec.classList.remove('on');return;}
-  sec.classList.add('on');
-  st('np-t', np.item.name||'');
-  st('np-a2',(np.item.artists||[]).map(a=>a.name).join(', ')||'');
-  const artEl=$('np-art');
-  if(artEl){ const img=np.item.album?.images?.[0]?.url; artEl.innerHTML=img?`<img src="${img}" alt=""/>`:' &#127925;'; }
-}
-
-/* ── APPLY DATA → DOM ─────────────────────────── */
-function applyData(tab,data) {
-  const cfg=TABS[tab]; const trackCount=data.tracks.length; const points=data.vibePoints||0;
-  st('badge-txt',cfg.label); st('ar-meta',`from top ${trackCount}`); st('tr-meta',`top ${trackCount}`);
-  const disc=$('h-disclaimer'); if(disc) disc.textContent=vibeStatus(points);
-  const [ve,vt]=detectVibe(data.genres||[]);
-  sh('ve',ve); st('vt',vt); animCtr(points);
-  st('s-tr',trackCount); st('s-hr','—'); st('s-ar',data.artists.length);
-  st('s-t1',data.artists[0]?.name||'—'); st('s-mn',points.toLocaleString());
-  sh('s-vb',vt); st('stats-sub',cfg.statsLbl+' overview'); st('tracks-sub',cfg.statsLbl+' top tracks');
-  renderArtists(data.artists,trackCount);
-  renderTracks(data.tracks,'home-tlist',true);
-  renderTracks(data.tracks,'full-tlist',false);
-  renderNP(data.np); clr('err-box');
-}
-
-/* ── TAB SWITCHING ────────────────────────────── */
-async function onTab(el, tab) {
-  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('on')); el.classList.add('on'); clr('err-box');
-  if(_tabCache[tab]){ applyData(tab,_tabCache[tab]); return; }
-  ['ar-list','home-tlist','full-tlist'].forEach(clr); showSkeleton();
-  try {
-    const data=await loadTabData(tab); _tabCache[tab]=data; hideSkeleton(); applyData(tab,data);
-  } catch(err) {
-    hideSkeleton(); st('ctr','0');
-    sh('err-box',`<div class="err">&#9888; ${err.message}<br><small style="color:#aaa;margin-top:4px;display:block">Make sure <code>${REDIRECT_URI}</code> is listed as a Redirect URI in your <a href="https://developer.spotify.com/dashboard" target="_blank">Spotify Dashboard</a>.</small></div>`);
-  }
-}
-
-/* ── ARTIST PANEL ─────────────────────────────── */
-function openPanel(artist) {
-  const panel=$('a-panel'),bg=$('a-bg'); if(!panel||!bg) return;
-  $('ap-body').innerHTML=''; $('ap-hero-img').innerHTML='&#127925;'; $('ap-hero-img').style.fontSize='72px';
-  st('ap-nm',''); st('ap-mins','0'); st('ap-cnt','0');
-  st('ap-nm',artist.name||''); st('ap-mins',artist.pts>0?artist.pts.toLocaleString():'0'); st('ap-cnt',artist.tracks.length);
-  let html='';
-  if(artist.tracks.length>0){
-    html+=`<div class="ap-stitle">${artist.name}'s Songs (${artist.tracks.length})</div>`;
-    html+=[...artist.tracks].sort((a,b)=>b.durationMs-a.durationMs).map((t,i)=>`
-      <div class="ap-tr" style="animation:up .2s ${i*.03}s ease both">
-        <div class="ap-tr-n">${i+1}</div>
-        <div class="ap-tr-a">${t.albumArtSm?`<img src="${t.albumArtSm}" alt="" loading="lazy"/>`:''}</div>
-        <div class="ap-tr-i"><div class="ap-tr-nm">${t.name}</div><div class="ap-tr-al">${t.albumName}</div></div>
-        <div class="ap-tr-d">${fmtMs(t.durationMs)}</div>
-      </div>`).join('');
-  } else {
-    html=`<div style="padding:40px 22px;text-align:center;color:var(--t2);font-size:14px;line-height:1.7">No tracks from <strong>${artist.name}</strong> for this period.</div>`;
-  }
-  $('ap-body').innerHTML=html;
-  document.body.style.overflow='hidden'; bg.classList.add('on');
-  requestAnimationFrame(()=>panel.classList.add('on'));
-  let sy=0,dr=false;
-  const onTS=e=>{sy=e.touches[0].clientY;dr=true;};
-  const onTM=e=>{if(!dr)return;const d=e.touches[0].clientY-sy;if(d>0)panel.style.transform=`translateX(-50%) translateY(${d}px)`;};
-  const onTE=e=>{dr=false;const d=e.changedTouches[0].clientY-sy;panel.style.transform='';if(d>80)closePanel();panel.removeEventListener('touchstart',onTS);panel.removeEventListener('touchmove',onTM);panel.removeEventListener('touchend',onTE);};
-  panel.addEventListener('touchstart',onTS,{passive:true}); panel.addEventListener('touchmove',onTM,{passive:true}); panel.addEventListener('touchend',onTE);
-}
-function closePanel() {
-  const p=$('a-panel'),b=$('a-bg');
-  if(p) p.classList.remove('on'); if(b) b.classList.remove('on'); document.body.style.overflow='';
-}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closePanel();closeFvPanel();}});
-
-/* ══════════════════════════════════════════════
-   FIREBASE
-══════════════════════════════════════════════ */
-const _fbApp = firebase.initializeApp({
-  apiKey:      'AIzaSyBZaTbDIyXOtyLPEtJLLbdOw8L4eSmiNqY',
-  databaseURL: 'https://vibecheck-app-7e557-default-rtdb.europe-west1.firebasedatabase.app/',
-  projectId:   'vibecheck-app-7e557',
-});
-const _db = firebase.database();
-let _lbListener   = null;
-let _nudgeListener = null;
-
-function startPresence(uid) {
-  const presRef = _db.ref('presence/'+uid);
-  presRef.set({ online:true, lastSeen:Date.now() });
-  presRef.onDisconnect().set({ online:false, lastSeen:Date.now() });
-}
-
-function fmtLastSeen(p) {
-  if(!p) return '';
-  if(p.online) return 'online';
-  const diff=Date.now()-(p.lastSeen||0), m=Math.floor(diff/60000);
-  if(m<2)  return 'just now';
-  if(m<60) return `${m}m ago`;
-  const h=Math.floor(m/60);
-  if(h<24) return `${h}h ago`;
-  return `${Math.floor(h/24)}d ago`;
-}
-
-async function saveStatus() {
-  if(!_profData) return;
-  const input=$('lb-status-input');
-  const status=(input?.value||'').trim().slice(0,50);
-  if(!status) return;
-  await _db.ref('scores/'+_profData.id).update({status});
-  if(input) input.value='';
-}
-
-async function saveMyScore() {
-  const btn=$('lb-save-btn'), msg=$('lb-save-msg');
-  if(!_profData){if(msg)msg.textContent='Load your stats first.';return;}
-  const yearData=_tabCache['year'];
-  if(!yearData){if(msg)msg.textContent='Open the All Time tab first.';return;}
-  const uid=_profData.id, name=_profData.display_name||_profData.id;
-  const score=yearData.vibePoints||0, vibe=vibeStatus(score);
-  if(btn){btn.disabled=true;btn.textContent='Saving...';}
-  try {
-    await _db.ref('scores/'+uid).update({name,score,vibe,updatedAt:Date.now()});
-    if(msg) msg.textContent='✅ Score saved!';
-    if(btn) btn.textContent='✅ Saved';
-    startPresence(uid);
-  } catch(e) {
-    if(msg) msg.textContent='❌ '+e.message;
-    if(btn){btn.disabled=false;btn.textContent='💾 Save My Score';}
-  }
-}
-
-async function sendNudge(toUid, toName) {
-  if(!_profData) return;
-  const fromName=_profData.display_name||_profData.id;
-  await _db.ref('nudges/'+toUid).push({from:fromName,ts:Date.now()});
-  showToast('&#127925; Vibe sent to '+toName+'!');
-}
-
-function showToast(msg) {
-  const toast=$('nudge-toast'); if(!toast) return;
-  toast.innerHTML=msg; toast.style.display='block';
-  clearTimeout(toast._t);
-  toast._t=setTimeout(()=>{ toast.style.display='none'; }, 2800);
-}
-
-function listenNudges(uid) {
-  if(_nudgeListener) return;
-  const ref=_db.ref('nudges/'+uid);
-  _nudgeListener=ref.on('child_added',snap=>{
-    const d=snap.val();
-    if(!d||(Date.now()-d.ts)>30000) return;
-    ref.child(snap.key).remove();
-    if(d.type==='friendAccepted') {
-      showToast(`&#129309; ${d.from} accepted your friend request!`);
-    } else {
-      showToast(`&#10024; ${d.from} sent you a vibe!`);
-    }
-  });
-}
-
-/* ── LEADERBOARD ──────────────────────────────── */
-function startLeaderboard() {
-  const el=$('lb-list'); if(!el||_lbListener) return;
-  const scoresRef=_db.ref('scores').orderByChild('score').limitToLast(25);
-  const presenceRef=_db.ref('presence');
-  let latestScores=[], latestPresence={};
-  function render() {
-    if(!latestScores.length){el.innerHTML='<div style="padding:20px;text-align:center;color:var(--t3)">No scores yet — be the first!</div>';return;}
-    const myUid=_profData?.id, medals=['gold','silver','bronze'];
-    el.innerHTML=latestScores.map((r,i)=>{
-      const isMe=r.uid===myUid, p=latestPresence[r.uid];
-      const isOnline=p?.online;
-      const nudgeBtn=isMe?'':
-        `<button onclick="sendNudge('${r.uid}','${(r.name||'').replace(/'/g,'')}')"
-          class="nudge-btn">&#127925;</button>`;
-      return`<div class="lb-row ${isMe?'me':''}">
-        <div class="lb-pos ${medals[i]||''}">${i<3?['🥇','🥈','🥉'][i]:i+1}</div>
-        <div class="lb-info">
-          <div class="lb-name">${r.name||'—'}${isMe?' <span style="color:var(--sp);font-size:10px;font-weight:800">YOU</span>':''}
-            <span style="font-size:10px;font-weight:700;color:${isOnline?'var(--sp)':'var(--t3)'}">${isOnline?'● ONLINE':''}</span>
-          </div>
-          <div class="lb-meta">${r.status?'🎵 '+r.status:(r.vibe||'')}</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-          <div class="lb-score">${Number(r.score||0).toLocaleString()}</div>${nudgeBtn}
-        </div>
-      </div>`;
-    }).join('');
-  }
-  _lbListener=scoresRef.on('value',snap=>{
-    const rows=[]; snap.forEach(c=>rows.push({uid:c.key,...c.val()}));
-    latestScores=rows.sort((a,b)=>b.score-a.score); render();
-  });
-  presenceRef.on('value',snap=>{ latestPresence=snap.val()||{}; render(); });
-}
-
-/* ══════════════════════════════════════════════
-   FRIENDS — live search + friend requests
-   Firebase structure:
-     /friendRequests/{toUid}/{fromUid} = { fromName, sentAt }
-     /friends/{uid}/{otherUid} = true   (mutual, written on accept)
-══════════════════════════════════════════════ */
-let _frListener      = null;
-let _frAllScores     = [];
-let _frPresence      = {};
-let _frQuery         = '';
-let _frFriends       = {};   // uid → true  (my confirmed friends)
-let _frSentReqs      = {};   // uid → true  (I sent a request to them)
-let _frIncoming      = {};   // requestKey → { fromUid, fromName, sentAt }
-
-/* ── SEARCH ───────────────────────────────────── */
-function onFrSearch(input) {
-  _frQuery = input.value.toLowerCase().trim();
-  const box=$('fr-search-box');
-  if(box) box.classList.toggle('has-val', _frQuery.length>0);
-  renderFriends();
-}
-function clearFrSearch() {
-  _frQuery='';
-  const inp=$('fr-search-input'); if(inp) inp.value='';
-  const box=$('fr-search-box'); if(box) box.classList.remove('has-val');
-  renderFriends();
-}
-
-/* ── SEND FRIEND REQUEST ──────────────────────── */
-async function sendFriendRequest(targetUid, targetName) {
-  if(!_profData) return;
-  const myUid  = _profData.id;
-  const myName = _profData.display_name || _profData.id;
-  if(myUid === targetUid) return;
-
-  // Write to /friendRequests/{targetUid}/{myUid}
-  await _db.ref(`friendRequests/${targetUid}/${myUid}`).set({
-    fromName: myName,
-    sentAt:   Date.now(),
-  });
-
-  // Track locally so button updates immediately
-  _frSentReqs[targetUid] = true;
-  renderFriends();
-  showToast('&#128276; Friend request sent to ' + targetName + '!');
-}
-
-/* ── ACCEPT FRIEND REQUEST ────────────────────── */
-async function acceptFriendRequest(fromUid, fromName, reqKey) {
-  if(!_profData) return;
-  const myUid  = _profData.id;
-  const myName = _profData.display_name || _profData.id;
-
-  // Write mutual friendship
-  await Promise.all([
-    _db.ref(`friends/${myUid}/${fromUid}`).set(true),
-    _db.ref(`friends/${fromUid}/${myUid}`).set(true),
-    // Remove the pending request
-    _db.ref(`friendRequests/${myUid}/${fromUid}`).remove(),
-  ]);
-
-  // Send a nudge-style notification to the sender
-  await _db.ref(`nudges/${fromUid}`).push({ from: myName, ts: Date.now(), type: 'friendAccepted' });
-
-  showToast('&#129309; Now friends with ' + fromName + '!');
-}
-
-/* ── DECLINE FRIEND REQUEST ───────────────────── */
-async function declineFriendRequest(fromUid) {
-  if(!_profData) return;
-  await _db.ref(`friendRequests/${_profData.id}/${fromUid}`).remove();
-}
-
-/* ── RENDER PENDING REQUESTS ──────────────────── */
-function renderPendingRequests() {
-  const section = $('fr-pending-section');
-  const list    = $('fr-pending-list');
-  const badge   = $('fr-pending-count');
-  if(!section || !list) return;
-
-  const reqs = Object.entries(_frIncoming); // [[fromUid, {fromName,sentAt}], ...]
-
-  if(!reqs.length) {
-    section.classList.remove('visible');
-    return;
-  }
-
-  section.classList.add('visible');
-  if(badge) badge.textContent = reqs.length;
-
-  list.innerHTML = reqs.map(([fromUid, d]) => {
-    const initials = (d.fromName||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-    const ago = fmtLastSeen({ lastSeen: d.sentAt });
-    return `<div class="fr-req-card" id="req-${fromUid}">
-      <div class="fr-req-avatar">${initials}</div>
-      <div class="fr-req-info">
-        <div class="fr-req-name">${d.fromName||'—'}</div>
-        <div class="fr-req-meta">Wants to be friends · ${ago}</div>
-      </div>
-      <div class="fr-req-actions">
-        <button class="btn-accept" onclick="acceptFriendRequest('${fromUid}','${(d.fromName||'').replace(/'/g,'')}','req-${fromUid}')">&#10003; Accept</button>
-        <button class="btn-decline" onclick="declineFriendRequest('${fromUid}')">&#10005;</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-/* ── RENDER FRIENDS LIST ──────────────────────── */
-function renderFriends() {
-  const el=$('fr-list'); if(!el) return;
-  const myUid=_profData?.id;
-
-  let list = _frQuery
-    ? _frAllScores.filter(r=>(r.name||'').toLowerCase().includes(_frQuery))
-    : [..._frAllScores];
-
-  // Sort: friends first, then online, then lastSeen desc
-  list.sort((a,b)=>{
-    const aFr=!!_frFriends[a.uid], bFr=!!_frFriends[b.uid];
-    if(aFr && !bFr) return -1;
-    if(!aFr && bFr) return 1;
-    const pa=_frPresence[a.uid], pb=_frPresence[b.uid];
-    if(pa?.online&&!pb?.online) return -1;
-    if(!pa?.online&&pb?.online) return 1;
-    return (pb.lastSeen||0)-(pa.lastSeen||0);
-  });
-
-  const sub=$('fr-sub');
-  if(sub) sub.textContent=_frQuery
-    ? `${list.length} result${list.length!==1?'s':''} for "${_frQuery}"`
-    : `${_frAllScores.length} people on VibeCheck`;
-
-  if(!list.length) {
-    el.innerHTML=`<div class="fr-empty"><div class="fr-empty-icon">${_frQuery?'🔍':'🎵'}</div><p>${_frQuery?'No one found matching "'+_frQuery+'"':'No one here yet — invite friends!'}</p></div>`;
-    return;
-  }
-
-  el.innerHTML=list.map((r,i)=>{
-    const isMe     = r.uid===myUid;
-    const isFriend = !!_frFriends[r.uid];
-    const isPending= !!_frSentReqs[r.uid];
-    const p        = _frPresence[r.uid]||{};
-    const isOnline = !!p.online;
-    const seenTxt  = fmtLastSeen(p);
-    const initials = (r.name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-    const scoreStr = r.score ? Number(r.score).toLocaleString() : null;
-
-    // Right-side action
-    let actionBtn;
-    if(isMe) {
-      actionBtn=`<span style="font-size:11px;color:var(--t3);font-weight:600">You</span>`;
-    } else if(isFriend) {
-      actionBtn=`<button class="add-friend-btn friend" disabled>&#129309; Friends</button>`;
-    } else if(isPending) {
-      actionBtn=`<button class="add-friend-btn pending" disabled>&#128276; Sent</button>`;
-    } else {
-      actionBtn=`<button class="add-friend-btn" onclick="sendFriendRequest('${r.uid}','${(r.name||'').replace(/'/g,'')}')">&#10010; Add</button>`;
-    }
-
-    // Nudge only for friends
-    const nudgeBtn = isFriend && !isMe
-      ? `<button class="nudge-btn" onclick="sendNudge('${r.uid}','${(r.name||'').replace(/'/g,'')}')">&#127925;</button>`
-      : '';
-
-    return`<div class="fr-card ${isMe?'me-card':isFriend?'fr-friend-card':''}" style="animation:fi .18s ${i*.022}s ease both${isFriend&&!isMe?';cursor:pointer':''}" ${isFriend&&!isMe?`onclick="openFriendVibe('${r.uid}','${(r.name||'').replace(/'/g,'')}')"`:''}>
-      <div class="fr-avatar">
-        ${initials}
-        <span class="online-dot ${isOnline?'live':''}"></span>
-      </div>
-      <div class="fr-info">
-        <div class="fr-name">
-          ${r.name||'—'}
-          ${isMe?'<span class="you-badge">YOU</span>':''}
-          ${isFriend&&!isMe?'<span class="you-badge" style="background:rgba(29,185,84,.15)">&#129309;</span>':''}
-        </div>
-        <div class="fr-sub-row">
-          ${r.status?`<span class="fr-status">🎵 ${r.status}`:(r.vibe?`<span class="fr-status">${r.vibe}`:'<span class="fr-status" style="color:var(--t3)">No status set')}</span>
-          ${seenTxt?`<span class="fr-seen ${isOnline?'live':''}">${isOnline?'● Now':seenTxt}</span>`:''}
-        </div>
-      </div>
-      <div class="fr-actions">
-        ${scoreStr?`<span class="fr-score-badge">${scoreStr}</span>`:''}
-        ${actionBtn}
-        ${nudgeBtn}
-      </div>
-    </div>`;
-  }).join('');
-}
-
-/* ── START FRIENDS (initialise all listeners) ─── */
-function startFriends() {
-  const el=$('fr-list'); if(!el||_frListener) return;
-  const myUid=_profData?.id; if(!myUid) return;
-
-  // 1. All scores (everyone on VibeCheck)
-  _frListener=_db.ref('scores').on('value',snap=>{
-    const rows=[]; snap.forEach(c=>rows.push({uid:c.key,...c.val()}));
-    _frAllScores=rows; renderFriends();
-  });
-
-  // 2. Presence
-  _db.ref('presence').on('value',snap=>{ _frPresence=snap.val()||{}; renderFriends(); });
-
-  // 3. My confirmed friends
-  _db.ref(`friends/${myUid}`).on('value',snap=>{ _frFriends=snap.val()||{}; renderFriends(); });
-
-  // 4. Requests I sent (to track pending state on buttons)
-  _db.ref(`friendRequests`).on('value', snap => {
-    _frSentReqs = {};
-    snap.forEach(toSnap => {
-      const toUid = toSnap.key;
-      toSnap.forEach(fromSnap => {
-        if(fromSnap.key === myUid) _frSentReqs[toUid] = true;
-      });
-    });
-    renderFriends();
-  });
-
-  // 5. Incoming requests for ME
-  _db.ref(`friendRequests/${myUid}`).on('value', snap => {
-    _frIncoming = {};
-    snap.forEach(c => { _frIncoming[c.key] = c.val(); });
-    renderPendingRequests();
-  });
-}
-
-/* ══════════════════════════════════════════════
-   FRIEND VIBE PANEL
-   Opens a bottom-sheet showing a friend's
-   Vibe stats (score, top artists, vibe tag).
-   Data source: /scores/{uid} from Firebase.
-   Only accessible for confirmed friends.
-══════════════════════════════════════════════ */
-async function openFriendVibe(uid, name) {
-  const panel=$('fv-panel'), bg=$('fv-bg'); if(!panel||!bg) return;
-  const initials=(name||'?').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-
-  // Reset
-  $('fv-av').textContent   = initials;
-  $('fv-nm').textContent   = name||'—';
-  $('fv-ve').textContent   = '🎵';
-  $('fv-vt').textContent   = '—';
-  $('fv-score').textContent= '—';
-  $('fv-tracks').textContent='—';
-  $('fv-artists').textContent='—';
-  $('fv-body').innerHTML   = `<div class="fv-loading"><div class="ring"></div><span>Loading ${name}'s vibe...</span></div>`;
-
-  // Open panel
-  document.body.style.overflow='hidden';
-  bg.classList.add('on');
-  requestAnimationFrame(()=>panel.classList.add('on'));
-
-  // Swipe-to-dismiss
-  let sy=0,dr=false;
-  const onTS=e=>{sy=e.touches[0].clientY;dr=true;};
-  const onTM=e=>{if(!dr)return;const d=e.touches[0].clientY-sy;if(d>0)panel.style.transform=`translateX(-50%) translateY(${d}px)`;};
-  const onTE=e=>{dr=false;const d=e.changedTouches[0].clientY-sy;panel.style.transform='';if(d>80)closeFvPanel();panel.removeEventListener('touchstart',onTS);panel.removeEventListener('touchmove',onTM);panel.removeEventListener('touchend',onTE);};
-  panel.addEventListener('touchstart',onTS,{passive:true});
-  panel.addEventListener('touchmove',onTM,{passive:true});
-  panel.addEventListener('touchend',onTE);
-
-  // Fetch score data from Firebase
-  try {
-    const snap = await _db.ref('scores/'+uid).get();
-    const d    = snap.val();
-
-    if(!d) {
-      $('fv-body').innerHTML=`<div class="fv-lock"><div class="fv-lock-icon">🎵</div><p>${name} hasn't saved their score yet.<br><span style="color:var(--t3);font-size:12px">Tell them to open VibeCheck and tap Save Score!</span></p></div>`;
-      return;
-    }
-
-    // Vibe tag
-    const vibe   = d.vibe || '🎵 Just Getting Started';
-    const vibeEmoji = vibe.split(' ')[0] || '🎵';
-    const vibeText  = vibe.split(' ').slice(1).join(' ') || vibe;
-    $('fv-ve').textContent = vibeEmoji;
-    $('fv-vt').textContent = vibeText;
-    $('fv-score').textContent  = d.score ? Number(d.score).toLocaleString() : '0';
-
-    // Top artists from Firebase if available, else show score only
-    const artistsSnap = await _db.ref('topArtists/'+uid).get();
-    const artistsData = artistsSnap.val();
-
-    if(artistsData && Array.isArray(artistsData)) {
-      $('fv-tracks').textContent  = artistsData.length || '—';
-      $('fv-artists').textContent = artistsData.length || '—';
-
-      $('fv-body').innerHTML = `
-        <div class="fv-section-title">🎤 Top Artists</div>
-        ${artistsData.slice(0,5).map((a,i)=>`
-          <div class="fv-artist-row">
-            <div class="fv-art-num">${i+1}</div>
-            <div class="fv-art-av">🎵</div>
-            <div class="fv-art-name">${a.name||'—'}</div>
-            <div class="fv-art-pts">${a.tracks||0} tracks</div>
-          </div>`).join('')}
-        ${d.status?`<div style="padding:16px 22px 0;font-size:13px;color:var(--t2)">🎵 "${d.status}"</div>`:''}`;
-    } else {
-      // No detailed artist data — show summary card
-      $('fv-tracks').textContent  = '—';
-      $('fv-artists').textContent = '—';
-      $('fv-body').innerHTML = `
-        <div style="padding:24px 22px">
-          <div style="background:var(--bg2);border:1px solid var(--bg3);border-radius:${getComputedStyle(document.documentElement).getPropertyValue('--r')};padding:20px;text-align:center">
-            <div style="font-size:32px;margin-bottom:10px">${vibeEmoji}</div>
-            <div style="font-size:16px;font-weight:800;margin-bottom:6px">${vibeText}</div>
-            <div style="font-size:13px;color:var(--t2)">${Number(d.score||0).toLocaleString()} Vibe Points</div>
-            ${d.status?`<div style="margin-top:12px;font-size:12px;color:var(--t3);font-style:italic">"${d.status}"</div>`:''}
-          </div>
-          <p style="font-size:12px;color:var(--t3);text-align:center;margin-top:14px;line-height:1.6">Detailed artist breakdown available<br>when ${name} saves their data again.</p>
-        </div>`;
-    }
-  } catch(e) {
-    $('fv-body').innerHTML=`<div class="fv-lock"><div class="fv-lock-icon">⚠️</div><p>Couldn't load ${name}'s vibe.<br><span style="color:var(--t3);font-size:12px">${e.message}</span></p></div>`;
-  }
-}
-
-function closeFvPanel() {
-  const p=$('fv-panel'),b=$('fv-bg');
-  if(p) p.classList.remove('on'); if(b) b.classList.remove('on');
-  document.body.style.overflow='';
-}
-
-/* ── INVITE ───────────────────────────────────── */
-function inviteFriends() {
-  const myName=_profData?.display_name||'I';
-  const score=(_tabCache['year']?.vibePoints||0).toLocaleString();
-  const status=vibeStatus(_tabCache['year']?.vibePoints||0);
-  const url='https://s10922-netizen.github.io/vibecheck/';
-  const text=`🎵 ${myName} scored ${score} Vibe Points on VibeCheck!\n${status}\n\nCheck your own music vibe 👉 ${url}`;
-  window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');
-}
-
-/* ── BOTTOM NAV ───────────────────────────────── */
-function goPage(nm) {
-  ['home','stats','leaderboard','friends','profile'].forEach(n=>{
-    const b=$(`bn-${n}`); if(b) b.classList.toggle('on',n===nm);
-  });
-  ['pg-home','pg-stats','pg-leaderboard','pg-friends','pg-profile'].forEach(id=>{
-    const p=$(id); if(p) p.classList.toggle('on',id===`pg-${nm}`);
-  });
-  const pw=$('pill-wrap'); if(pw) pw.style.display=nm==='home'?'':'none';
-  if(nm==='profile')     fillProfile();
-  if(nm==='leaderboard') startLeaderboard();
-  if(nm==='friends')     startFriends();
-}
-
-/* ── PROFILE ──────────────────────────────────── */
-async function loadProfile() {
-  const p=await spApi('/me'); _profData=p;
-  const av=$('u-av'); st('u-nm',p.display_name||p.id);
-  if(av){ av.innerHTML=p.images?.[0]?.url?`<img src="${p.images[0].url}" alt="av"/>`:( p.display_name||'U')[0].toUpperCase(); }
-}
-function fillProfile() {
-  if(!_profData) return; const p=_profData;
-  const big=$('p-av');
-  if(big){ big.innerHTML=p.images?.[0]?.url?`<img src="${p.images[0].url}" style="width:100%;height:100%;object-fit:cover"/>`:(p.display_name||'U')[0].toUpperCase(); }
-  st('p-nm',p.display_name||p.id||''); st('p-id',p.id?'@'+p.id:'');
-  st('p-plan',p.product?p.product[0].toUpperCase()+p.product.slice(1):'');
-  st('p-ctry',p.country||''); st('p-fol',(p.followers?.total??0).toLocaleString());
-}
-
-/* ── BOOT ─────────────────────────────────────── */
-function getTok(){ return _token||sessionStorage.getItem('tok')||localStorage.getItem('tok')||null; }
-function logout(){
-  sessionStorage.clear(); localStorage.removeItem('tok'); localStorage.removeItem('pkce_v');
-  _token=null; _profData=null; Object.keys(_tabCache).forEach(k=>delete _tabCache[k]);
-  location.href=location.pathname;
-}
-
-async function boot() {
-  if(localStorage.getItem('vc_cache_ver')!==_CACHE_VERSION){
-    localStorage.setItem('vc_cache_ver',_CACHE_VERSION);
-    Object.keys(_tabCache).forEach(k=>delete _tabCache[k]);
-  }
-  const params=new URLSearchParams(location.search);
-  const code=params.get('code'), oauthErr=params.get('error');
-  if(oauthErr){
-    showScr('s-login');
-    sh('err-box',`<div class="err">Spotify error: <strong>${oauthErr}</strong><br><small>${params.get('error_description')||''}</small></div>`);
-    return;
-  }
-  if(code){
-    setLoad('Connecting to Spotify...');
-    try {
-      await exchangeCode(code);
-      _token=sessionStorage.getItem('tok')||localStorage.getItem('tok');
-      setLoad('Loading your profile...'); await loadProfile(); showScr('s-app');
-      await onTab(document.querySelector('.pill[data-tab="year"]'),'year');
-    } catch(e){
-      showScr('s-login');
-      sh('err-box',`<div class="err">&#9888; ${e.message}<br><small style="color:#aaa;margin-top:4px;display:block">REDIRECT sent: <code>${REDIRECT_URI}</code></small></div>`);
-    }
-    return;
-  }
-  const t=getTok();
-  if(t){
-    _token=t; setLoad('Restoring session...');
-    try { await loadProfile(); showScr('s-app'); await onTab(document.querySelector('.pill[data-tab="year"]'),'year'); }
-    catch { sessionStorage.clear(); localStorage.removeItem('tok'); showScr('s-login'); }
-    return;
-  }
-  showScr('s-login');
-}
-
+const CLIENT_ID='22a39828c40d4acc8e50f21daaf65639';
+const REDIRECT_URI='https://s10922-netizen.github.io/vibecheck/';
+const SCOPES='user-read-private user-read-email user-top-read user-read-recently-played user-read-currently-playing';
+const TABS={week:{kind:'recent',range:null,label:'PAST WEEK',statsLbl:'Past week'},month:{kind:'top',range:'short_term',label:'4 WEEKS',statsLbl:'Last 4 weeks'},medium:{kind:'top',range:'medium_term',label:'6 MONTHS',statsLbl:'Last 6 months'},year:{kind:'top',range:'long_term',label:'ALL TIME',statsLbl:'All time'}};
+const TAB_MULT={week:1,month:4,medium:12,year:52};
+let token=null,profile=null;
+const tabCache={};
+let lbRows=[],lbPresence={},lbStarted=false;
+let frRows=[],frQuery='',frStarted=false;
+const $=id=>document.getElementById(id);
+const st=(id,v)=>{const e=$(id);if(e)e.textContent=String(v);};
+function esc(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function showScr(id){document.querySelectorAll('.scr').forEach(s=>{s.classList.remove('on');s.style.display='';});const t=$(id);if(t){t.style.display='flex';t.classList.add('on');}}
+function setLoad(msg){st('rmsg',msg||'Loading...');showScr('s-load');}
+function vibeStatus(p){if(p>=800000)return'&#128081; Music Legend';if(p>=400000)return'&#128293; Main Character';if(p>=150000)return'&#127911; Vibe Explorer';if(p>=30000)return'&#10024; Rising Star';return'&#127925; Just Getting Started';}
+function detectVibe(genres){const g=(genres||[]).join(' ').toLowerCase();if(g.includes('hip-hop')||g.includes('rap'))return['&#128293;','Hip-Hop Head'];if(g.includes('pop'))return['&#10024;','Pop Obsessed'];if(g.includes('rock')||g.includes('metal'))return['&#127928;','Rock Soul'];if(g.includes('r&b')||g.includes('soul'))return['&#127769;','R&B Vibes'];if(g.includes('electronic')||g.includes('house'))return['&#9889;','Club Energy'];if(g.includes('latin')||g.includes('reggaeton'))return['&#128122;','Latin Heat'];if(g.includes('jazz'))return['&#127927;','Jazz Lover'];if(g.includes('classical')||g.includes('piano'))return['&#127929;','Classical Soul'];if(g.includes('indie')||g.includes('alternative'))return['&#127807;','Indie Spirit'];return['&#127925;','Eclectic Taste'];}
+function fmtMs(ms){if(!ms)return'';return`${Math.floor(ms/60000)}:${String(Math.floor((ms%60000)/1000)).padStart(2,'0')}`;}
+function animCtr(target,dur=1100){const el=$('ctr');if(!el)return;const from=parseInt(el.textContent.replace(/[^0-9]/g,''))||0,t0=performance.now();(function f(now){const p=Math.min((now-t0)/dur,1),e=1-Math.pow(1-p,3);el.textContent=Math.round(from+(target-from)*e).toLocaleString();if(p<1)requestAnimationFrame(f);})(performance.now());}
+function showSkeleton(){const c=$('ctr');if(c)c.style.visibility='hidden';const cw=document.querySelector('.cw');if(cw&&!cw.querySelector('.csk')){const s=document.createElement('div');s.className='sk csk';cw.appendChild(s);}const vt=$('vtag');if(vt){vt.classList.add('sk');st('ve','');st('vt','');}const ar=$('ar-list');if(ar)ar.innerHTML=Array.from({length:5},(_,i)=>`<div class="skr" style="opacity:${1-i*.13}"><div style="width:18px;flex-shrink:0"></div><div class="sk skc"></div><div class="skls"><div class="sk skl" style="height:13px;width:78%"></div><div class="sk skl" style="height:11px;width:52%"></div><div class="sk skl" style="height:2px;width:90%;margin-top:4px"></div></div><div class="skrc"><div class="sk skl" style="height:13px;width:100%"></div><div class="sk skl" style="height:10px;width:70%"></div></div></div>`).join('');}
+function hideSkeleton(){const cw=document.querySelector('.cw');const csk=cw&&cw.querySelector('.csk');if(csk)csk.remove();const c=$('ctr');if(c)c.style.visibility='visible';const vt=$('vtag');if(vt)vt.classList.remove('sk');}
+async function sha256(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function randStr(n=64){const c='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~',a=new Uint8Array(n);crypto.getRandomValues(a);return[...a].map(b=>c[b%c.length]).join('');}
+async function doLogin(){const v=randStr(),ch=await sha256(v);localStorage.setItem('pkce_v',v);location.href='https://accounts.spotify.com/authorize?'+new URLSearchParams({client_id:CLIENT_ID,response_type:'code',redirect_uri:REDIRECT_URI,code_challenge_method:'S256',code_challenge:ch,scope:SCOPES});}
+async function exchangeCode(code){const v=localStorage.getItem('pkce_v');if(!v)throw new Error('No PKCE verifier.');const r=await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'authorization_code',code,redirect_uri:REDIRECT_URI,client_id:CLIENT_ID,code_verifier:v})});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error_description||'Token exchange failed');}const d=await r.json();token=d.access_token;localStorage.setItem('tok',token);localStorage.removeItem('pkce_v');history.replaceState({},'',location.pathname);}
+async function sp(path){const r=await fetch('https://api.spotify.com/v1'+path,{headers:{Authorization:'Bearer '+token}});if(r.status===401){logout();throw new Error('Session expired.');}if(r.status===204)return null;if(!r.ok)throw new Error('Spotify '+r.status);return r.json();}
+async function getTopTracks(range){const[a,b]=await Promise.all([sp(`/me/top/tracks?time_range=${range}&limit=50&offset=0`),sp(`/me/top/tracks?time_range=${range}&limit=50&offset=50`)]);const raw=[...(a?.items||[]),...(b?.items||[])];const seen=new Set();return raw.filter(t=>t?.id&&!seen.has(t.id)&&(seen.add(t.id),true)).map(t=>({id:t.id,name:t.name||'Unknown',durationMs:t.duration_ms||210000,albumName:t.album?.name||'',albumArt:t.album?.images?.[1]?.url||t.album?.images?.[0]?.url||'',albumArtSm:t.album?.images?.[2]?.url||t.album?.images?.[0]?.url||'',spotifyUrl:t.external_urls?.spotify||'',artists:(t.artists||[]).map(a=>({id:a.id,name:a.name})).filter(a=>a.id&&a.name)}));}
+function buildArtists(tracks){const map=new Map();tracks.forEach(t=>t.artists.forEach(a=>{if(!map.has(a.id))map.set(a.id,{id:a.id,name:a.name,totalMs:0,tracks:[]});const e=map.get(a.id);e.totalMs+=t.durationMs;if(!e.tracks.some(x=>x.id===t.id))e.tracks.push(t);}));return Array.from(map.values()).sort((a,b)=>b.totalMs-a.totalMs).slice(0,5);}
+function calcPoints(tracks,tab){const n=tracks.length;return Math.round(tracks.reduce((s,t,i)=>s+(n-i)*(t.durationMs/60000),0)*(TAB_MULT[tab]||1));}
+async function loadTabData(tab){const cfg=TABS[tab];if(cfg.kind==='recent'){const[rec,np]=await Promise.all([sp('/me/player/recently-played?limit=50'),sp('/me/player/currently-playing').catch(()=>null)]);const cut=Date.now()-7*24*3600*1000;const plays=(rec?.items||[]).filter(it=>it?.track?.id&&it?.track?.type==='track'&&Date.parse(it.played_at)>=cut);const seen=new Set();const tracks=plays.filter(it=>!seen.has(it.track.id)&&(seen.add(it.track.id),true)).map(it=>({id:it.track.id,name:it.track.name||'Unknown',durationMs:it.track.duration_ms||210000,albumName:it.track.album?.name||'',albumArt:it.track.album?.images?.[1]?.url||it.track.album?.images?.[0]?.url||'',albumArtSm:it.track.album?.images?.[2]?.url||it.track.album?.images?.[0]?.url||'',spotifyUrl:it.track.external_urls?.spotify||'',artists:(it.track.artists||[]).map(a=>({id:a.id,name:a.name})).filter(a=>a.id&&a.name)}));return{tracks,artists:buildArtists(tracks),vibePoints:calcPoints(tracks,'week'),np,genres:[]};}const[tracks,artRes,np]=await Promise.all([getTopTracks(cfg.range),sp(`/me/top/artists?time_range=${cfg.range}&limit=10`),sp('/me/player/currently-playing').catch(()=>null)]);return{tracks,artists:buildArtists(tracks),vibePoints:calcPoints(tracks,tab),np,genres:(artRes?.items||[]).flatMap(a=>a.genres||[])};}
+function renderNP(np){const s=$('np-s');if(!s)return;if(!np?.item){s.classList.remove('on');return;}s.classList.add('on');st('np-t',np.item.name||'');st('np-a2',(np.item.artists||[]).map(a=>a.name).join(', ')||'');const art=$('np-art');if(art){const img=np.item.album?.images?.[0]?.url;art.innerHTML=img?`<img src="${esc(img)}" alt=""/>`:'&#127925;';}}
+function renderTracks(tracks,elId,animate){const el=$(elId);if(!el)return;if(!tracks.length){el.innerHTML='<div style="padding:20px;color:var(--t3);font-size:14px">No track data.</div>';return;}el.innerHTML=tracks.slice(0,100).map((t,i)=>`<div class="tr"${animate?` style="animation:up .28s ${i*.02}s ease both"`:''}}><div class="trn" style="${i<3?'color:var(--sp);font-size:15px':''}">${i<3?['&#129351;','&#129352;','&#129353;'][i]:i+1}</div><div class="ti">${t.albumArt?`<img src="${esc(t.albumArt)}" loading="lazy" alt=""/>`:''}</div><div class="tinf"><div class="tn">${esc(t.name)}</div><div class="tar">${esc(t.artists.map(a=>a.name).join(', '))}</div></div><div class="td">${fmtMs(t.durationMs)}</div>${t.spotifyUrl?`<button class="play-btn" onclick="window.open('${esc(t.spotifyUrl)}','_blank')" title="Open in Spotify"><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9"/></svg></button>`:''}</div>`).join('');}
+function renderArtists(artists,trackCount){const el=$('ar-list');if(!el)return;if(!artists.length){el.innerHTML='<div style="padding:20px;color:var(--t3);font-size:14px">No artist data.</div>';return;}const max=artists[0].totalMs||1;el.innerHTML='';artists.forEach((a,i)=>{const pts=Math.round(a.totalMs/60000),pct=Math.round((a.totalMs/max)*100);const row=document.createElement('div');row.className='ar';row.style.animation=`up .35s ${i*.06}s ease both`;row.innerHTML=`<div class="rk ${i===0?'g':''}">${i+1}</div><div class="ai">&#127925;</div><div class="ainf"><div class="an">${esc(a.name)}</div><div class="ag">${a.tracks.length} track${a.tracks.length!==1?'s':''} in top ${trackCount}</div><div class="abar"><div class="abf" style="width:0"></div></div></div><div class="ar-r"><div class="am">${pts.toLocaleString()}<small> pts</small></div><div class="as2">${a.tracks.length} song${a.tracks.length!==1?'s':''}</div></div><div class="ac">&#8250;</div>`;row.addEventListener('click',()=>openPanel({name:a.name,pts,tracks:a.tracks}));el.appendChild(row);setTimeout(()=>{const b=row.querySelector('.abf');if(b)b.style.width=`${pct}%`;},80+i*70);});}
+function applyTab(tab,data){const cfg=TABS[tab],pts=data.vibePoints||0,tc=data.tracks.length;st('badge-txt',cfg.label);st('ar-meta',`from top ${tc}`);st('tr-meta',`top ${tc}`);st('h-disclaimer',vibeStatus(pts));const[ve,vt]=detectVibe(data.genres||[]);st('ve',ve);st('vt',vt);animCtr(pts);st('s-tr',tc);st('s-hr','—');st('s-ar',data.artists.length);st('s-t1',data.artists[0]?.name||'—');st('s-mn',pts.toLocaleString());st('s-vb',vt);st('stats-sub',cfg.statsLbl+' overview');st('tracks-sub',cfg.statsLbl+' top tracks');renderArtists(data.artists,tc);renderTracks(data.tracks,'home-tlist',true);renderTracks(data.tracks,'full-tlist',false);renderNP(data.np);}
+async function onTab(el,tab){document.querySelectorAll('.pill').forEach(p=>p.classList.remove('on'));if(el)el.classList.add('on');const eb=$('err-box');if(eb)eb.innerHTML='';if(tabCache[tab]){applyTab(tab,tabCache[tab]);return;}['ar-list','home-tlist','full-tlist'].forEach(id=>{const e=$(id);if(e)e.innerHTML='';});showSkeleton();try{const data=await loadTabData(tab);tabCache[tab]=data;hideSkeleton();applyTab(tab,data);}catch(e){hideSkeleton();st('ctr','0');const eb=$('err-box');if(eb)eb.innerHTML=`<div class="err">&#9888; ${esc(e.message||'Failed')}</div>`;}}
+function openPanel(artist){const panel=$('a-panel'),bg=$('a-bg');if(!panel||!bg)return;st('ap-nm',artist.name||'');st('ap-mins',(artist.pts||0).toLocaleString());st('ap-cnt',artist.tracks.length);$('ap-body').innerHTML=artist.tracks.length?`<div class="ap-stitle">${esc(artist.name)}'s Songs (${artist.tracks.length})</div>`+[...artist.tracks].sort((a,b)=>b.durationMs-a.durationMs).map((t,i)=>`<div class="ap-tr" style="animation:up .2s ${i*.03}s ease both"><div class="ap-tr-n">${i+1}</div><div class="ap-tr-a">${t.albumArtSm?`<img src="${esc(t.albumArtSm)}" alt="" loading="lazy"/>`:''}</div><div class="ap-tr-i"><div class="ap-tr-nm">${esc(t.name)}</div><div class="ap-tr-al">${esc(t.albumName)}</div></div><div class="ap-tr-d">${fmtMs(t.durationMs)}</div></div>`).join(''):'<div style="padding:40px 22px;text-align:center;color:var(--t2);font-size:14px;line-height:1.7">No tracks data.</div>';document.body.style.overflow='hidden';bg.classList.add('on');requestAnimationFrame(()=>panel.classList.add('on'));}
+function closePanel(){const p=$('a-panel'),b=$('a-bg');if(p)p.classList.remove('on');if(b)b.classList.remove('on');document.body.style.overflow='';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel();});
+firebase.initializeApp({apiKey:'AIzaSyBZaTbDIyXOtyLPEtJLLbdOw8L4eSmiNqY',databaseURL:'https://vibecheck-app-7e557-default-rtdb.europe-west1.firebasedatabase.app/',projectId:'vibecheck-app-7e557'});
+const db=firebase.database();
+function startPresence(uid){const ref=db.ref('presence/'+uid);ref.set({online:true,lastSeen:Date.now()});ref.onDisconnect().set({online:false,lastSeen:Date.now()});}
+function renderLeaderboard(){const el=$('lb-list');if(!el)return;if(!lbRows.length){el.innerHTML='<div style="padding:20px;text-align:center;color:var(--t3)">No scores yet - be the first!</div>';return;}const myUid=profile?.id;const sorted=[...lbRows].sort((a,b)=>(b.score||0)-(a.score||0));const top25=sorted.slice(0,25);const myIdx=myUid?sorted.findIndex(r=>r.uid===myUid):-1;const inTop=top25.some(r=>r.uid===myUid);const medals=['gold','silver','bronze'];const rowHtml=(r,idx)=>{const isMe=r.uid===myUid,online=!!lbPresence[r.uid]?.online;return`<div class="lb-row ${isMe?'me':''}"><div class="lb-pos ${idx<3?medals[idx]:''}">${idx<3?['&#129351;','&#129352;','&#129353;'][idx]:idx+1}</div><div class="lb-info"><div class="lb-name">${esc(r.name||'—')}${isMe?' <span style="color:var(--sp);font-size:10px;font-weight:800">YOU</span>':''} ${online?'<span style="color:var(--sp);font-size:10px;font-weight:700">&#9679; ONLINE</span>':''}</div><div class="lb-meta">${esc(r.status?'&#127925; '+r.status:(r.vibe||''))}</div></div><div style="display:flex;align-items:center;gap:8px;flex-shrink:0"><div class="lb-score">${Number(r.score||0).toLocaleString()}</div>${isMe?'':`<button class="nudge-btn" onclick="sendNudge('${esc(r.uid)}','${esc(r.name||'')}')">&#128075;</button>`}</div></div>`;};let html=top25.map((r,i)=>rowHtml(r,i)).join('');if(myIdx>=0&&!inTop)html+=`<div style="padding:8px 22px;color:var(--t3);font-size:11px">...</div>${rowHtml(sorted[myIdx],myIdx)}`;el.innerHTML=html;}
+/* FIX 1: startLeaderboard - boolean guard, attaches listener once only */
+function startLeaderboard(){if(lbStarted)return;lbStarted=true;db.ref('scores').orderByChild('score').on('value',snap=>{const rows=[];snap.forEach(c=>rows.push({uid:c.key,...c.val()}));lbRows=rows;renderLeaderboard();});db.ref('presence').on('value',snap=>{lbPresence=snap.val()||{};renderLeaderboard();});}
+async function saveStatus(){if(!profile)return;const input=$('lb-status-input'),status=(input?.value||'').trim().slice(0,50);if(!status)return;await db.ref('scores/'+profile.id).update({status,updatedAt:Date.now()});if(input)input.value='';}
+/* FIX 2: saveMyScore - no manual array manipulation, no refreshLeaderboardOnce */
+async function saveMyScore(){const btn=$('lb-save-btn'),msg=$('lb-save-msg');if(!profile)return;if(!tabCache.year){const yearBtn=document.querySelector('.pill[data-tab="year"]');await onTab(yearBtn,'year');}const yearData=tabCache.year;if(!yearData){if(msg)msg.textContent='Could not load All Time data.';return;}if(btn){btn.disabled=true;btn.textContent='Saving...';}try{await db.ref('scores/'+profile.id).set({name:profile.display_name||profile.id,score:yearData.vibePoints||0,vibe:vibeStatus(yearData.vibePoints||0),status:($('lb-status-input')?.value||'').trim().slice(0,50),updatedAt:Date.now()});/* Firebase listener fires automatically - no manual update needed */if(msg)msg.textContent='&#10003; Score saved!';if(btn)btn.textContent='&#10003; Saved';startPresence(profile.id);}catch(e){if(msg)msg.textContent='&#10060; '+(e.message||'Failed to save');if(btn){btn.disabled=false;btn.textContent='&#128190; Save My Score';}}}
+async function sendNudge(toUid,toName){if(!profile)return;await db.ref('nudges/'+toUid).push({from:profile.display_name||profile.id,ts:Date.now()});const toast=$('nudge-toast');if(toast){toast.textContent=`&#127925; Vibe sent to ${toName}!`;toast.style.display='block';setTimeout(()=>{toast.style.display='none';},2800);}}
+function renderFriends(){const el=$('fr-list');if(!el)return;const list=frQuery?frRows.filter(r=>String(r.name||'').toLowerCase().includes(frQuery)):frRows;if(!list.length){el.innerHTML='<div class="fr-empty"><div class="fr-empty-icon">&#128105;</div><p>No friends found.</p></div>';return;}const sub=$('fr-sub');if(sub)sub.textContent=`${list.length} people on VibeCheck`;el.innerHTML=list.map(r=>{const isMe=r.uid===profile?.id;return`<div class="fr-card ${isMe?'me-card':''}"><div class="fr-avatar">${esc((r.name||'?').slice(0,2).toUpperCase())}</div><div class="fr-info"><div class="fr-name">${esc(r.name||'—')}${isMe?'<span class="you-badge">YOU</span>':''}</div><div class="fr-sub-row"><span class="fr-status">${esc(r.status||r.vibe||'')}</span></div></div><div class="fr-actions"><span class="fr-score-badge">${Number(r.score||0).toLocaleString()}</span></div></div>`;}).join('');}
+function startFriends(){if(frStarted)return;frStarted=true;db.ref('scores').on('value',snap=>{const rows=[];snap.forEach(c=>rows.push({uid:c.key,...c.val()}));frRows=rows.sort((a,b)=>(b.score||0)-(a.score||0));renderFriends();});}
+function onFrSearch(input){frQuery=(input?.value||'').toLowerCase().trim();const box=$('fr-search-box');if(box)box.classList.toggle('has-val',!!frQuery);renderFriends();}
+function clearFrSearch(){frQuery='';const input=$('fr-search-input');if(input)input.value='';const box=$('fr-search-box');if(box)box.classList.remove('has-val');renderFriends();}
+function inviteFriends(){const name=profile?.display_name||'I',score=(tabCache.year?.vibePoints||0).toLocaleString();window.open('https://wa.me/?text='+encodeURIComponent(`&#127925; ${name} scored ${score} Vibe Points on VibeCheck!\nCheck yours: https://s10922-netizen.github.io/vibecheck/`),'_blank');}
+/* FIX 3: goPage - startLeaderboard only when navigating to leaderboard tab */
+function goPage(nm){['home','stats','leaderboard','friends','profile'].forEach(n=>{const b=$(`bn-${n}`),p=$(`pg-${n}`);if(b)b.classList.toggle('on',n===nm);if(p)p.classList.toggle('on',n===nm);});const pw=$('pill-wrap');if(pw)pw.style.display=nm==='home'?'':'none';if(nm==='leaderboard')startLeaderboard();if(nm==='friends')startFriends();if(nm==='profile')fillProfile();}
+async function loadProfile(){const p=await sp('/me');profile=p;st('u-nm',p.display_name||p.id);const av=$('u-av');if(av)av.innerHTML=p.images?.[0]?.url?`<img src="${esc(p.images[0].url)}" alt="av"/>`:(p.display_name||'U')[0].toUpperCase();}
+function fillProfile(){if(!profile)return;const p=profile;const big=$('p-av');if(big)big.innerHTML=p.images?.[0]?.url?`<img src="${esc(p.images[0].url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>`:esc((p.display_name||'U')[0].toUpperCase());st('p-nm',p.display_name||p.id||'—');st('p-id',p.id?'@'+p.id:'');st('p-plan',p.product?p.product[0].toUpperCase()+p.product.slice(1):'Free');st('p-ctry',p.country||'—');st('p-fol',(p.followers?.total??0).toLocaleString());}
+function logout(){localStorage.removeItem('tok');localStorage.removeItem('pkce_v');location.href=location.pathname;}
+/* FIX 3 (continued): boot - NO startLeaderboard() call here */
+async function boot(){const code=new URLSearchParams(location.search).get('code');if(code){setLoad('Connecting...');try{await exchangeCode(code);token=localStorage.getItem('tok');await loadProfile();showScr('s-app');await onTab(document.querySelector('.pill[data-tab="year"]'),'year');startPresence(profile.id);}catch(e){const eb=$('err-box');if(eb)eb.innerHTML=`<div class="err">&#9888; ${esc(e.message||'Login failed')}<br><small style="color:#aaa;margin-top:4px;display:block">REDIRECT: <code>${REDIRECT_URI}</code></small></div>`;showScr('s-login');}return;}const t=localStorage.getItem('tok');if(t){token=t;setLoad('Restoring...');try{await loadProfile();showScr('s-app');await onTab(document.querySelector('.pill[data-tab="year"]'),'year');startPresence(profile.id);}catch{logout();}return;}showScr('s-login');}
 boot();
 </script>
 </body>
