@@ -413,12 +413,36 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
     </div>
   </div>
 
+  <!-- FRIENDS -->
+  <div class="page" id="pg-friends">
+    <div class="inn">
+      <div style="padding:28px 22px 12px;display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <h2 style="font-size:24px;font-weight:900;letter-spacing:-.5px">Friends</h2>
+          <p style="font-size:13px;color:var(--t2);margin-top:4px" id="fr-sub">Everyone on VibeCheck</p>
+        </div>
+        <div class="lb-live"><span class="dot"></span>LIVE</div>
+      </div>
+      <!-- Add Friend / Invite button -->
+      <div style="padding:0 22px 4px">
+        <button onclick="inviteFriends()" style="width:100%;padding:13px;border-radius:50px;border:1.5px solid var(--sp);background:transparent;color:var(--sp);font-family:var(--f);font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+          &#128279; Add Friend — Invite via WhatsApp
+        </button>
+      </div>
+      <div class="dv"></div>
+      <div id="fr-list" style="padding-bottom:8px">
+        <div class="empty">Loading...</div>
+      </div>
+    </div>
+  </div>
+
   <!-- BOTTOM NAV -->
   <div class="bnav">
     <div class="bni">
       <button class="bn on" id="bn-home"        onclick="goPage('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="bnl">Home</span></button>
       <button class="bn" id="bn-stats"          onclick="goPage('stats')"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span class="bnl">Stats</span></button>
       <button class="bn" id="bn-leaderboard"    onclick="goPage('leaderboard')"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span class="bnl">Ranks</span></button>
+      <button class="bn" id="bn-friends"        onclick="goPage('friends')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="bnl">Friends</span></button>
       <button class="bn" id="bn-profile"        onclick="goPage('profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="bnl">Profile</span></button>
     </div>
   </div>
@@ -1183,19 +1207,81 @@ function inviteFriends() {
 }
 
 /* ═══════════════════════════════════════════
-   BOTTOM NAV — updated to include leaderboard
+   FRIENDS — live list of all users in DB
+   Same data source as leaderboard (scores +
+   presence), shown sorted by online-first then
+   last-seen. Nudge button included.
+═══════════════════════════════════════════ */
+let _frListener = null;
+
+function startFriends() {
+  const el = $('fr-list'); if(!el || _frListener) return;
+
+  let latestScores = [], latestPresence = {};
+
+  function render() {
+    const myUid = _profData?.id;
+    // Sort: online first, then by lastSeen desc
+    const sorted = [...latestScores].sort((a,b) => {
+      const pa = latestPresence[a.uid], pb = latestPresence[b.uid];
+      if (pa?.online && !pb?.online) return -1;
+      if (!pa?.online && pb?.online) return 1;
+      return (pb.lastSeen||0) - (pa.lastSeen||0);
+    });
+
+    const sub = $('fr-sub');
+    if(sub) sub.textContent = `${sorted.length} people on VibeCheck`;
+
+    if(!sorted.length){ el.innerHTML='<div class="empty">No one yet — invite friends!</div>'; return; }
+
+    el.innerHTML = sorted.map(r => {
+      const isMe = r.uid === myUid;
+      const p    = latestPresence[r.uid] || {};
+      const nudgeBtn = isMe ? '<span style="font-size:11px;color:var(--t3)">You</span>' :
+        `<button onclick="sendNudge('${r.uid}','${r.name.replace(/'/g,'')}')"
+          style="background:var(--bg3);border:none;border-radius:50px;padding:5px 12px;font-size:12px;font-weight:700;color:var(--sp);cursor:pointer">
+          &#127925; Nudge
+        </button>`;
+      return `
+        <div class="lb-row ${isMe?'me':''}">
+          <div style="width:10px;height:10px;border-radius:50%;background:${p.online?'var(--sp)':'var(--bg4)'};flex-shrink:0;margin-right:2px"></div>
+          <div class="lb-info">
+            <div class="lb-name" style="display:flex;align-items:center;gap:6px">
+              ${r.name} ${fmtLastSeen(p)}
+            </div>
+            <div class="lb-meta">${r.status ? '🎵 '+r.status : (r.vibe||'')}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
+            ${nudgeBtn}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  _frListener = _db.ref('scores').on('value', snap => {
+    const rows=[]; snap.forEach(c=>rows.push({uid:c.key,...c.val()}));
+    latestScores=rows; render();
+  });
+  _db.ref('presence').on('value', snap => {
+    latestPresence=snap.val()||{}; render();
+  });
+}
+
+/* ═══════════════════════════════════════════
+   BOTTOM NAV
 ═══════════════════════════════════════════ */
 function goPage(nm) {
-  ['home','stats','leaderboard','profile'].forEach(n => {
+  ['home','stats','leaderboard','friends','profile'].forEach(n => {
     const b = $(`bn-${n}`); if(b) b.classList.toggle('on', n===nm);
   });
-  ['pg-home','pg-stats','pg-leaderboard','pg-profile'].forEach(id => {
+  ['pg-home','pg-stats','pg-leaderboard','pg-friends','pg-profile'].forEach(id => {
     const p = $(id); if(p) p.classList.toggle('on', id===`pg-${nm}`);
   });
   const pw = $('pill-wrap');
   if(pw) pw.style.display = nm==='home' ? '' : 'none';
-  if(nm === 'profile')     fillProfile();
-  if(nm === 'leaderboard') startLeaderboard(); // start live listener on first visit
+  if(nm==='profile')     fillProfile();
+  if(nm==='leaderboard') startLeaderboard();
+  if(nm==='friends')     startFriends();
 }
 
 /* ═══════════════════════════════════════════
