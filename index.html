@@ -190,7 +190,40 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
   .sh{padding:0 14px 10px}.dv{margin:16px 14px}.sgrid{padding:0 14px;gap:8px}.scv{font-size:18px}.np{margin:0 14px}
   #a-panel{max-width:100%}.lb-row,.fr-card{padding:10px 14px}.fr-search-wrap{padding:8px 14px 12px}
 }
-@keyframes spin{to{transform:rotate(360deg)}}@keyframes eqa{from{transform:scaleY(.3)}to{transform:scaleY(1)}}
+/* ── GAMES ──────────────────────────────────── */
+.gm-card{display:flex;align-items:center;gap:14px;background:var(--bg2);border-radius:18px;padding:18px;border:1px solid var(--bg3);cursor:pointer;transition:border-color .2s,transform .15s;-webkit-tap-highlight-color:transparent}
+.gm-card:hover{border-color:var(--sp);transform:scale(1.01)}
+.gm-card:active{transform:scale(.98)}
+.gm-icon{font-size:36px;flex-shrink:0;width:56px;height:56px;background:var(--bg3);border-radius:14px;display:flex;align-items:center;justify-content:center}
+.gm-info{flex:1;min-width:0}
+.gm-title{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.gm-desc{font-size:12px;color:var(--t2);margin-top:3px;line-height:1.5}
+.gm-badge{display:inline-block;margin-top:7px;font-size:10px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--sp);background:var(--glow);border-radius:50px;padding:3px 9px}
+.gm-arrow{font-size:20px;color:var(--t3);flex-shrink:0}
+/* Question card */
+.gm-q{background:var(--bg2);border-radius:18px;padding:20px;border:1px solid var(--bg3);margin-top:14px}
+.gm-q-label{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--sp);margin-bottom:10px}
+.gm-q-main{font-size:20px;font-weight:900;letter-spacing:-.5px;line-height:1.2;margin-bottom:4px}
+.gm-q-sub{font-size:12px;color:var(--t2)}
+.gm-album{width:100%;aspect-ratio:1;border-radius:12px;background:var(--bg3);overflow:hidden;margin-bottom:14px;display:flex;align-items:center;justify-content:center;font-size:56px}
+.gm-album img{width:100%;height:100%;object-fit:cover;border-radius:12px}
+.gm-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.gm-opt{background:var(--bg3);border:1.5px solid var(--bg4);border-radius:12px;padding:12px 10px;font-size:13px;font-weight:700;font-family:var(--f);color:var(--t);cursor:pointer;transition:all .15s;text-align:center;line-height:1.3;-webkit-tap-highlight-color:transparent}
+.gm-opt:hover{border-color:var(--sp);background:var(--glow)}
+.gm-opt.correct{border-color:#1DB954;background:rgba(29,185,84,.15);color:#1DB954}
+.gm-opt.wrong{border-color:#f55;background:rgba(255,80,80,.1);color:#f88}
+.gm-opt.reveal{border-color:#1DB954;background:rgba(29,185,84,.08)}
+.gm-opt:disabled{cursor:default}
+.gm-score{display:flex;align-items:center;justify-content:space-between;padding:12px 0;font-size:13px;font-weight:700}
+.gm-score span{color:var(--sp);font-size:18px;font-weight:900}
+.gm-next{width:100%;padding:13px;border-radius:50px;background:var(--sp);color:#000;font-family:var(--f);font-size:15px;font-weight:800;border:none;cursor:pointer;margin-top:10px;transition:background .15s}
+.gm-next:hover{background:var(--sp2)}
+.gm-end{text-align:center;padding:32px 0}
+.gm-end-score{font-size:52px;font-weight:900;letter-spacing:-3px;color:var(--sp)}
+.gm-end-label{font-size:14px;color:var(--t2);margin-top:4px}
+.gm-end-verdict{font-size:18px;font-weight:800;margin-top:12px}
+.gm-back{background:var(--bg3);border:1px solid var(--bg4);border-radius:50px;padding:10px 22px;font-family:var(--f);font-size:13px;font-weight:700;color:var(--t2);cursor:pointer;margin-top:14px;transition:all .15s}
+.gm-back:hover{border-color:var(--t2);color:var(--t)}@keyframes eqa{from{transform:scaleY(.3)}to{transform:scaleY(1)}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}@keyframes fi{from{opacity:0}to{opacity:1}}@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
@@ -325,12 +358,46 @@ html,body{background:var(--bg);color:var(--t);font-family:var(--f);min-height:10
     <div class="dv"></div>
     <div id="fr-list" style="padding-bottom:8px"><div class="fr-empty"><div class="fr-empty-icon">&#128105;</div><p>Loading friends...</p></div></div>
   </div></div>
+  <!-- GAMES -->
+  <div class="page" id="pg-games"><div class="inn">
+    <div style="padding:28px 22px 16px">
+      <h2 style="font-size:24px;font-weight:900;letter-spacing:-.5px">&#127918; Music Games</h2>
+      <p style="font-size:13px;color:var(--t2);margin-top:4px">Test your music knowledge</p>
+    </div>
+    <!-- Game Cards -->
+    <div style="padding:0 22px;display:flex;flex-direction:column;gap:14px">
+      <!-- Game 1: Guess the Artist -->
+      <div class="gm-card" onclick="startGame('artist')">
+        <div class="gm-icon">&#127914;</div>
+        <div class="gm-info">
+          <div class="gm-title">Guess the Artist</div>
+          <div class="gm-desc">See a track name from your top songs — can you guess who made it?</div>
+          <div class="gm-badge">From your Top 50</div>
+        </div>
+        <div class="gm-arrow">&#8250;</div>
+      </div>
+      <!-- Game 2: Guess the Song -->
+      <div class="gm-card" onclick="startGame('song')">
+        <div class="gm-icon">&#127930;</div>
+        <div class="gm-info">
+          <div class="gm-title">Guess the Song</div>
+          <div class="gm-desc">See the album cover — name that track from your library!</div>
+          <div class="gm-badge">From your Top 50</div>
+        </div>
+        <div class="gm-arrow">&#8250;</div>
+      </div>
+    </div>
+    <!-- Game arena (hidden until game starts) -->
+    <div id="gm-arena" style="display:none;padding:0 22px;margin-top:8px"></div>
+  </div></div>
+
   <!-- BOTTOM NAV -->
   <div class="bnav"><div class="bni">
     <button class="bn on" id="bn-home"       onclick="goPage('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span class="bnl">Home</span></button>
     <button class="bn" id="bn-stats"         onclick="goPage('stats')"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg><span class="bnl">Stats</span></button>
     <button class="bn" id="bn-leaderboard"   onclick="goPage('leaderboard')"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span class="bnl">Ranks</span></button>
     <button class="bn" id="bn-friends"       onclick="goPage('friends')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="bnl">Friends</span></button>
+    <button class="bn" id="bn-games"         onclick="goPage('games')"><svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4"/><circle cx="15" cy="11" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="13" r="1" fill="currentColor" stroke="none"/></svg><span class="bnl">Games</span></button>
     <button class="bn" id="bn-profile"       onclick="goPage('profile')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="bnl">Profile</span></button>
   </div></div>
   <div id="nudge-toast">&#127925; Vibe sent!</div>
@@ -408,8 +475,148 @@ function startFriends(){if(frStarted)return;frStarted=true;db.ref('scores').on('
 function onFrSearch(input){frQuery=(input?.value||'').toLowerCase().trim();const box=$('fr-search-box');if(box)box.classList.toggle('has-val',!!frQuery);renderFriends();}
 function clearFrSearch(){frQuery='';const input=$('fr-search-input');if(input)input.value='';const box=$('fr-search-box');if(box)box.classList.remove('has-val');renderFriends();}
 function inviteFriends(){const name=profile?.display_name||'I',score=(tabCache.year?.vibePoints||0).toLocaleString();window.open('https://wa.me/?text='+encodeURIComponent(`&#127925; ${name} scored ${score} Vibe Points on VibeCheck!\nCheck yours: https://s10922-netizen.github.io/vibecheck/`),'_blank');}
-/* FIX 3: goPage - startLeaderboard only when navigating to leaderboard tab */
-function goPage(nm){['home','stats','leaderboard','friends','profile'].forEach(n=>{const b=$(`bn-${n}`),p=$(`pg-${n}`);if(b)b.classList.toggle('on',n===nm);if(p)p.classList.toggle('on',n===nm);});const pw=$('pill-wrap');if(pw)pw.style.display=nm==='home'?'':'none';if(nm==='leaderboard')startLeaderboard();if(nm==='friends')startFriends();if(nm==='profile')fillProfile();}
+/* ── GAMES ─────────────────────────────────── */
+let gmState = null; // current game state
+
+async function getGameTracks() {
+  // Use cached year data if available, else fetch
+  if (tabCache.year?.tracks?.length) return tabCache.year.tracks;
+  const data = await loadTabData('year');
+  tabCache.year = data;
+  return data.tracks;
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+async function startGame(type) {
+  const arena = $('gm-arena');
+  if (!arena) return;
+  arena.style.display = 'block';
+  arena.innerHTML = '<div style="padding:20px;text-align:center;color:var(--t2);font-size:13px">Loading your tracks...</div>';
+
+  let tracks;
+  try { tracks = await getGameTracks(); } catch(e) {
+    arena.innerHTML = `<div class="err">&#9888; Could not load tracks: ${esc(e.message)}</div>`;
+    return;
+  }
+  if (!tracks || tracks.length < 4) {
+    arena.innerHTML = '<div style="padding:20px;text-align:center;color:var(--t3);font-size:13px">Not enough tracks — load your stats first.</div>';
+    return;
+  }
+
+  const pool = shuffle(tracks);
+  gmState = { type, pool, idx: 0, score: 0, total: Math.min(10, pool.length) };
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const arena = $('gm-arena');
+  if (!arena || !gmState) return;
+  const { type, pool, idx, score, total } = gmState;
+
+  if (idx >= total) { renderGameEnd(); return; }
+
+  const correct = pool[idx];
+  // Pick 3 random wrong answers
+  const others = shuffle(pool.filter((_, i) => i !== idx)).slice(0, 3);
+  const options = shuffle([correct, ...others]);
+
+  let qHtml = '';
+
+  if (type === 'artist') {
+    // Show track name, guess the artist
+    qHtml = `
+      <div class="gm-score">&#127918; Question ${idx+1}/${total} <span>${score}</span> pts</div>
+      <div class="gm-q">
+        <div class="gm-q-label">Who made this track?</div>
+        <div class="gm-q-main">${esc(correct.name)}</div>
+        <div class="gm-q-sub">${esc(correct.albumName)}</div>
+      </div>
+      <div class="gm-opts">
+        ${options.map(o => `<button class="gm-opt" onclick="pickAnswer(this,'${esc(o.artists[0]?.name||'?')}','${esc(correct.artists[0]?.name||'?')}')">${esc(o.artists[0]?.name||'?')}</button>`).join('')}
+      </div>`;
+  } else {
+    // Show album art, guess the track name
+    qHtml = `
+      <div class="gm-score">&#127918; Question ${idx+1}/${total} <span>${score}</span> pts</div>
+      <div class="gm-album">${correct.albumArt ? `<img src="${esc(correct.albumArt)}" alt="album"/>` : '&#127930;'}</div>
+      <div class="gm-q">
+        <div class="gm-q-label">What track is this?</div>
+        <div class="gm-q-sub">Guess the song from the album art</div>
+      </div>
+      <div class="gm-opts">
+        ${options.map(o => `<button class="gm-opt" onclick="pickAnswer(this,'${esc(o.name)}','${esc(correct.name)}')">${esc(o.name)}</button>`).join('')}
+      </div>`;
+  }
+
+  arena.innerHTML = qHtml + `<button class="gm-back" onclick="endGame()">&#8592; Back to Games</button>`;
+}
+
+function pickAnswer(btn, chosen, correct) {
+  const arena = $('gm-arena');
+  if (!arena || !gmState) return;
+
+  // Disable all buttons
+  arena.querySelectorAll('.gm-opt').forEach(b => {
+    b.disabled = true;
+    if (b.textContent.trim() === correct) b.classList.add('reveal');
+  });
+
+  const isCorrect = chosen === correct;
+  btn.classList.add(isCorrect ? 'correct' : 'wrong');
+  if (isCorrect) gmState.score++;
+
+  // Next button
+  const next = document.createElement('button');
+  next.className = 'gm-next';
+  next.innerHTML = gmState.idx + 1 >= gmState.total ? '&#127942; See Results' : 'Next &#8594;';
+  next.onclick = () => { gmState.idx++; renderQuestion(); };
+  arena.appendChild(next);
+}
+
+function renderGameEnd() {
+  const arena = $('gm-arena');
+  if (!arena) return;
+  const { score, total, type } = gmState;
+  const pct = Math.round((score / total) * 100);
+  const verdict = pct === 100 ? '&#129351; Perfect score!' : pct >= 70 ? '&#127942; Music genius!' : pct >= 40 ? '&#127925; Not bad!' : '&#128546; Keep listening...';
+  arena.innerHTML = `
+    <div class="gm-end">
+      <div class="gm-end-score">${score}/${total}</div>
+      <div class="gm-end-label">${pct}% correct</div>
+      <div class="gm-end-verdict">${verdict}</div>
+    </div>
+    <button class="gm-next" onclick="startGame('${type}')">&#128260; Play Again</button>
+    <button class="gm-back" onclick="endGame()">&#8592; Back to Games</button>`;
+  gmState = null;
+}
+
+function endGame() {
+  gmState = null;
+  const arena = $('gm-arena');
+  if (arena) { arena.style.display = 'none'; arena.innerHTML = ''; }
+}
+
+/* ── goPage — updated with games ──────────────── */
+function goPage(nm){
+  ['home','stats','leaderboard','friends','games','profile'].forEach(n=>{
+    const b=$(`bn-${n}`),p=$(`pg-${n}`);
+    if(b)b.classList.toggle('on',n===nm);
+    if(p)p.classList.toggle('on',n===nm);
+  });
+  const pw=$('pill-wrap');if(pw)pw.style.display=nm==='home'?'':'none';
+  if(nm==='leaderboard')startLeaderboard();
+  if(nm==='friends')startFriends();
+  if(nm==='profile')fillProfile();
+  if(nm!=='games')endGame(); // reset game when leaving
+}
 async function loadProfile(){const p=await sp('/me');profile=p;st('u-nm',p.display_name||p.id);const av=$('u-av');if(av)av.innerHTML=p.images?.[0]?.url?`<img src="${esc(p.images[0].url)}" alt="av"/>`:(p.display_name||'U')[0].toUpperCase();}
 function fillProfile(){if(!profile)return;const p=profile;const big=$('p-av');if(big)big.innerHTML=p.images?.[0]?.url?`<img src="${esc(p.images[0].url)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>`:esc((p.display_name||'U')[0].toUpperCase());st('p-nm',p.display_name||p.id||'—');st('p-id',p.id?'@'+p.id:'');st('p-plan',p.product?p.product[0].toUpperCase()+p.product.slice(1):'Free');st('p-ctry',p.country||'—');st('p-fol',(p.followers?.total??0).toLocaleString());}
 function logout(){localStorage.removeItem('tok');localStorage.removeItem('pkce_v');location.href=location.pathname;}
